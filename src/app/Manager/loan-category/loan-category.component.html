@@ -1,0 +1,23 @@
+<body>
+    <div class="login-container">
+      <h2>Add loan categories</h2>
+      <!-- <form [formGroup]="loginForm" > -->
+      <form [formGroup]="categoryForm">     
+    
+        <label for="loanCategory">Loan Category:</label>
+        <input type="text" id="loanName" name="loanName" formControlName="loanName" ><br><br>
+    
+        <div class="example-button-row">
+          <button mat-raised-button color="accent" type="submit" (click)="Category(loanName)">Add Category</button>
+        </div>
+      </form>
+      <div>
+        <h1>Current Loan Categories</h1>
+        <ul>
+            <li *ngFor="let category of Categorys">
+              {{ category.loanName }}
+            </li>
+          </ul>
+      </div>
+    </div>
+  </body> 
