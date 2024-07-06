@@ -2,20 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
-import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppRoutingModule } from '../../app-routing.module';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-loan-category',
   standalone: true,
   imports: [
-    BrowserModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
     FormsModule,
-    AppRoutingModule],
+    CommonModule
+    //AppRoutingModule
+  ],
   templateUrl: './loan-category.component.html',
   styleUrl: './loan-category.component.scss'
 })

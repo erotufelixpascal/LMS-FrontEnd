@@ -3,20 +3,21 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { CommonService } from "../../Services/common.service";
-import { BrowserModule } from "@angular/platform-browser";
+
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { AppRoutingModule } from "../../app-routing.module";
+import { CommonModule } from "@angular/common";
+// import { AppRoutingModule } from "../../app-routing.module";
 
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
+    // BrowserAnimationsModule,
     ReactiveFormsModule,
     FormsModule,
-    AppRoutingModule],
+    CommonModule
+    ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
