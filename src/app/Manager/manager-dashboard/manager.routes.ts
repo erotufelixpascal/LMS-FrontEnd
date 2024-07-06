@@ -8,6 +8,7 @@ export const MANAGER_ROUTES :Routes = [
        children:[
         {path:'', redirectTo: 'loan-category', pathMatch: 'full'},
         {path:'loan-category', component:LoanCategoryComponent}
+        // {path:'loan-category', component:LoanCategoryComponent}
        ]
 },    
 ]

@@ -3,10 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { CommonService } from "../../Services/common.service";
-
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { CommonModule } from "@angular/common";
-// import { AppRoutingModule } from "../../app-routing.module";
 
 
 @Component({
@@ -24,7 +21,8 @@ import { CommonModule } from "@angular/common";
 
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  roles!: string[];
+  roles: number = 0;
+  customerID : string =''
   
   constructor(
     private fb: FormBuilder,
@@ -44,28 +42,32 @@ export class LoginComponent implements OnInit {
       console.log(this.loginForm.value);
       //localStorage.setItem("PID","23456")
       //this.router.navigate(["/loan-application"]);
+      this.DataService.getUsers().subscribe((res) =>{
+        // localStorage.setItem("userPID", "res.customerID");
+        this.customerID = res.customerID;
+      })
 
-      this.DataService.getUserRole().subscribe((data) => {
-        this.roles = data;
+      this.DataService.getUserRole(this.customerID).subscribe((data) => {
+        this.roles = data[0].userRole;
         if (this.roles) {
             // "id": 1,"userType": "Manager",
             // if (data[0].userRole = 1) {
-            if (data[0].userRole = 1) {
+            if (this.roles = 1) {
                 this.router.navigate(["/adminpage"]);
               }
             // "id": 2,"userType": "Loans Officer",
-            if (data[0].userRole = 2) {
+            if (this.roles = 2) {
                 this.router.navigate(["/siteadminpage"]);
               }
             // "id": 3,"userType": "Individual Client",
-            if (data[0].userRole = 3) {
+            if (this.roles = 3) {
                 this.router.navigate(["/loan-application"]);
               }
             // "id": 4,"userType": "Business Client",
-            if (data[0].userRole = 4) {
+            if (this.roles = 4) {
                 this.router.navigate(["/loan-application"]);
               }
-        }else if (data[0].userRole = " ") {
+        }else if (this.roles = 0) {
             //add code for unregistered PID
         }});
       };
