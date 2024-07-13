@@ -8,18 +8,16 @@ import { NgModule } from '@angular/core';
 
 export const routes: Routes = [
     {path:'', component:LoginComponent},
-    {path:'client', 
-          loadComponent:( )  => import('./Client/client-home/client-home.component')
-          .then (c => c.ClientHomeComponent)  
-      },
-    {path:'client/loan-application', 
-          loadComponent:( )  => import('./Client/loan-application/loan-application.component')
-          .then (c => c.LoanApplicationComponent)  
-      },
+    //{path:'settings', component:   },
+    {path:'loan-test', redirectTo: 'loan-category', pathMatch: 'full'},
+    {path:'loan-category', component:LoanCategoryComponent},
+    {path:'logout', component:LoginComponent},
+    {path:'', 
+          loadChildren:( )  => import('./Client/client.routes')
+          .then (c => c.CLIENT_ROUTES)  
+    },
     {path:'manager',
-        loadChildren: () => import('./Manager/manager-dashboard/manager.routes') 
+        loadChildren: () => import('./Manager/manager.routes') 
         .then(r => r.MANAGER_ROUTES)
     },
-      {path:'loan-test', redirectTo: 'loan-category', pathMatch: 'full'},
-      {path:'loan-category', component:LoanCategoryComponent}
 ];
