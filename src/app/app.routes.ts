@@ -16,7 +16,7 @@ export const routes: Routes = [
           loadChildren:( )  => import('./Client/client.routes')
           .then (c => c.CLIENT_ROUTES)  
     },
-    {path:'manager',
+    {path:'',
         loadChildren: () => import('./Manager/manager.routes') 
         .then(r => r.MANAGER_ROUTES)
     },
