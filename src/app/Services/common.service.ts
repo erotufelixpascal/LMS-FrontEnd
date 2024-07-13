@@ -24,8 +24,8 @@ export class CommonService {
     const headers = new HttpHeaders({
       "Content-Type": "application/json",
     });
-    return this.http.get<any>(this.apiURL + "/users/${customerID}");
-    // return this.http.get<any>(`${this.apiURL}/users/${customerID}`, { headers });
+    return this.http.get<any>(this.apiURL + "/users/customerID");
+    //return this.http.get<any>(`${this.apiURL}/users/${customerID}`, { headers });
   }
 
   loanApplication( amount: number, reason: string,status: string, term: number, interestRate: number, customerID: string, category: string ){

@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   roles: number = 0;
   customerID : string =''
+  users : any[] = [];
   
   constructor(
     private fb: FormBuilder,
@@ -43,6 +44,8 @@ export class LoginComponent implements OnInit {
       //localStorage.setItem("PID","23456")
       //this.router.navigate(["/loan-application"]);
       this.DataService.getUsers().subscribe((res) =>{
+        this.users = res
+        console.log(this.users)
         // localStorage.setItem("userPID", "res.customerID");
         this.customerID = res.customerID;
       })
@@ -53,19 +56,19 @@ export class LoginComponent implements OnInit {
             // "id": 1,"userType": "Manager",
             // if (data[0].userRole = 1) {
             if (this.roles = 1) {
-                this.router.navigate(["/adminpage"]);
+                this.router.navigate(["/client"]);
               }
             // "id": 2,"userType": "Loans Officer",
             if (this.roles = 2) {
-                this.router.navigate(["/siteadminpage"]);
+                this.router.navigate(["/manager"]);
               }
             // "id": 3,"userType": "Individual Client",
             if (this.roles = 3) {
-                this.router.navigate(["/loan-application"]);
+                this.router.navigate(["/manager"]);
               }
             // "id": 4,"userType": "Business Client",
             if (this.roles = 4) {
-                this.router.navigate(["/loan-application"]);
+                this.router.navigate(["/manager"]);
               }
         }else if (this.roles = 0) {
             //add code for unregistered PID

@@ -8,7 +8,7 @@ import { NgModule } from '@angular/core';
 
 export const routes: Routes = [
     {path:'', component:LoginComponent},
-      {path:'application', 
+    {path:'client', 
           loadComponent:( )  => import('./Client/loan-application/loan-application.component')
           .then (c => c.LoanApplicationComponent)  
       },
