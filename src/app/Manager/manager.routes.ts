@@ -6,9 +6,9 @@ export const MANAGER_ROUTES :Routes = [
     {path:'', redirectTo: 'manager', pathMatch: 'full'},
     {path:'manager', component:ManagerDashboardComponent,
        children:[
-        {path:'', redirectTo: 'loan-category', pathMatch: 'full'},
-        {path:'loan-category', component:LoanCategoryComponent}
-        // {path:'loan-category', component:LoanCategoryComponent}
+        {path:'', redirectTo: 'manager-dashboard', pathMatch: 'full'},
+        {path:'loan-category', component:LoanCategoryComponent},
+        {path:'manager-dashboard', component:ManagerDashboardComponent}
        ]
 },    
 ]
