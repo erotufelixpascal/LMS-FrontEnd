@@ -72,33 +72,34 @@
             </div>
         <p>Current loan categories</p>
             <div class="container">
-                <!-- <div class="column">
-                    <h2>Oslo</h2>
-                    <p>Oslo is the capital city of Norway.</p>
-                    <p>Oslo has over 600.000 inhabitants.</p>
-                </div>
-                <div class="column">
-                    <h2>London</h2>
-                    <p>London is the capital city of England.</p>
-                    <p>London has over 13 million inhabitants.</p>
-                </div>
-                <div class="column">
-                    <h2>Rome</h2>
-                    <p>Rome is the capital city of Italy.</p>
-                    <p>Rome has almost 3 million inhabitants.</p>
-                </div> -->
                 <div>
                     <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
                     <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center"> -->
                         <mat-tab label="Repayments"><br>
                             <button>Add repayments</button>
                             <p>Here you will find the repayments</p>
+                            <ag-grid-angular
+                                style="width: 100%; height: 550px"
+                                [class]="themeClass"
+                                [defaultColDef]="defaultColDef"
+                                [rowData]="repaymentList"
+                                [columnDefs]="colDefs"
+                                (gridSizeChanged)="onGridSizeChange($event)"
+                                > </ag-grid-angular>
+                        </mat-tab>
+                        <mat-tab label="Loan Schedule">Loan Repayment Schedule <br>
+                            <p>Here you will find the Loan Repayment Schedule</p>
+                            <ag-grid-angular
+                                style="width: 100%; height: 550px"
+                                [class]="themeClass"
+                                [defaultColDef]="defaultColDef"
+                                [rowData]="scheduleList"
+                                [columnDefs]="colDefs"
+                                (gridSizeChanged)="onGridSizeChange($event)"
+                                > </ag-grid-angular>
                         </mat-tab>
                         <mat-tab label="Loan Terms">Loan Terms <br>
                             <p>Here you will find the loan Terms</p>
-                        </mat-tab>
-                        <mat-tab label="Loan Schedule">Loan Schedule <br>
-                            <p>Here you will find the Loan Schedule</p>
                         </mat-tab>
                         <mat-tab label="Loan Collateral">Loan Collateral <br>
                             <p>Here you will find the Loan Collateral</p>
