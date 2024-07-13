@@ -9,10 +9,14 @@ import { NgModule } from '@angular/core';
 export const routes: Routes = [
     {path:'', component:LoginComponent},
     {path:'client', 
+          loadComponent:( )  => import('./Client/client-home/client-home.component')
+          .then (c => c.ClientHomeComponent)  
+      },
+    {path:'client/loan-application', 
           loadComponent:( )  => import('./Client/loan-application/loan-application.component')
           .then (c => c.LoanApplicationComponent)  
       },
-      {path:'manager',
+    {path:'manager',
         loadChildren: () => import('./Manager/manager-dashboard/manager.routes') 
         .then(r => r.MANAGER_ROUTES)
     },
