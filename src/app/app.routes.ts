@@ -7,17 +7,10 @@ import { ManagerDashboardComponent } from './Manager/manager-dashboard/manager-d
 import { NgModule } from '@angular/core';
 
 export const routes: Routes = [
+    {path:'loan-test', redirectTo: 'loan-category', pathMatch: 'full'},
     {path:'', component:LoginComponent},
     //{path:'settings', component:   },
-    {path:'loan-test', redirectTo: 'loan-category', pathMatch: 'full'},
-    {path:'loan-category', component:LoanCategoryComponent},
     {path:'logout', component:LoginComponent},
-    {path:'', 
-          loadChildren:( )  => import('./Client/client.routes')
-          .then (c => c.CLIENT_ROUTES)  
-    },
-    {path:'',
-        loadChildren: () => import('./Manager/manager.routes') 
-        .then(r => r.MANAGER_ROUTES)
-    },
+    {path:'', loadChildren:( )  => import('./Client/client.routes').then (c => c.CLIENT_ROUTES)},
+    {path:'', loadChildren: () => import('./Manager/manager.routes').then(r => r.MANAGER_ROUTES)},
 ];
