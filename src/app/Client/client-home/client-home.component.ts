@@ -6,6 +6,8 @@ import { CommonService } from '../../Services/common.service';
 import {MatTabsModule} from '@angular/material/tabs';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridReadyEvent,  GridSizeChangedEvent, createGrid } from "ag-grid-community";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { LoanApplicationComponent } from '../loan-application/loan-application.component';
 
 interface IRow {
   participant_PID: string;
@@ -46,17 +48,30 @@ export class ClientHomeComponent implements OnInit{
     { field: "ParticipantFirstName", headerName: "Loan Number" },
     { field: "ParticipantLastName", headerName: "Client ID" },
     { field: "ParticipantNamesLike", headerName: "Loan Amount" },
-    { field: "course_partner_PID", headerName: "Loan Amount Paid" },
-    { field: "CoursePartnerFirstName", headerName: "Date Paid" },
-    { field: "CoursePartnerLastName", headerName: "Mode of Payment" },
+    { field: "course_partner_PID", headerName: "Processing Fee" },
+    { field: "course_partner_PID", headerName: "Principal Amount" },
+    { field: "course_partner_PID", headerName: "Interest Amount" },
     { field: "CoursePartnerNamesLike", headerName: "Balance Remaining" },
+    { field: "CoursePartnerFirstName", headerName: "Date Paid" },
+    { field: "course_partner_PID", headerName: "Penalities" },
+    { field: "CoursePartnerLastName", headerName: "Mode of Payment" }
+
   ];
 
+  colDefs1: ColDef[] = [
+    { field: "ParticipantFirstName", headerName: "Loan Number" },
+    { field: "ParticipantLastName", headerName: "Client ID" },
+    { field: "course_partner_PID", headerName: "Principal Amount Due" },
+    { field: "course_partner_PID", headerName: "Interest Amount Due" },
+    { field: "CoursePartnerFirstName", headerName: "Due Date" },
+    { field: "CoursePartnerNamesLike", headerName: "Balance Remaining" },
+  ];
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private DataService: CommonService
+    private DataService: CommonService,
+    private modalService:NgbModal,
    ){
     this.clientForm = this.fb.group({
       Name: ["", Validators.required],
@@ -72,8 +87,25 @@ export class ClientHomeComponent implements OnInit{
 
   ngOnInit(): void {}
 
+  // addRepayment(){}
+
+  // showModal(data: any) {
+    showModal() {
+    const modalRef = this.modalService.open(LoanApplicationComponent);
+    //modalRef.componentInstance.data = data.data;
+
+    modalRef.closed.subscribe((data) => {
+      console.log("onclosed", data);
+      if (data == 1) {
+        //this.ClassList(this.courseIDInt);
+
+      }
+    });
+  }
+
   goToChildRoute(route :string ){
-    this.router.navigate([route]);
+      console.log('Navigating to:', route);
+      this.router.navigate([route]);
   }
 
   onGridSizeChange(params: GridSizeChangedEvent) {
