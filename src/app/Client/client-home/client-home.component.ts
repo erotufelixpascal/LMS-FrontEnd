@@ -7,7 +7,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridReadyEvent,  GridSizeChangedEvent, createGrid } from "ag-grid-community";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoanApplicationComponent } from '../loan-application/loan-application.component';
+import { LoanRepaymentComponent } from '../loan-repayment/loan-repayment.component';
 
 interface IRow {
   participant_PID: string;
@@ -91,7 +91,7 @@ export class ClientHomeComponent implements OnInit{
 
   // showModal(data: any) {
     showModal() {
-    const modalRef = this.modalService.open(LoanApplicationComponent);
+    const modalRef = this.modalService.open(LoanRepaymentComponent);
     //modalRef.componentInstance.data = data.data;
 
     modalRef.closed.subscribe((data) => {

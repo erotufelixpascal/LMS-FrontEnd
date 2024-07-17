@@ -11,6 +11,6 @@ export const routes: Routes = [
     {path:'', component:LoginComponent},
     //{path:'settings', component:   },
     {path:'logout', component:LoginComponent},
-    {path:'', loadChildren:( )  => import('./Client/client.routes').then (c => c.CLIENT_ROUTES)},
-    {path:'', loadChildren: () => import('./Manager/manager.routes').then(r => r.MANAGER_ROUTES)},
+    {path:'client', loadChildren:( )  => import('./Client/client.routes').then (c => c.CLIENT_ROUTES)},
+    {path:'manager', loadChildren: () => import('./Manager/manager.routes').then(r => r.MANAGER_ROUTES)},
 ];

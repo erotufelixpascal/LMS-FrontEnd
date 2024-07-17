@@ -5,9 +5,9 @@ import { ClientHomeComponent } from "./client-home/client-home.component";
 
 export const CLIENT_ROUTES :Routes = [
     {path:'', redirectTo: 'client', pathMatch: 'full'},
-    {path:'client', component:ClientHomeComponent,
+    {path:'', component:ClientHomeComponent,
        children:[
-        {path:'', redirectTo: 'client', pathMatch: 'full'},
+        {path:'', redirectTo: 'loan-application', pathMatch: 'full'},
         {path:'loan-application', component:LoanApplicationComponent},
         {path:'loan-repayment', component:LoanRepaymentComponent}
        ]
