@@ -9,7 +9,7 @@
             <a class="nav-link" routerLink="manager/users">Users</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="manager/loan-applications">Loan Application Approval</a>
+            <a class="nav-link" routerLink="manager/loan-applications">Loan Applications</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" routerLink="manager/dashboard">Organization Statistics/Perfomance</a>
@@ -70,20 +70,21 @@
                     <p>Rome has almost 3 million inhabitants.</p>
                 </div>
             </div>
-        <p>Current loan categories</p>
+    <!-- new -->
+        <h4>Loan Setup</h4>
             <div class="container">
                 <div class="column">
-                    <h2>Oslo</h2>
-                    <p>Oslo is the capital city of Norway.</p>
-                    <p>Oslo has over 600.000 inhabitants.</p>
+                    <h3>Loan Categories</h3>
+                    <p *ngFor="let category of loanCategories">{{category.loanName}}</p>
+                    <button>Add loan categories</button>
                 </div>
                 <div class="column">
-                    <h2>London</h2>
-                    <p>London is the capital city of England.</p>
+                    <h3>Loan Terms</h3>
+                    <p>Define loan terms for staff to use</p>
                     <p>London has over 13 million inhabitants.</p>
                 </div>
                 <div class="column">
-                    <h2>Rome</h2>
+                    <h3>Rome</h3>
                     <p>Rome is the capital city of Italy.</p>
                     <p>Rome has almost 3 million inhabitants.</p>
                 </div>

@@ -101,11 +101,50 @@
                         <mat-tab label="Loan Collateral">Loan Collateral <br>
                             <p>Here you will find the Loan Collateral</p>
                         </mat-tab>
-                        <mat-tab label="Loan Files">Loan Files <br>
-                            <p>Here you will find the Loan Files</p>
+                        <mat-tab label="Loan Files"><br>
+                            <div class="container mt-4">
+                                <!-- <h2>Loan Files</h2> -->
+                                <table class="table table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th>File Name</th>
+                                      <th>Type</th>
+                                      <th>Upload Date</th>
+                                      <th>Action</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr *ngFor="let file of loanFiles">
+                                      <td>{{ file.fileName }}</td>
+                                      <td>{{ file.fileType }}</td>
+                                      <td>{{ file.uploadDate | date }}</td>
+                                      <td>
+                                        <button class="btn btn-primary" (click)="downloadFile(file)">Download</button>
+                                        <button class="btn btn-danger" (click)="deleteFile(file)">Delete</button>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>                              
                         </mat-tab>
                         <mat-tab label="Loan Comments">Loan Comments/Reminders<br>
-                            <p>Here you will find the Loan Comments</p>
+                            <div class="loan-comments">                              
+                                <!-- Display existing comments -->
+                                <div *ngFor="let comment of comments" class="comment">
+                                  <div class="comment-header">
+                                    <strong>{{ comment.userName }}</strong>
+                                    <span class="timestamp">{{ comment.timestamp | date:'short' }}</span>
+                                  </div>
+                                  <p>{{ comment.text }}</p>
+                                </div>
+                              
+                                <!-- Add new comment -->
+                                <div class="add-comment">
+                                  <h4>Add a Comment</h4>
+                                  <textarea [(ngModel)]="newComment.text" rows="3" placeholder="Write your comment..."></textarea>
+                                  <button (click)="addComment()">Submit</button>
+                                </div>
+                              </div>
                         </mat-tab>
                     </mat-tab-group>
                 </div>

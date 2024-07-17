@@ -19,6 +19,16 @@ interface IRow {
   CoursePartnerLastName: string;
   CoursePartnerNamesLike: string;
 }
+interface LoanFile {
+  fileName: string;
+  fileType: string;
+  uploadDate: Date;
+}
+interface Comment {
+  userName: string;
+  text: string;
+  timestamp: Date;
+}
 @Component({
   selector: 'app-client-home',
   standalone: true,
@@ -33,7 +43,6 @@ interface IRow {
   styleUrl: './client-home.component.scss'
 })
 export class ClientHomeComponent implements OnInit{
-  clientForm: FormGroup;
   themeClass = "ag-theme-alpine";
   repaymentList: IRow[] = [];
   scheduleList: IRow[] = [];
@@ -67,25 +76,47 @@ export class ClientHomeComponent implements OnInit{
     { field: "CoursePartnerNamesLike", headerName: "Balance Remaining" },
   ];
 
+  loanFiles: LoanFile[] = [
+    { fileName: 'loan-agreement.pdf', fileType: 'PDF', uploadDate: new Date('2024-01-01') },
+    { fileName: 'credit-report.docx', fileType: 'DOCX', uploadDate: new Date('2024-02-01') },
+    { fileName: 'collateral.png', fileType: 'Image', uploadDate: new Date('2024-03-01') },
+    { fileName: 'loan-repayment-schedule.xlsx', fileType: 'Excel', uploadDate: new Date('2024-04-01') }
+  ];
+
+  comments: Comment[] = [
+    { userName: 'John Doe', text: 'Initial review completed.', timestamp: new Date('2024-01-15T10:30:00') },
+    { userName: 'Jane Smith', text: 'Loan approved.', timestamp: new Date('2024-02-01T14:45:00') },
+    { userName: 'Patricia Akiding', text: 'Everything checks out', timestamp: new Date('2024-01-15T10:30:00') },
+    { userName: 'Erotu Felix-Manager', text: 'Loan disbursed.', timestamp: new Date('2024-02-01T14:45:00') },
+  ];
+  newComment: Comment = { userName: 'Current User', text: '', timestamp: new Date() };
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private DataService: CommonService,
     private modalService:NgbModal,
-   ){
-    this.clientForm = this.fb.group({
-      Name: ["", Validators.required],
-      RelationshipFor: ["", Validators.required],
-      Active: [false],
-      Order: [
-        null,
-        [Validators.required, Validators.min(1), Validators.max(7)],
-      ],
-      Archive: [false],
-    });
-   }
+   ){ }
 
   ngOnInit(): void {}
+
+  downloadFile(file: LoanFile): void {
+    // Logic to download the file
+    console.log('Downloading file:', file);
+  }
+
+  deleteFile(file: LoanFile): void {
+    // Logic to delete the file
+    console.log('Deleting file:', file);
+  }
+
+  addComment() {
+    if (this.newComment.text.trim()) {
+      this.newComment.timestamp = new Date();
+      this.comments.push({ ...this.newComment });
+      this.newComment.text = '';
+    }
+  }
 
   // addRepayment(){}
 
