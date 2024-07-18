@@ -52,25 +52,6 @@
             </div>
         </div>
         <!-- new -->
-        <p> Outstanding Loan Perfomers - Clients</p>
-            <div class="container">
-                <div class="column">
-                    <h2>Oslo</h2>
-                    <p>Oslo is the capital city of Norway.</p>
-                    <p>Oslo has over 600.000 inhabitants.</p>
-                </div>
-                <div class="column">
-                    <h2>London</h2>
-                    <p>London is the capital city of England.</p>
-                    <p>London has over 13 million inhabitants.</p>
-                </div>
-                <div class="column">
-                    <h2>Rome</h2>
-                    <p>Rome is the capital city of Italy.</p>
-                    <p>Rome has almost 3 million inhabitants.</p>
-                </div>
-            </div>
-    <!-- new -->
         <h4>Loan Setup</h4>
             <div class="container">
                 <div class="column">
@@ -89,6 +70,97 @@
                     <p>Rome has almost 3 million inhabitants.</p>
                 </div>
             </div>
+        <!-- new -->
+        <p> Outstanding Loan Perfomers - Clients</p>
+            <div class="container">
+              <div>
+                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center"> -->
+                    <mat-tab label="Loan application approval"><br>
+                        <button >Approve Application</button>
+                        <p>Here you will find the Loan application</p>
+                        <!-- <ag-grid-angular
+                            style="width: 100%; height: 550px"
+                            [class]="themeClass"
+                            [defaultColDef]="defaultColDef"
+                            [rowData]="repaymentList"
+                            [columnDefs]="loanRepayment"
+                            (gridSizeChanged)="onGridSizeChange($event)"
+                            > </ag-grid-angular> -->
+                    </mat-tab>
+                    <mat-tab label="Loan Disbursment">Loan Disbursment<br>
+                        <p>Here you will find the Loan Disbursment</p>
+                        <!-- <ag-grid-angular
+                            style="width: 100%; height: 550px"
+                            [class]="themeClass"
+                            [defaultColDef]="defaultColDef"
+                            [rowData]="scheduleList"
+                            [columnDefs]="loanRepaymentSchedule"
+                            (gridSizeChanged)="onGridSizeChange($event)"
+                            > </ag-grid-angular> -->
+                    </mat-tab>
+                    <mat-tab label="Loan Terms">Loan Terms <br>
+                      <!-- <ag-grid-angular
+                        style="width: 100%; height: 550px"
+                        [class]="themeClass"
+                        [defaultColDef]="defaultColDef"
+                        [rowData]="loanTerm"
+                        [columnDefs]="loanTerms"
+                        (gridSizeChanged)="onGridSizeChange($event)"
+                      > </ag-grid-angular> -->
+                    </mat-tab>
+                    <mat-tab label="Loan Collateral">Loan Collateral <br>
+                        <p>Here you will find the Loan Collateral</p>
+                    </mat-tab>
+                    <mat-tab label="Loan Files"><br>
+                        <div class="container mt-4">
+                            <!-- <h2>Loan Files</h2> -->
+                            <table class="table table-bordered">
+                              <thead>
+                                <tr>
+                                  <th>File Name</th>
+                                  <th>Type</th>
+                                  <th>Upload Date</th>
+                                  <th>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let file of loanFiles">
+                                  <td>{{ file.fileName }}</td>
+                                  <td>{{ file.fileType }}</td>
+                                  <td>{{ file.uploadDate | date }}</td>
+                                  <td>
+                                    <button class="btn btn-primary" (click)="downloadFile(file)">Download</button>
+                                    <button class="btn btn-danger" (click)="deleteFile(file)">Delete</button>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>                              
+                    </mat-tab>
+                    <mat-tab label="Loan Comments">Loan Comments/Reminders<br>
+                        <div class="loan-comments">                              
+                            <!-- Display existing comments -->
+                            <div *ngFor="let comment of comments" class="comment">
+                              <div class="comment-header">
+                                <strong>{{ comment.userName }}</strong>
+                                <span class="timestamp">{{ comment.timestamp | date:'short' }}</span>
+                              </div>
+                              <p>{{ comment.text }}</p>
+                            </div>
+                          
+                            <!-- Add new comment -->
+                            <div class="add-comment">
+                              <h4>Add a Comment</h4>
+                              <textarea [(ngModel)]="newComment.text" rows="3" placeholder="Write your comment..."></textarea>
+                              <button (click)="addComment()">Submit</button>
+                            </div>
+                          </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+            </div>
+    
 
     </article>
 
