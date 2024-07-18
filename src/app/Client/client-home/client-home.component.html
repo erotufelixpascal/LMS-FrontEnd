@@ -80,7 +80,7 @@
                                 [class]="themeClass"
                                 [defaultColDef]="defaultColDef"
                                 [rowData]="repaymentList"
-                                [columnDefs]="colDefs"
+                                [columnDefs]="loanRepayment"
                                 (gridSizeChanged)="onGridSizeChange($event)"
                                 > </ag-grid-angular>
                         </mat-tab>
@@ -91,12 +91,19 @@
                                 [class]="themeClass"
                                 [defaultColDef]="defaultColDef"
                                 [rowData]="scheduleList"
-                                [columnDefs]="colDefs1"
+                                [columnDefs]="loanRepaymentSchedule"
                                 (gridSizeChanged)="onGridSizeChange($event)"
                                 > </ag-grid-angular>
                         </mat-tab>
                         <mat-tab label="Loan Terms">Loan Terms <br>
-                            <p>Here you will find the loan Terms</p>
+                          <ag-grid-angular
+                            style="width: 100%; height: 550px"
+                            [class]="themeClass"
+                            [defaultColDef]="defaultColDef"
+                            [rowData]="loanTerm"
+                            [columnDefs]="loanTerms"
+                            (gridSizeChanged)="onGridSizeChange($event)"
+                          > </ag-grid-angular>
                         </mat-tab>
                         <mat-tab label="Loan Collateral">Loan Collateral <br>
                             <p>Here you will find the Loan Collateral</p>

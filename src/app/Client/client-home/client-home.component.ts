@@ -46,6 +46,7 @@ export class ClientHomeComponent implements OnInit{
   themeClass = "ag-theme-alpine";
   repaymentList: IRow[] = [];
   scheduleList: IRow[] = [];
+  loanTerm: IRow[] = [];
   gridApi: any;
   defaultColDef: ColDef = {
     sortable: true,
@@ -53,7 +54,7 @@ export class ClientHomeComponent implements OnInit{
     resizable: true,
   };
 
-  colDefs: ColDef[] = [
+  loanRepayment: ColDef[] = [
     { field: "ParticipantFirstName", headerName: "Loan Number" },
     { field: "ParticipantLastName", headerName: "Client ID" },
     { field: "ParticipantNamesLike", headerName: "Loan Amount" },
@@ -67,13 +68,19 @@ export class ClientHomeComponent implements OnInit{
 
   ];
 
-  colDefs1: ColDef[] = [
+  loanRepaymentSchedule: ColDef[] = [
     { field: "ParticipantFirstName", headerName: "Loan Number" },
     { field: "ParticipantLastName", headerName: "Client ID" },
     { field: "course_partner_PID", headerName: "Principal Amount Due" },
     { field: "course_partner_PID", headerName: "Interest Amount Due" },
     { field: "CoursePartnerFirstName", headerName: "Due Date" },
     { field: "CoursePartnerNamesLike", headerName: "Balance Remaining" },
+  ];
+
+  loanTerms: ColDef[] = [
+    { field: "loanType", headerName: "Loan Type" },
+    { field: "typicalPeriod", headerName: "Typical Period" },
+    { field: "commonUseCases", headerName: "Common Use Cases" }
   ];
 
   loanFiles: LoanFile[] = [
@@ -98,7 +105,11 @@ export class ClientHomeComponent implements OnInit{
     private modalService:NgbModal,
    ){ }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.DataService.loanTerms().subscribe((res) =>{
+      this.loanTerm = res
+      })
+  }
 
   downloadFile(file: LoanFile): void {
     // Logic to download the file
@@ -133,6 +144,12 @@ export class ClientHomeComponent implements OnInit{
       }
     });
   }
+
+
+
+
+
+
 
   goToChildRoute(route :string ){
       console.log('Navigating to:', route);

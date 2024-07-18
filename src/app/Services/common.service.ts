@@ -94,4 +94,11 @@ export class CommonService {
         return this.http.get<any>(this.apiURL + "/loan-categories");
       }
 
+      loanTerms() {
+        const headers = new HttpHeaders({
+          "Content-Type": "application/json",
+        });
+        return this.http.get<any>(this.apiURL + "/loan-terms");
+      }
+
 }
