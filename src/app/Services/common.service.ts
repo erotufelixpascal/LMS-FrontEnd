@@ -28,6 +28,26 @@ export class CommonService {
     //return this.http.get<any>(`${this.apiURL}/users/${customerID}`, { headers });
   }
 
+  updateUserRole(  customerID: string, role:string ){
+    const headers = new HttpHeaders({
+        "Content-Type": "application/json",
+      });
+      return this.http.post<any>(this.apiURL + "/users",
+      {
+        dirty: Boolean,
+        customerID: customerID, 
+        role: role
+      },
+      { headers }
+    )
+    .pipe(
+      catchError((error) => {
+        console.error("Error occurred:", error);
+        return throwError(error);
+      })
+    );
+  }
+
   loanApplication( amount: number, reason: string,status: string, term: number, interestRate: number, customerID: string, category: string ){
     const headers = new HttpHeaders({
         "Content-Type": "application/json",
