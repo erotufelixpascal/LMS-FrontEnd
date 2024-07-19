@@ -100,5 +100,17 @@ export class CommonService {
         });
         return this.http.get<any>(this.apiURL + "/loan-terms");
       }
+      getDisbusredLoan() {
+        const headers = new HttpHeaders({
+          "Content-Type": "application/json",
+        });
+        return this.http.get<any>(this.apiURL + "/loan-application");
+      }
+      getPendingLoan() {
+        const headers = new HttpHeaders({
+          "Content-Type": "application/json",
+        });
+        return this.http.get<any>(this.apiURL + "/loan-application");
+      }
 
 }

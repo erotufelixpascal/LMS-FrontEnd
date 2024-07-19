@@ -5,8 +5,8 @@ section {
     height: fit-content;
   }
   img {
-    width: 150px;
-    height: 150px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     display: flex;
   }
@@ -18,7 +18,7 @@ section {
 
 .navbar {
     background-color: #333;
-    overflow: hidden;
+    overflow: visible;
     width: 20%;
     padding-top: 20px;
     position: sticky;
@@ -53,18 +53,18 @@ section {
   
  
 //   /* Style the content */
-//   article {
-//     -webkit-flex: 3;
-//     -ms-flex: 3;
-//     flex: 3;
-//     background-color: #f1f1f1;
-//     padding: 10px;
-//   }
+  article {
+    -webkit-flex: 3;
+    -ms-flex: 3;
+    flex: 3;
+    background-color:rgb(214, 218, 28);
+    //padding: 10px;
+  }
   
   /* Style the footer */
   footer {
     background-color: #777;
-    padding: 8px;
+    padding: 2px;
     text-align: center;
     color: white;
     //margin-left: 20%;

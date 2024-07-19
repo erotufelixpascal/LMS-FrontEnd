@@ -9,6 +9,7 @@ import { ColDef, GridReadyEvent,  GridSizeChangedEvent, createGrid } from "ag-gr
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoanRepaymentComponent } from '../loan-repayment/loan-repayment.component';
 
+
 interface IRow {
   participant_PID: string;
   ParticipantFirstName: string;
@@ -65,7 +66,6 @@ export class ClientHomeComponent implements OnInit{
     { field: "CoursePartnerFirstName", headerName: "Date Paid" },
     { field: "course_partner_PID", headerName: "Penalities" },
     { field: "CoursePartnerLastName", headerName: "Mode of Payment" }
-
   ];
 
   loanRepaymentSchedule: ColDef[] = [
@@ -144,13 +144,6 @@ export class ClientHomeComponent implements OnInit{
       }
     });
   }
-
-
-
-
-
-
-
   goToChildRoute(route :string ){
       console.log('Navigating to:', route);
       this.router.navigate([route]);

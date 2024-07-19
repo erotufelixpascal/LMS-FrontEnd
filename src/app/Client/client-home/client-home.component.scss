@@ -5,28 +5,35 @@ section {
   height: fit-content;
 }
 img {
-  width: 150px;
-  height: 150px;
+  width: 60px;
+  height: 45px;
   border-radius: 50%;
-  display: flex;
+  background-color: rgb(199, 18, 18);
+  //display: flex;
 }
-
-//   .container {
-//     display: flex;
-//     //height: 100vh; /* 100% of the viewport height */
-//}
 
 .navbar {
   background-color: #333;
-  // overflow: hidden;
-  overflow: visible;
+  //background-color: #007bff;
+  overflow: hidden;
   width: 50%;
   padding-top: 20px;
   position: sticky;
   top: 0;
-  height: 100vh; /* Ensure sidebar covers the full height */
-  overflow-y: auto; /* Allow scrolling in the sidebar */
+  height: 100vh;
+  //overflow-y: auto; /* Allow scrolling in the sidebar */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white; /* Ensure text is visible on the dark background */
 }
+
+// .navbar img {
+//   margin-bottom: 5px; /* Add some space below the image */
+//   z-index: 1; /* Ensure the image is above other elements */
+//   font-size: 38px;
+//   font-weight: 600;
+// }
 
 .navbar-nav {
   list-style-type: none;
@@ -51,11 +58,19 @@ img {
 .nav-link:hover {
   background-color: #575757;
 }
+article{
+  //margin-left: 20px;
+  background-color:rgb(214, 218, 28);
+  //display: flex;
+  
+}
+
+
 
 /* Style the footer */
 footer {
   background-color: #777;
-  padding: 8px;
+  padding: 2px;
   text-align: center;
   color: white;
   //margin-left: 20%;
@@ -67,7 +82,7 @@ footer {
   justify-content: space-between;
   padding: 20px;
   background-color:rgb(240, 214, 235);
-  margin-left: 20px;
+  //margin-left: 20px;
 }
 
 .column {

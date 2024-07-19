@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../Services/common.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
 
 interface IRow {
   participant_PID: string;
@@ -48,15 +48,41 @@ interface Comment {
 export class ManagerDashboardComponent implements OnInit{
   loanCategories: any[]=[];
   themeClass = "ag-theme-alpine";
-  repaymentList: IRow[] = [];
-  scheduleList: IRow[] = [];
-  loanTerm: IRow[] = [];
+  loanApprovalList: IRow[] = [];
+  loanDisbursementList: IRow[] = [];
+  loanClosedList: IRow[] = [];
   gridApi: any;
   defaultColDef: ColDef = {
     sortable: true,
     filter: true,
     resizable: true,
   };
+
+  loanApproval: ColDef[] = [
+    { field: "ParticipantFirstName", headerName: "Loan Number" },
+    { field: "ParticipantNamesLike", headerName: "Loan Amount" },
+    { field: "course_partner_PID", headerName: "Processing Fee" },
+    { field: "course_partner_PID", headerName: "Principal Amount" },
+    { field: "course_partner_PID", headerName: "Interest Amount" },
+    { field: "CoursePartnerLastName", headerName: "Change Loan Status" }
+  ];
+
+  loanDisbursement: ColDef[] = [
+    { field: "loanNumber", headerName: "Loan Number" },
+    { field: "amount", headerName: "Loan Amount" },
+    { field: "course_partner_PID", headerName: "Processing Fee" },
+    { field: "amount", headerName: "Principal Amount" },
+    { field: "course_partner_PID", headerName: "Interest Amount" },
+    { field: "status", headerName: "Loan Status" }
+  ];
+  loanClosed: ColDef[] = [
+    { field: "ParticipantFirstName", headerName: "Loan Number" },
+    { field: "ParticipantNamesLike", headerName: "Loan Amount" },
+    { field: "course_partner_PID", headerName: "Processing Fee" },
+    { field: "course_partner_PID", headerName: "Principal Amount" },
+    { field: "course_partner_PID", headerName: "Interest Amount" },
+    { field: "CoursePartnerLastName", headerName: "Loan Status" }
+  ];
 
   loanFiles: LoanFile[] = [
     { fileName: 'loan-agreement.pdf', fileType: 'PDF', uploadDate: new Date('2024-01-01') },
@@ -83,8 +109,14 @@ export class ManagerDashboardComponent implements OnInit{
       this.loanCategories = res
       // console.log(this.loanCategories)
     })
-
+    this.DataService.getDisbusredLoan().subscribe((data) =>{
+      this.loanDisbursementList = data
+    })
+    this.DataService.getPendingLoan().subscribe((data) =>{
+      this.loanDisbursementList = data
+    })
     }
+
     downloadFile(file: LoanFile): void {
       // Logic to download the file
       console.log('Downloading file:', file);
@@ -101,6 +133,10 @@ export class ManagerDashboardComponent implements OnInit{
         this.comments.push({ ...this.newComment });
         this.newComment.text = '';
       }
+    }
+    onGridSizeChange(params: GridSizeChangedEvent) {
+      const gridApi = params.api;
+      gridApi.sizeColumnsToFit();
     }
 
     goToChildRoute(route :string ){

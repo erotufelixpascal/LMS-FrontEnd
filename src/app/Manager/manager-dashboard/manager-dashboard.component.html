@@ -79,25 +79,35 @@
                     <mat-tab label="Loan application approval"><br>
                         <button >Approve Application</button>
                         <p>Here you will find the Loan application</p>
-                        <!-- <ag-grid-angular
+                        <ag-grid-angular
                             style="width: 100%; height: 550px"
                             [class]="themeClass"
                             [defaultColDef]="defaultColDef"
-                            [rowData]="repaymentList"
-                            [columnDefs]="loanRepayment"
+                            [rowData]="loanApprovalList"
+                            [columnDefs]="loanApproval"
                             (gridSizeChanged)="onGridSizeChange($event)"
-                            > </ag-grid-angular> -->
+                            > </ag-grid-angular>
                     </mat-tab>
-                    <mat-tab label="Loan Disbursment">Loan Disbursment<br>
+                    <mat-tab label="Loan Disbursed">Loan Disbursed<br>
                         <p>Here you will find the Loan Disbursment</p>
-                        <!-- <ag-grid-angular
+                        <ag-grid-angular
                             style="width: 100%; height: 550px"
                             [class]="themeClass"
                             [defaultColDef]="defaultColDef"
-                            [rowData]="scheduleList"
-                            [columnDefs]="loanRepaymentSchedule"
+                            [rowData]="loanDisbursementList"
+                            [columnDefs]="loanDisbursement"
                             (gridSizeChanged)="onGridSizeChange($event)"
-                            > </ag-grid-angular> -->
+                            > </ag-grid-angular>
+                    </mat-tab>
+                    <mat-tab label="Closed Off Loans">Closed Off Loans<br>
+                      <ag-grid-angular
+                        style="width: 100%; height: 550px"
+                        [class]="themeClass"
+                        [defaultColDef]="defaultColDef"
+                        [rowData]="loanClosedList"
+                        [columnDefs]="loanClosed"
+                        (gridSizeChanged)="onGridSizeChange($event)"
+                      > </ag-grid-angular>
                     </mat-tab>
                     <mat-tab label="Loan Terms">Loan Terms <br>
                       <!-- <ag-grid-angular
