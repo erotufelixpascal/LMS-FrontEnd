@@ -4,17 +4,19 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
+import { MatTabsModule } from '@angular/material/tabs';
+import { AgGridModule } from 'ag-grid-angular';
 
 
 @Component({
   selector: 'app-loan-category',
   standalone: true,
   imports: [
-    BrowserAnimationsModule,
+    CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    CommonModule
-    //AppRoutingModule
+    MatTabsModule,
+    AgGridModule,
   ],
   templateUrl: './loan-category.component.html',
   styleUrl: './loan-category.component.scss'
@@ -53,8 +55,7 @@ export class LoanCategoryComponent implements OnInit{
     }
 
     fetchLoanCategories(): void {
-        this.DataService.getLoanCategories().subscribe(
-          data => {
+        this.DataService.getLoanCategories().subscribe(data => {
             this.Categorys = data;
             console.log('Loan categories fetched successfully', data);
           },

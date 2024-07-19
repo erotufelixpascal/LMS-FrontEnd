@@ -112,5 +112,11 @@ export class CommonService {
         });
         return this.http.get<any>(this.apiURL + "/loan-application");
       }
+      getClosedLoan() {
+        const headers = new HttpHeaders({
+          "Content-Type": "application/json",
+        });
+        return this.http.get<any>(this.apiURL + "/loan-application");
+      }
 
 }

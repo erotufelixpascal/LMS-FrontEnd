@@ -7,6 +7,9 @@ import { CommonService } from '../../Services/common.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { LoanCategoryComponent } from '../loan-category/loan-category.component';
+import { LoanRepaymentComponent } from '../../Client/loan-repayment/loan-repayment.component';
 
 interface IRow {
   participant_PID: string;
@@ -34,7 +37,6 @@ interface Comment {
   standalone: true,
   imports: [
     CommonModule,
-    // BrowserAnimationsModule,
     ReactiveFormsModule,
     FormsModule,
     MatTabsModule,
@@ -47,6 +49,7 @@ interface Comment {
 
 export class ManagerDashboardComponent implements OnInit{
   loanCategories: any[]=[];
+  loanName: string="";
   themeClass = "ag-theme-alpine";
   loanApprovalList: IRow[] = [];
   loanDisbursementList: IRow[] = [];
@@ -59,29 +62,30 @@ export class ManagerDashboardComponent implements OnInit{
   };
 
   loanApproval: ColDef[] = [
-    { field: "ParticipantFirstName", headerName: "Loan Number" },
-    { field: "ParticipantNamesLike", headerName: "Loan Amount" },
-    { field: "course_partner_PID", headerName: "Processing Fee" },
-    { field: "course_partner_PID", headerName: "Principal Amount" },
-    { field: "course_partner_PID", headerName: "Interest Amount" },
-    { field: "CoursePartnerLastName", headerName: "Change Loan Status" }
+    { field: "loanNumber", headerName: "Loan Number" },
+    // { field: "course_partner_PID", headerName: "Processing Fee" },
+    { field: "principleAmount", headerName: "Principal Amount" },
+    { field: "interestAmount", headerName: "Interest Amount" },
+    { field: "totalAmount", headerName: "Loan Amount" },
+    { field: "status", headerName: "Change Loan Status" }
   ];
 
   loanDisbursement: ColDef[] = [
     { field: "loanNumber", headerName: "Loan Number" },
-    { field: "amount", headerName: "Loan Amount" },
-    { field: "course_partner_PID", headerName: "Processing Fee" },
-    { field: "amount", headerName: "Principal Amount" },
-    { field: "course_partner_PID", headerName: "Interest Amount" },
+    // { field: "course_partner_PID", headerName: "Processing Fee" },
+    { field: "principleAmount", headerName: "Principal Amount" },
+    { field: "interestAmount", headerName: "Interest Amount" },
+    { field: "totalAmount", headerName: "Loan Amount" },
     { field: "status", headerName: "Loan Status" }
   ];
   loanClosed: ColDef[] = [
-    { field: "ParticipantFirstName", headerName: "Loan Number" },
-    { field: "ParticipantNamesLike", headerName: "Loan Amount" },
-    { field: "course_partner_PID", headerName: "Processing Fee" },
-    { field: "course_partner_PID", headerName: "Principal Amount" },
-    { field: "course_partner_PID", headerName: "Interest Amount" },
-    { field: "CoursePartnerLastName", headerName: "Loan Status" }
+    { field: "loanNumber", headerName: "Loan Number" },
+    // { field: "ParticipantNamesLike", headerName: "Loan Amount" },
+    // { field: "course_partner_PID", headerName: "Processing Fee" },
+    { field: "principleAmount", headerName: "Principal Amount" },
+    { field: "interestAmount", headerName: "Interest Amount" },
+    { field: "totalAmount", headerName: "Loan Amount" },
+    { field: "status", headerName: "Loan Status" }
   ];
 
   loanFiles: LoanFile[] = [
@@ -102,6 +106,7 @@ export class ManagerDashboardComponent implements OnInit{
     constructor (
         private router: Router,
         private DataService:CommonService,
+        private modalService:NgbModal,
     ){ }
 
     ngOnInit(): void {
@@ -113,7 +118,10 @@ export class ManagerDashboardComponent implements OnInit{
       this.loanDisbursementList = data
     })
     this.DataService.getPendingLoan().subscribe((data) =>{
-      this.loanDisbursementList = data
+      this.loanApprovalList = data
+    })
+    this.DataService.getClosedLoan().subscribe((data) =>{
+      this.loanClosedList = data
     })
     }
 
@@ -133,6 +141,17 @@ export class ManagerDashboardComponent implements OnInit{
         this.comments.push({ ...this.newComment });
         this.newComment.text = '';
       }
+    }
+    showModal(){
+      //const modalRef = this.modalService.open(LoanCategoryComponent);
+      const modalRef = this.modalService.open(LoanCategoryComponent);
+      modalRef.closed.subscribe((data) => {
+        console.log("onclosed", data);
+        if (data == 1) {
+          //this.ClassList(this.courseIDInt);
+  
+        }
+      });
     }
     onGridSizeChange(params: GridSizeChangedEvent) {
       const gridApi = params.api;

@@ -57,7 +57,7 @@
                 <div class="column">
                     <h3>Loan Categories</h3>
                     <p *ngFor="let category of loanCategories">{{category.loanName}}</p>
-                    <button>Add loan categories</button>
+                    <button (click)="showModal()">Add loan categories</button>
                 </div>
                 <div class="column">
                     <h3>Loan Terms</h3>
