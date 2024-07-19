@@ -2,7 +2,7 @@ import{ Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { CommonService } from '../../Services/common.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AgGridModule } from 'ag-grid-angular';
@@ -10,6 +10,7 @@ import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoanCategoryComponent } from '../loan-category/loan-category.component';
 import { LoanRepaymentComponent } from '../../Client/loan-repayment/loan-repayment.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 interface IRow {
   participant_PID: string;
@@ -41,13 +42,16 @@ interface Comment {
     FormsModule,
     MatTabsModule,
     AgGridModule,
+    MatTooltipModule
 
 ],
+  providers: [DatePipe],
   templateUrl: './manager-dashboard.component.html',
   styleUrl: './manager-dashboard.component.scss'
 })
 
 export class ManagerDashboardComponent implements OnInit{
+  currentDateTime: string;
   loanCategories: any[]=[];
   loanName: string="";
   themeClass = "ag-theme-alpine";
@@ -107,7 +111,10 @@ export class ManagerDashboardComponent implements OnInit{
         private router: Router,
         private DataService:CommonService,
         private modalService:NgbModal,
-    ){ }
+        private datePipe: DatePipe
+    ){ 
+      this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
+    }
 
     ngOnInit(): void {
     this.DataService.getLoanCategories().subscribe((res) =>{
