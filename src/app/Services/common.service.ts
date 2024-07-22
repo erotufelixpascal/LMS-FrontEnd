@@ -28,15 +28,21 @@ export class CommonService {
     //return this.http.get<any>(`${this.apiURL}/users/${customerID}`, { headers });
   }
 
-  updateUserRole(  customerID: string, role:string ){
+  addUser( role:string ,firstName:string,lastName:string,email:string,address:string,designation:string,phone:string,information:string){
     const headers = new HttpHeaders({
         "Content-Type": "application/json",
       });
       return this.http.post<any>(this.apiURL + "/users",
       {
-        dirty: Boolean,
-        customerID: customerID, 
-        role: role
+        dirty: Boolean, 
+        role: role,
+        firstName: firstName,
+        lastName : lastName,
+        email : email,
+        address :address,
+        designation :designation,
+        phone :phone,
+        information :information
       },
       { headers }
     )
@@ -46,6 +52,13 @@ export class CommonService {
         return throwError(error);
       })
     );
+  }
+  getRoles() {
+    const headers = new HttpHeaders({
+      "Content-Type": "application/json",
+    });
+    return this.http.get<any>(this.apiURL + "/user-roles");
+    //return this.http.get<any>(`${this.apiURL}/users/${customerID}`, { headers });
   }
 
   loanApplication( amount: number, reason: string,status: string, term: number, interestRate: number, customerID: string, category: string ){
