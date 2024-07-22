@@ -47,30 +47,19 @@
         </ul>
       </nav>
     <article>
-        <div class="alert alert-warning">
-            <strong>Warning!</strong> This needs your urgent attention please!!.
-        </div>
         <div class="timeDate">
           Current Date and Time: {{ currentDateTime }}
         </div>
         <div class="container">
-            <h2>Assign User Role</h2>
+            <h2>Select Staff</h2>
             <form [formGroup]="staffForm" (ngSubmit)="onSubmit()">
               <div class="form-group">
-                <label for="customerID">User</label>
-                <!-- <select formControlName="customerID" id="customerID" class="form-control">
-                  <option *ngFor="let user of userList" [value]="user.customerID">{{ user.firstName }} - {{ user.lastName }}</option>
-                </select> -->
-              </div>
-              <div class="form-group">
-                <label for="role">Role</label>
-                <select formControlName="role" id="role" class="form-control">
-                  <option value="admin">Admin</option>
-                  <option value="manager">Manager</option>
-                  <option value="client">Client</option>
-                  <option value="staff">Staff</option>
+                <label for="customerID">Staff Member</label>
+                <select formControlName="staffID" id="staffID" class="form-control">
+                  <option *ngFor="let staff of staffList" [value]="staff.customerID">{{ staff.firstName }} - {{ staff.lastName }}</option>
                 </select>
               </div>
+        
               <button type="submit" class="btn btn-primary">Assign Role</button>
             </form>
           </div>          
