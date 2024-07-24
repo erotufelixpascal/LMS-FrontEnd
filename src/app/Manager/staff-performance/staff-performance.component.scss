@@ -8,6 +8,7 @@ section {
     height: 30px;
     border-radius: 50%;
     display: flex;
+    color: red;
   }
   
   .timeDate {
@@ -73,7 +74,7 @@ section {
     //margin-left: 20%;
   }
   .container {
-      max-width: 600px;
+      //max-width: 600px;
       margin: 50px auto;
       padding: 20px;
       border: 1px solid #ccc;
@@ -81,7 +82,7 @@ section {
       background-color: #f9f9f9;
     }
     
-    h2 {
+    h4 {
       text-align: center;
       margin-bottom: 20px;
     }

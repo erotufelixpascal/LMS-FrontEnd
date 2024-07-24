@@ -157,5 +157,11 @@ export class CommonService {
         });
         return this.http.get<any>(this.apiURL + "/users?userRole=5");
       }
+      getStatistics() {
+        const headers = new HttpHeaders({
+          "Content-Type": "application/json",
+        });
+        return this.http.get<any>(this.apiURL + "/loan-statistics");
+      }
 
 }

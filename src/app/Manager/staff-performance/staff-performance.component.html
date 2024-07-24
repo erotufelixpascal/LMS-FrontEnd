@@ -1,6 +1,6 @@
 <section>
     <nav class="navbar" >
-        <img src="src\assets\logo.png" alt="">
+        <img src="./../../../assets/Person.png" alt="testing">
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link"  (click)="goToChildRoute('/manager/manager-dashboard')" >Dashboard</a>
@@ -41,9 +41,6 @@
           <li class="nav-item">
             <a class="nav-link"  (click)="goToChildRoute('/settings')">Settings</a>
           </li>
-          <!-- <li class="nav-item"><a class="nav-link" (click)="goToChildRoute('/loan-applications')" >Home page</a></li>
-          <li class="nav-item"><a class="nav-link" href="/loan-applications" >Home</a></li>
-          <li><a href="/loan-applications">new</a></li> -->
         </ul>
       </nav>
     <article>
@@ -51,16 +48,27 @@
           Current Date and Time: {{ currentDateTime }}
         </div>
         <div class="container">
-            <h2>Select Staff</h2>
-            <form [formGroup]="staffForm" (ngSubmit)="onSubmit()">
-              <div class="form-group">
+            <!-- <h2>Select Staff</h2> -->
+              <!-- <div class="form-group">
                 <label for="customerID">Staff Member</label>
                 <select formControlName="staffID" id="staffID" class="form-control">
                   <option *ngFor="let staff of staffList" [value]="staff.customerID">{{ staff.firstName }} - {{ staff.lastName }}</option>
                 </select>
-              </div>
-        
-              <button type="submit" class="btn btn-primary">Assign Role</button>
+              </div> -->
+            <form [formGroup]="staffForm" (ngSubmit)="onSubmit()">
+              <h4>Select Staff</h4>
+              <p>Here you will find the statistics of staff members</p>
+                        <ag-grid-angular
+                            style="width: 100%; height: 550px"
+                            [class]="themeClass"
+                            [defaultColDef]="defaultColDef"
+                            [rowData]="staffPerformanceList"
+                            [columnDefs]="staffCol"
+                            (gridSizeChanged)="onGridSizeChange($event)"
+                            > </ag-grid-angular>
+                            
+                            
+              <!-- <button type="submit" class="btn btn-primary">Assign Role</button> -->
             </form>
           </div>          
     </article>
