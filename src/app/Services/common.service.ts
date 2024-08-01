@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, BehaviorSubject } from "rxjs";
+// import { Observable, BehaviorSubject } from "rxjs";
 import { throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 // import { loanApplications, loanApplicationValidator } from './models/loanApplication';
@@ -19,12 +19,41 @@ export class CommonService {
     });
     return this.http.get<any>(this.apiURL + "/users");
   }
+  loginUser(email:string) {
+    const headers = new HttpHeaders({
+      "Content-Type": "application/json",
+    });
+    return this.http.get<any>(this.apiURL + `/users/${email}`);
+    //return this.http.get<any>(`${this.apiURL}/users/${email}`);
+
+  }
+
+
+  // loginUser( email:string){
+  //   const headers = new HttpHeaders({
+  //       "Content-Type": "application/json",
+  //     });
+  //     //return this.http.post<any>(this.apiURL + "/users",
+  //     return this.http.get<any>(this.apiURL + "/users/email",
+  //     {
+  //       dirty: Boolean, 
+  //        email : email,
+  //     },
+  //     { headers }
+  //   )
+  //   .pipe(
+  //     catchError((error) => {
+  //       console.error("Error occurred:", error);
+  //       return throwError(error);
+  //     })
+  //   );
+  // }
 
   getUserRole( customerID: string) {
     const headers = new HttpHeaders({
       "Content-Type": "application/json",
     });
-    return this.http.get<any>(this.apiURL + "/users/customerID");
+    return this.http.get<any>(this.apiURL + "/users/?customerID");
     //return this.http.get<any>(`${this.apiURL}/users/${customerID}`, { headers });
   }
 
@@ -161,7 +190,9 @@ export class CommonService {
         const headers = new HttpHeaders({
           "Content-Type": "application/json",
         });
-        return this.http.get<any>(this.apiURL + "/loan-statistics");
+        // return this.http.get<any>(this.apiURL + "/loan-statistics");
+        // return this.http.get<any>(this.apiURL + "/loan-statistics/?format=json");
+        return this.http.get<any>(this.apiURL + "/loan-statistics?format=json&userRole=5");
       }
 
 }

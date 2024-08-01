@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
+import { forkJoin } from 'rxjs';
 
 interface IRow {
   participant_PID: string;
@@ -36,9 +37,12 @@ export class StaffPerformanceComponent implements OnInit {
 
   staffForm: FormGroup
   currentDateTime:string=""
+  // no-dd-sa:typescript-best-practices/no-explicit-any
   staffList: any[]=[];
+  // no-dd-sa:typescript-best-practices/no-explicit-any
+  staffPerformanceList : any[]=[];
   themeClass = "ag-theme-alpine";
-  staffPerformanceList: IRow[] = [];
+  mergedData: IRow[] = [];
   defaultColDef: ColDef = {
     sortable: true,
     filter: true,
@@ -46,20 +50,19 @@ export class StaffPerformanceComponent implements OnInit {
   };
 
   staffCol: ColDef[] = [
-    { field: "StaffID", headerName: "Staff ID" },
+    // { field: "StaffID", headerName: "Staff ID", width:150 },
     { field: "lastName", headerName: "Last Name" },
     { field: "firstName", headerName: "First Name" },
-    { field: "loans_applied", headerName: "Applied" },
-    { field: "loans_pending", headerName: "Pending" },
-    { field: "loans_disbursed", headerName: "Disbursed" },
-    { field: "loans_recovered", headerName: "Recovered" },
-    { field: "totalAmount", headerName: "Effectiveness" },
-    //{ field: "status", headerName: "Loans Disbursed" }
+    { field: "loans_applied", headerName: "Applied", width:140 },
+    { field: "loans_pending", headerName: "Pending", width:140 },
+    { field: "loans_disbursed", headerName: "Disbursed", width:150 },
+    { field: "loans_recovered", headerName: "Recovered", width:150 },
+    { field: "effectiveness", headerName: "Effectiveness(%)", width:180 }
   ];
 
   constructor(
     private fb:FormBuilder,
-    private DataService:CommonService,
+    private dataService:CommonService,
     private router: Router,
     private datePipe: DatePipe){
 
@@ -70,17 +73,32 @@ export class StaffPerformanceComponent implements OnInit {
     })
 
   }
+  // ngOnInit(): void {
+  //   forkJoin({
+  //     // staffList: this.dataService.getStaffList(),
+  //     staffPerformanceList: this.dataService.getStatistics()
+  //     // staffPerformanceList: this.dataService.getLoanCategories()
+  //   }).subscribe((result) => {
+             
+  //       // since staffList and staffPerformanceList are both arrays
+  //       // this.mergedData = [...result.staffList, ...result.staffPerformanceList]  
+  //       this.mergedData = [ result.staffPerformanceList]
+  //       console.log(this.mergedData)    
+  //     // If you want to use them separately, you can still do that
+  //     // this.staffList = result.staffList;
+  //     //this.staffPerformanceList = result.staffPerformanceList;
+  //   });
+  // }
   ngOnInit(): void {
-    this.DataService.getStaffList().subscribe((res)=>{
-      this.staffList = res
+    this.dataService.getStatistics().subscribe((data)=>{
+      this.staffPerformanceList= data
     })
-    this.DataService.getStatistics().subscribe((data) =>{
-      this.staffPerformanceList = data
-      console.log(this.staffPerformanceList)
-    })
+    
   }
 
-  onSubmit(){}
+  onSubmit(){
+    console.log()
+  }
 
   goToChildRoute(route :string ){
     this.router.navigate([route]);
