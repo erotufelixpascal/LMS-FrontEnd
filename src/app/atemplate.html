@@ -49,23 +49,39 @@
       </nav>
     <article>
         <div class="alert alert-warning">
-            <strong>Warning!</strong> A Customer <b>MUST</b> have <b>ONLY</b> one loan at a time!!.
+            <strong>Warning!</strong> This needs your urgent attention please!!.
         </div>
         <div class="timeDate">
           Current Date and Time: {{ currentDateTime }}
         </div>
+        <p> Outstanding Loan Perfomers - Loan Officers</p>
+        <div class="container">
+            <div class="column">
+              <h3>Financial Metrics</h3>
+              <p>Total Loan Amount Disbursed: $500,000</p>
+              <p>Total Outstanding Amount: $200,000</p>
+              <p>Interest Earned: $50,000</p>
+            </div>
+            <div class="column">
+              <h3>Customer Information</h3>
+              <p>Total Customers: 100</p>
+              <p>Active Loans: 75</p>
+              <p>Closed Loans: 18282</p>
+            </div>
+            <div class="column">
+              <h3>Loan Application Overview</h3>
+              <p>Pending Applications: 20</p>
+              <p>Approved Applications: 50</p>
+              <p>Rejected Applications: 10</p>
+            </div>
+        </div>
         <!-- new -->
         <p> Outstanding Loan Perfomers - Clients</p>
             <div class="container">
-            <form [formGroup]="staffForm">
               <div>
-                <label for="loanNumber">Loan Number:</label>
-                <input type="text" placeholder="Select Loan Number" id="loanNumber" name="loanNumber" formControlName="loanNumber">
-                <button mat-raised-button color="accent" type="submit" >Search</button>
-                
                 <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
                 <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center"> -->
-                    <mat-tab label="Loan Payment Schedule"><br>
+                    <mat-tab label="Loan application approval"><br>
                         <button >Approve Application</button>
                         <p>Here you will find the Loan application</p>
                         <!-- <ag-grid-angular
@@ -77,88 +93,21 @@
                             (gridSizeChanged)="onGridSizeChange($event)"
                             > </ag-grid-angular> -->
                     </mat-tab>
-                    <mat-tab label="Loan Repayments">Loan Disbursed<br>
-                        <p>Here you will find the Loan Disbursment</p>
-                        <!-- <ag-grid-angular
-                            style="width: 100%; height: 550px"
-                            [class]="themeClass"
-                            [defaultColDef]="defaultColDef"
-                            [rowData]="loanDisbursementList"
-                            [columnDefs]="loanDisbursement"
-                            (gridSizeChanged)="onGridSizeChange($event)"
-                            > </ag-grid-angular> -->
-                    </mat-tab>
-                    <mat-tab label="Closed Off Loans">Closed Off Loans<br>
-                      <!-- <ag-grid-angular
-                        style="width: 100%; height: 550px"
-                        [class]="themeClass"
-                        [defaultColDef]="defaultColDef"
-                        [rowData]="loanClosedList"
-                        [columnDefs]="loanClosed"
-                        (gridSizeChanged)="onGridSizeChange($event)"
-                      > </ag-grid-angular> -->
-                    </mat-tab>
-                    <mat-tab label="Loan Terms">Loan Terms <br>
-                      <!-- <ag-grid-angular
-                        style="width: 100%; height: 550px"
-                        [class]="themeClass"
-                        [defaultColDef]="defaultColDef"
-                        [rowData]="loanTerm"
-                        [columnDefs]="loanTerms"
-                        (gridSizeChanged)="onGridSizeChange($event)"
-                      > </ag-grid-angular> -->
-                    </mat-tab>
                     <mat-tab label="Loan Collateral">Loan Collateral <br>
                         <p>Here you will find the Loan Collateral</p>
                     </mat-tab>
                     <mat-tab label="Loan Files"><br>
                         <div class="container mt-4">
-                            <!-- <h2>Loan Files</h2> -->
-                            <table class="table table-bordered">
-                              <thead>
-                                <tr>
-                                  <th>File Name</th>
-                                  <th>Type</th>
-                                  <th>Upload Date</th>
-                                  <th>Action</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr *ngFor="let file of loanFiles">
-                                  <td>{{ file.fileName }}</td>
-                                  <td>{{ file.fileType }}</td>
-                                  <td>{{ file.uploadDate | date }}</td>
-                                  <td>
-                                    <button class="btn btn-primary" (click)="downloadFile(file)">Download</button>
-                                    <button class="btn btn-danger" (click)="deleteFile(file)">Delete</button>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
+                            <h2>Loan Files</h2>
                           </div>                              
                     </mat-tab>
                     <mat-tab label="Loan Comments">Loan Comments/Reminders<br>
-                        <div class="loan-comments">                              
-                            <!-- Display existing comments -->
-                            <div *ngFor="let comment of comments" class="comment">
-                              <div class="comment-header">
-                                <strong>{{ comment.userName }}</strong>
-                                <span class="timestamp">{{ comment.timestamp | date:'short' }}</span>
-                              </div>
-                              <p>{{ comment.text }}</p>
-                            </div>
-                          
-                            <!-- Add new comment -->
-                            <div class="add-comment">
-                              <h4>Add a Comment</h4>
-                              <textarea [(ngModel)]="newComment.text" rows="3" placeholder="Write your comment..."></textarea>
-                              <button (click)="addComment()">Submit</button>
-                            </div>
+                        <div class="loan-comments">  
+                            <h2>Testing</h2>                            
                           </div>
                     </mat-tab>
                 </mat-tab-group>
             </div>
-          </form>
             </div>
     
 

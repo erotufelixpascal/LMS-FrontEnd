@@ -96,10 +96,6 @@ export class StaffPerformanceComponent implements OnInit {
     
   }
 
-  onSubmit(){
-    console.log()
-  }
-
   goToChildRoute(route :string ){
     this.router.navigate([route]);
   }

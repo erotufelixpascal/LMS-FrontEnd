@@ -55,7 +55,7 @@
                   <option *ngFor="let staff of staffList" [value]="staff.customerID">{{ staff.firstName }} - {{ staff.lastName }}</option>
                 </select>
               </div> -->
-            <form [formGroup]="staffForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="staffForm">
               <h4>Select Staff</h4>
               <p>Here you will find the statistics of staff members</p>
                         <ag-grid-angular
