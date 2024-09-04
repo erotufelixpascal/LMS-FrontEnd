@@ -48,45 +48,53 @@
         </ul>
       </nav>
     <article>
-        <div class="alert alert-warning">
-            <strong>Warning!</strong> A Customer <b>MUST</b> have <b>ONLY</b> one loan at a time!!.
+      <div class="alert alert-warning">
+        <strong>Warning!</strong> A Customer <b>MUST</b> have <b>ONLY</b> one loan at a time!!.
+    </div>
+    <div class="timeDate">
+      Current Date and Time: {{ currentDateTime }}
+    </div>
+    <p> Outstanding Loan Perfomers - Clients</p>
+      <form [formGroup]="staffForm">
+        <div>
+          <label>Loan Number:</label>
+          <!-- <input type="text"  placeholder="Select Loan Number" name="loanNumber" formControlName=""/><br /><br /> -->
+          <select placeholder="Select Loan Number" formControlName="loanNumber" id="loanNumber" name="loanNumber">
+            <option *ngFor="let loan of loanNumbers" [value]="loan.loanNumber">{{ loan.loanNumber }} </option>
+          </select>
+          <button color="accent" type="submit" (click)="schedules(loanNumber)" >Search</button >
         </div>
-        <div class="timeDate">
-          Current Date and Time: {{ currentDateTime }}
-        </div>
+        
+      </form>
+      <!-- <button color="accent" type="submit" (click)="schedules(loanNumber)" >Search</button > -->
+      <div>
         <!-- new -->
-        <p> Outstanding Loan Perfomers - Clients</p>
             <div class="container">
-            <form [formGroup]="staffForm">
-              <div>
-                <label for="loanNumber">Loan Number:</label>
-                <input type="text" placeholder="Select Loan Number" id="loanNumber" name="loanNumber" formControlName="loanNumber">
-                <button mat-raised-button color="accent" type="submit" >Search</button>
-                
+            <!-- <div id="myGrid" style="height: 20px; width: 600px" class="ag-theme-quartz"></div> -->
+               
                 <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
                 <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center"> -->
                     <mat-tab label="Loan Payment Schedule"><br>
-                        <button >Approve Application</button>
                         <p>Here you will find the Loan application</p>
-                        <!-- <ag-grid-angular
+                        <ag-grid-angular
                             style="width: 100%; height: 550px"
                             [class]="themeClass"
                             [defaultColDef]="defaultColDef"
-                            [rowData]="loanApprovalList"
-                            [columnDefs]="loanApproval"
+                            [rowData]="loanSchedule"
+                            [columnDefs]="schedule"
                             (gridSizeChanged)="onGridSizeChange($event)"
-                            > </ag-grid-angular> -->
+                            > </ag-grid-angular>
                     </mat-tab>
                     <mat-tab label="Loan Repayments">Loan Disbursed<br>
                         <p>Here you will find the Loan Disbursment</p>
-                        <!-- <ag-grid-angular
+                        <ag-grid-angular
                             style="width: 100%; height: 550px"
                             [class]="themeClass"
                             [defaultColDef]="defaultColDef"
-                            [rowData]="loanDisbursementList"
-                            [columnDefs]="loanDisbursement"
+                            [rowData]="loanPayment"
+                            [columnDefs]="payment"
                             (gridSizeChanged)="onGridSizeChange($event)"
-                            > </ag-grid-angular> -->
+                            > </ag-grid-angular>
                     </mat-tab>
                     <mat-tab label="Closed Off Loans">Closed Off Loans<br>
                       <!-- <ag-grid-angular
@@ -157,11 +165,8 @@
                           </div>
                     </mat-tab>
                 </mat-tab-group>
-            </div>
-          </form>
-            </div>
-    
-
+            </div>   
+          </div>
     </article>
 
 </section>

@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -10,14 +10,15 @@ import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
 import { CommonService } from '../../Services/common.service';
 
 interface IRow {
-  participant_PID: string;
-  ParticipantFirstName: string;
-  ParticipantLastName: string;
-  ParticipantNamesLike: string;
-  course_partner_PID: string;
-  CoursePartnerFirstName: string;
-  CoursePartnerLastName: string;
-  CoursePartnerNamesLike: string;
+  loanNumber : string;
+  principal : string;
+  interest : string;
+  totalAmount : string;
+  balance : string;
+  payment_date : string;
+  next_payment_date : string;
+  Month: string;
+
 }
 interface LoanFile {
   fileName: string;
@@ -49,17 +50,22 @@ export class LoanManagementComponent implements OnInit {
   staffForm: FormGroup
   currentDateTime: string;
   gridApi: any;
+  loanNumbers :any[] =[];
+  loanSchedule: IRow[] = [];
+  loanPayment : IRow[] = [];
+  loanNumber: string=''
   themeClass = "ag-theme-alpine";
   defaultColDef: ColDef = {
     sortable: true,
     filter: true,
     resizable: true,
   };
+  quauntity = signal(1)
 
   constructor (
     private router: Router,
     private formBuilder: FormBuilder,
-    private dataService:CommonService,
+    private DataService:CommonService,
     private modalService:NgbModal,
     private datePipe: DatePipe
 ){ 
@@ -67,7 +73,31 @@ export class LoanManagementComponent implements OnInit {
   this.staffForm = this.formBuilder.group({
     loanNumber: ["", Validators.required],
   })
+
 }
+
+schedule: ColDef[] = [
+  { field: "loanNumber", headerName: "Loan Number" },
+  { field: "principal", headerName: "Principal Amount" },
+  { field: "interest", headerName: "Interest Amount" },
+  { field: "totalAmount", headerName: "Total Amount" },
+  { field: "balance", headerName: "Balance" },
+  { field: "payment_date", headerName: "Due Date" },
+  { field: "next_payment_date", headerName: "Next Payment Date" },
+  { field: "Month", headerName: "Month" }
+  
+];
+payment: ColDef[] = [
+  { field: "loanNumber", headerName: "Loan Number" },
+  { field: "principal", headerName: "Principal Amount" },
+  { field: "interest", headerName: "Interest Amount" },
+  { field: "totalAmount", headerName: "Total Amount" },
+  { field: "balance", headerName: "Balance" },
+  { field: "payment_date", headerName: "Due Date" },
+  { field: "next_payment_date", headerName: "Next Payment Date" },
+  { field: "Month", headerName: "Month" }
+  
+];
 
   loanFiles: LoanFile[] = [
     { fileName: 'loan-agreement.pdf', fileType: 'PDF', uploadDate: new Date('2024-01-01') },
@@ -84,7 +114,21 @@ export class LoanManagementComponent implements OnInit {
   ];
   newComment: Comment = { userName: 'Current User', text: '', timestamp: new Date() };
   
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.loans(); 
+   }
+   loans(){
+    this.DataService.getLoans().subscribe((res) =>{
+      this.loanNumbers = res
+  })
+}
+   schedules(loanNumber : string){
+    this.DataService.getSchedule(this.loanNumber).subscribe((res) =>{
+      this.loanSchedule = res
+      console.log(this.loanSchedule)
+      this.loanPayment= res
+    })
+  }
   
   showModal(){
     //const modalRef = this.modalService.open(LoanCategoryComponent);
@@ -124,5 +168,8 @@ export class LoanManagementComponent implements OnInit {
   goToChildRoute(route :string ){
       this.router.navigate([route]);
     }
+
+
+
 
 }

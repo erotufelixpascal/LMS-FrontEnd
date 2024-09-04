@@ -17,7 +17,8 @@ section {
   display: flex;
   flex-direction: column;
   justify-content: flex-end; /* Align items to the end of the container */
-  align-items: center;  
+  align-items: center;
+  padding-left: 30px;  
   
   }
 
@@ -81,8 +82,7 @@ section {
     display: flex;
     justify-content: space-between;
     padding: 20px;
-  }
-  
+}  
   .column {
     flex: 1;
     margin: 0 10px;
@@ -98,5 +98,8 @@ section {
   
   .column:last-child {
     margin-right: 0;
+  }
+  .form-control{
+    width: 200px;
   }
   

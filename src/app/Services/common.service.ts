@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 // import { Observable, BehaviorSubject } from "rxjs";
 import { throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { loanRepayment } from './models/loanRepayment';
 // import { loanApplications, loanApplicationValidator } from './models/loanApplication';
 // import {category, categoryValidator} from './models/category';
 
@@ -193,6 +194,26 @@ export class CommonService {
         // return this.http.get<any>(this.apiURL + "/loan-statistics");
         // return this.http.get<any>(this.apiURL + "/loan-statistics/?format=json");
         return this.http.get<any>(this.apiURL + "/loan-statistics?format=json&userRole=5");
+      }
+      // getSchedule() {
+      //   const headers = new HttpHeaders({
+      //     "Content-Type": "application/json",
+      //   });
+      //   return this.http.get<any>(this.apiURL + "schedule/?format=json");
+      // }
+
+      getSchedule(loanNumber:string) {
+        const headers = new HttpHeaders({
+          "Content-Type": "application/json",
+        });
+        return this.http.get<any>(this.apiURL + "/schedule");
+      }
+
+      getLoans() {
+        const headers = new HttpHeaders({
+          "Content-Type": "application/json",
+        });
+        return this.http.get<any>(this.apiURL + "/loans");
       }
 
 }
