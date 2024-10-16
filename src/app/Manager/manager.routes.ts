@@ -4,6 +4,7 @@ import { LoanCategoryComponent } from "./loan-category/loan-category.component";
 import { StaffPerformanceComponent } from "./staff-performance/staff-performance.component";
 import { UserRolesComponent } from "./user-roles/user-roles.component";
 import { ViewReportsComponent } from "./view-reports/view-reports.component";
+import { EmployeePayrollComponent } from "./employee-payroll/employee-payroll.component";
 
 export const MANAGER_ROUTES :Routes = [
     {path:'', redirectTo: 'manager-dashboard', pathMatch: 'full'},
@@ -12,6 +13,6 @@ export const MANAGER_ROUTES :Routes = [
     {path:'manager-performance', component:StaffPerformanceComponent},
     {path:'manager-user-role', component:UserRolesComponent},
     {path:'manager-report', component:ViewReportsComponent},
-    //{path:'manager-dashboard', component:ManagerDashboardComponent}
+    {path:'manager-payroll', component:EmployeePayrollComponent},
   
 ]

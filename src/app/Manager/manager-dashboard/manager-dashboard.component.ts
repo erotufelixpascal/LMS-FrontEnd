@@ -1,6 +1,5 @@
-import{ Component, OnInit } from '@angular/core';
+import { Component, Inject, effect, signal } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { CommonService } from '../../Services/common.service';
@@ -9,24 +8,15 @@ import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoanCategoryComponent } from '../loan-category/loan-category.component';
-import { LoanRepaymentComponent } from '../../Client/loan-repayment/loan-repayment.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Observable, forkJoin } from 'rxjs';
 
-interface IRow {
-  participant_PID: string;
-  ParticipantFirstName: string;
-  ParticipantLastName: string;
-  ParticipantNamesLike: string;
-  course_partner_PID: string;
-  CoursePartnerFirstName: string;
-  CoursePartnerLastName: string;
-  CoursePartnerNamesLike: string;
-}
 interface LoanFile {
   fileName: string;
   fileType: string;
   uploadDate: Date;
 }
+
 interface Comment {
   userName: string;
   text: string;
@@ -43,21 +33,30 @@ interface Comment {
     MatTabsModule,
     AgGridModule,
     MatTooltipModule
-
-],
+  ],
   providers: [DatePipe],
   templateUrl: './manager-dashboard.component.html',
-  styleUrl: './manager-dashboard.component.scss'
+  styleUrls: ['./manager-dashboard.component.scss']
 })
+export class ManagerDashboardComponent {
 
-export class ManagerDashboardComponent implements OnInit{
-  currentDateTime: string;
-  loanCategories: any[]=[];
-  loanName: string="";
-  themeClass = "ag-theme-alpine";
-  loanApprovalList: IRow[] = [];
-  loanDisbursementList: IRow[] = [];
-  loanClosedList: IRow[] = [];
+  router = Inject(Router);
+  DataService = Inject(CommonService);
+  modalService = Inject(NgbModal);
+  // datePipe = Inject(DatePipe);
+
+  currentDateTime :string='';
+  dashboardData = signal(null);
+  isOpen = signal<boolean>(false);
+  registeredParticipantsList = signal<any[]>([]);
+  // currentDateTime = signal('');
+  loanCategories = signal<any[]>([]);
+  loanName = signal('');
+  themeClass = 'ag-theme-alpine';
+  loanApprovalList = signal<any[]>([]);
+  loanDisbursementList = signal<any[]>([]);
+  loanClosedList = signal<any[]>([]);
+
   gridApi: any;
   defaultColDef: ColDef = {
     sortable: true,
@@ -66,30 +65,27 @@ export class ManagerDashboardComponent implements OnInit{
   };
 
   loanApproval: ColDef[] = [
-    { field: "loanNumber", headerName: "Loan Number" },
-    // { field: "course_partner_PID", headerName: "Processing Fee" },
-    { field: "principleAmount", headerName: "Principal Amount" },
-    { field: "interestAmount", headerName: "Interest Amount" },
-    { field: "totalAmount", headerName: "Loan Amount" },
-    { field: "status", headerName: "Change Loan Status" }
+    { field: 'loanNumber', headerName: 'Loan Number' },
+    { field: 'principleAmount', headerName: 'Principal Amount' },
+    { field: 'interestAmount', headerName: 'Interest Amount' },
+    { field: 'totalAmount', headerName: 'Loan Amount' },
+    { field: 'status', headerName: 'Change Loan Status' }
   ];
 
   loanDisbursement: ColDef[] = [
-    { field: "loanNumber", headerName: "Loan Number" },
-    // { field: "course_partner_PID", headerName: "Processing Fee" },
-    { field: "principleAmount", headerName: "Principal Amount" },
-    { field: "interestAmount", headerName: "Interest Amount" },
-    { field: "totalAmount", headerName: "Loan Amount" },
-    { field: "status", headerName: "Loan Status" }
+    { field: 'loanNumber', headerName: 'Loan Number' },
+    { field: 'principleAmount', headerName: 'Principal Amount' },
+    { field: 'interestAmount', headerName: 'Interest Amount' },
+    { field: 'totalAmount', headerName: 'Loan Amount' },
+    { field: 'status', headerName: 'Loan Status' }
   ];
+
   loanClosed: ColDef[] = [
-    { field: "loanNumber", headerName: "Loan Number" },
-    // { field: "ParticipantNamesLike", headerName: "Loan Amount" },
-    // { field: "course_partner_PID", headerName: "Processing Fee" },
-    { field: "principleAmount", headerName: "Principal Amount" },
-    { field: "interestAmount", headerName: "Interest Amount" },
-    { field: "totalAmount", headerName: "Loan Amount" },
-    { field: "status", headerName: "Loan Status" }
+    { field: 'loanNumber', headerName: 'Loan Number' },
+    { field: 'principleAmount', headerName: 'Principal Amount' },
+    { field: 'interestAmount', headerName: 'Interest Amount' },
+    { field: 'totalAmount', headerName: 'Loan Amount' },
+    { field: 'status', headerName: 'Loan Status' }
   ];
 
   loanFiles: LoanFile[] = [
@@ -103,70 +99,76 @@ export class ManagerDashboardComponent implements OnInit{
     { userName: 'John Doe', text: 'Initial review completed.', timestamp: new Date('2024-01-15T10:30:00') },
     { userName: 'Jane Smith', text: 'Loan approved.', timestamp: new Date('2024-02-01T14:45:00') },
     { userName: 'Patricia Akiding', text: 'Everything checks out', timestamp: new Date('2024-01-15T10:30:00') },
-    { userName: 'Erotu Felix-Manager', text: 'Loan disbursed.', timestamp: new Date('2024-02-01T14:45:00') },
+    { userName: 'Erotu Felix-Manager', text: 'Loan disbursed.', timestamp: new Date('2024-02-01T14:45:00') }
   ];
   newComment: Comment = { userName: 'Current User', text: '', timestamp: new Date() };
 
-    constructor (
-        private router: Router,
-        private DataService:CommonService,
-        private modalService:NgbModal,
-        private datePipe: DatePipe
-    ){ 
-      this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
-    }
+  constructor(
+    private datePipe: DatePipe
+  ) {
+    this.currentDateTime =(this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime'));
+    this.loadLoanData();
+  }
 
-    ngOnInit(): void {
-    this.DataService.getLoanCategories().subscribe((res) =>{
-      this.loanCategories = res
-      // console.log(this.loanCategories)
-    })
-    this.DataService.getDisbusredLoan().subscribe((data) =>{
-      this.loanDisbursementList = data
-    })
-    this.DataService.getPendingLoan().subscribe((data) =>{
-      this.loanApprovalList = data
-    })
-    this.DataService.getClosedLoan().subscribe((data) =>{
-      this.loanClosedList = data
-    })
-    }
-
-    downloadFile(file: LoanFile): void {
-      // Logic to download the file
-      console.log('Downloading file:', file);
-    }
-  
-    deleteFile(file: LoanFile): void {
-      // Logic to delete the file
-      console.log('Deleting file:', file);
-    }
-
-    addComment() {
-      if (this.newComment.text.trim()) {
-        this.newComment.timestamp = new Date();
-        this.comments.push({ ...this.newComment });
-        this.newComment.text = '';
+  loadLoanData() {
+    forkJoin({
+      loanCategories: this.DataService.getLoanCategories() as Observable<any[]>,
+      // loans : this.DataService.
+      // loanDisbursementList: this.DataService.getDisbusredLoan() as Observable<any[]>,
+      // loanApprovalList: this.DataService.getPendingLoan() as Observable<any[]>,
+      // loanClosedList: this.DataService.getClosedLoan() as Observable<any[]>
+    }).subscribe({
+      next: (res) => {
+        this.loanCategories.set(res.loanCategories) ;
+        // this.loanDisbursementList.set(res.loanDisbursementList);
+        // this.loanApprovalList.set(res.loanApprovalList);
+        // this.loanClosedList.set(res.loanClosedList);
+      },
+      error: (error) => {
+        console.error('Error fetching dashboard data:', error);
+      },
+      complete: () => {
+        console.log('All subscriptions complete');
       }
-    }
-    showModal(){
-      //const modalRef = this.modalService.open(LoanCategoryComponent);
-      const modalRef = this.modalService.open(LoanCategoryComponent);
-      modalRef.closed.subscribe((data) => {
-        console.log("onclosed", data);
-        if (data == 1) {
-          //this.ClassList(this.courseIDInt);
-  
-        }
-      });
-    }
-    onGridSizeChange(params: GridSizeChangedEvent) {
-      const gridApi = params.api;
-      gridApi.sizeColumnsToFit();
-    }
+    });
+  }
 
-    goToChildRoute(route :string ){
-        this.router.navigate([route]);
+  downloadFile(file: LoanFile): void {
+    console.log('Downloading file:', file);
+  }
+
+  deleteFile(file: LoanFile): void {
+    console.log('Deleting file:', file);
+  }
+
+  addComment() {
+    if (this.newComment.text.trim()) {
+      this.newComment.timestamp = new Date();
+      this.comments.push({ ...this.newComment });
+      this.newComment.text = '';
+    }
+  }
+
+  showModal() {
+    const modalRef = this.modalService.open(LoanCategoryComponent);
+    modalRef.closed.subscribe((data: any) => {
+      console.log('onclosed', data);
+      if (data === 1) {
+        // Logic to refresh or update upon modal close
       }
+    });
+  }
 
+  onGridSizeChange(params: GridSizeChangedEvent) {
+    const gridApi = params.api;
+    gridApi.sizeColumnsToFit();
+  }
+
+  goToChildRoute(route: string) {
+    this.router.navigate([route]);
+  }
+
+  ef = effect(() => {
+    console.log('Dashboard data updated', this.dashboardData());
+  });
 }

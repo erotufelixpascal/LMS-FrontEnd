@@ -71,7 +71,7 @@ export class LoanManagementComponent implements OnInit {
 ){ 
   this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
   this.staffForm = this.formBuilder.group({
-    loanNumber: ["", Validators.required],
+    loanNumber: ['', Validators.required],
   })
 
 }
@@ -123,10 +123,17 @@ payment: ColDef[] = [
   })
 }
    schedules(loanNumber : string){
+    const formData = this.staffForm.value;
+  console.log('Loan Number:', formData.loanNumber); 
+  this.loanNumber = formData.loanNumber
     this.DataService.getSchedule(this.loanNumber).subscribe((res) =>{
       this.loanSchedule = res
-      console.log(this.loanSchedule)
-      this.loanPayment= res
+      // console.log(this.loanSchedule)
+    })
+
+    this.DataService.getPayments().subscribe((res)=>{
+      this.loanPayment = res
+      // console.log(this.loanPayment)
     })
   }
   

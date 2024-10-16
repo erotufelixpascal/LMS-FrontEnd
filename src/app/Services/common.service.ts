@@ -203,10 +203,16 @@ export class CommonService {
       // }
 
       getSchedule(loanNumber:string) {
+        // const headers = new HttpHeaders({
+        //   "Content-Type": "application/json",
+        // });
+        return this.http.get<any>(this.apiURL + "/schedule");
+      }
+      getPayments() {
         const headers = new HttpHeaders({
           "Content-Type": "application/json",
         });
-        return this.http.get<any>(this.apiURL + "/schedule");
+        return this.http.get<any>(this.apiURL + "/payment");
       }
 
       getLoans() {
