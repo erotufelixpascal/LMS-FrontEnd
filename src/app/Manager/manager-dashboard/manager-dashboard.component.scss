@@ -83,20 +83,5 @@ section {
     padding: 20px;
   }
   
-  .column {
-    flex: 1;
-    margin: 0 10px;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border: 1px solid #ccc;
-    text-align: center;
-  }
-  
-  .column:first-child {
-    margin-left: 0;
-  }
-  
-  .column:last-child {
-    margin-right: 0;
-  }
+
   

@@ -1,4 +1,4 @@
-import { Component, Inject, effect, signal } from '@angular/core';
+import { Component, inject, effect, signal } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -40,10 +40,10 @@ interface Comment {
 })
 export class ManagerDashboardComponent {
 
-  router = Inject(Router);
-  DataService = Inject(CommonService);
-  modalService = Inject(NgbModal);
-  // datePipe = Inject(DatePipe);
+  router = inject(Router);
+  DataService = inject(CommonService);
+  modalService = inject(NgbModal);
+  datePipe = inject(DatePipe);
 
   currentDateTime :string='';
   dashboardData = signal(null);
@@ -104,7 +104,7 @@ export class ManagerDashboardComponent {
   newComment: Comment = { userName: 'Current User', text: '', timestamp: new Date() };
 
   constructor(
-    private datePipe: DatePipe
+    // private datePipe: DatePipe
   ) {
     this.currentDateTime =(this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime'));
     this.loadLoanData();
@@ -112,17 +112,16 @@ export class ManagerDashboardComponent {
 
   loadLoanData() {
     forkJoin({
-      loanCategories: this.DataService.getLoanCategories() as Observable<any[]>,
-      // loans : this.DataService.
-      // loanDisbursementList: this.DataService.getDisbusredLoan() as Observable<any[]>,
-      // loanApprovalList: this.DataService.getPendingLoan() as Observable<any[]>,
-      // loanClosedList: this.DataService.getClosedLoan() as Observable<any[]>
+      loanCategories: this.DataService.getLoanCategories() ,
+      loanDisbursementList: this.DataService.getDisbusredLoan() ,
+      loanApprovalList: this.DataService.getPendingLoan() ,
+      loanClosedList: this.DataService.getClosedLoan() 
     }).subscribe({
       next: (res) => {
         this.loanCategories.set(res.loanCategories) ;
-        // this.loanDisbursementList.set(res.loanDisbursementList);
-        // this.loanApprovalList.set(res.loanApprovalList);
-        // this.loanClosedList.set(res.loanClosedList);
+        this.loanDisbursementList.set(res.loanDisbursementList);
+        this.loanApprovalList.set(res.loanApprovalList);
+        this.loanClosedList.set(res.loanClosedList);
       },
       error: (error) => {
         console.error('Error fetching dashboard data:', error);
