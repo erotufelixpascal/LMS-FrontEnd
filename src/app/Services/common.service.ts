@@ -174,6 +174,8 @@ export class CommonService {
           "Content-Type": "application/json",
         });
         return this.http.get<any>(this.apiURL + "/loan-application");
+        // return this.http.get<any>("https://my.api.mockaroo.com/loan_application.json?key=97bd0420");
+        // return this.http.get<any>("true working")
       }
       getClosedLoan() {
         const headers = new HttpHeaders({

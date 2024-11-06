@@ -103,25 +103,59 @@ export class ManagerDashboardComponent {
   ];
   newComment: Comment = { userName: 'Current User', text: '', timestamp: new Date() };
 
-  constructor(
+  constructor(  
     // private datePipe: DatePipe
   ) {
     this.currentDateTime =(this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime'));
     this.loadLoanData();
+    this.loanApprovalListData();
+    this.loanClosedListData();
+    this.loanDisbursementListData()
   }
 
+  loanApprovalListData(){
+    this.DataService.getPendingLoan().subscribe({
+      next:(res)=>{
+        this.loanApprovalList.set(res);
+      },
+      error: (error) =>{
+        console.error('Error fetching dashboard data:', error);
+      },
+      complete: () => {
+        console.log('All subscriptions complete');
+      }
+  });
+}
+  loanDisbursementListData(){
+    this.DataService.getDisbusredLoan() .subscribe({
+      next:(res)=>{
+        this.loanDisbursementList.set(res);        
+      },
+      error: (error) =>{
+        console.error('Error fetching dashboard data:', error);
+      },
+      complete: () => {
+        console.log('All subscriptions complete');
+      }
+  });
+}
+  loanClosedListData(){
+    this.DataService.getClosedLoan().subscribe({
+      next:(res)=>{
+        this.loanClosedList.set(res);        
+      },
+      error: (error) =>{
+        console.error('Error fetching dashboard data:', error);
+      },
+      complete: () => {
+        console.log('All subscriptions complete');
+      }
+  });
+  }
   loadLoanData() {
-    forkJoin({
-      loanCategories: this.DataService.getLoanCategories() ,
-      loanDisbursementList: this.DataService.getDisbusredLoan() ,
-      loanApprovalList: this.DataService.getPendingLoan() ,
-      loanClosedList: this.DataService.getClosedLoan() 
-    }).subscribe({
+      this.DataService.getLoanCategories().subscribe({
       next: (res) => {
-        this.loanCategories.set(res.loanCategories) ;
-        this.loanDisbursementList.set(res.loanDisbursementList);
-        this.loanApprovalList.set(res.loanApprovalList);
-        this.loanClosedList.set(res.loanClosedList);
+        this.loanCategories.set(res) ;
       },
       error: (error) => {
         console.error('Error fetching dashboard data:', error);
