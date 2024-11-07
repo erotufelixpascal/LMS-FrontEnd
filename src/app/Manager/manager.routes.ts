@@ -10,7 +10,7 @@ export const MANAGER_ROUTES :Routes = [
     {path:'', redirectTo: 'manager-dashboard', pathMatch: 'full'},
     {path:'manager-dashboard', component:ManagerDashboardComponent},
     {path:'loan-category', component:LoanCategoryComponent},
-    {path:'manager-performance', component:StaffPerformanceComponent},
+    {path:'manager-staff-performance', component:StaffPerformanceComponent},
     {path:'manager-user-role', component:UserRolesComponent},
     {path:'manager-report', component:ViewReportsComponent},
     {path:'manager-payroll', component:EmployeePayrollComponent},
