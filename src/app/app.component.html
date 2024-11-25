@@ -1,4 +1,17 @@
+<!-- <ng-container *ngIf="role === 'manager'; else staffNavbar"> -->
+<!-- <ng-container *ngIf="role() === 'manager'; else staffNavbar">
+  <app-manager-navbar></app-manager-navbar>
+</ng-container>
+<ng-template #staffNavbar>
+  <app-staff-navbar></app-staff-navbar>
+</ng-template> -->
 <section>
   <router-outlet />
+  <!-- <ng-container *ngIf="role() === 'manager'; else staffNavbar">
+    <app-manager-navbar></app-manager-navbar>
+  </ng-container>
+  <ng-template #staffNavbar>
+    <app-staff-navbar></app-staff-navbar>
+  </ng-template> -->
 </section>
-<!-- <app-footer /> -->
+<app-footer />

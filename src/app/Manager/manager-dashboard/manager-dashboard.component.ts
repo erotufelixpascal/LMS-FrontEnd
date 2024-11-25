@@ -9,7 +9,8 @@ import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoanCategoryComponent } from '../loan-category/loan-category.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Observable, forkJoin } from 'rxjs';
+import { ManagerNavbarComponent } from '../../Navbar/manager-navbar/manager-navbar.component';
+import { FooterComponent } from '../../Core/Footer/footer.component';
 
 interface LoanFile {
   fileName: string;
@@ -32,7 +33,9 @@ interface Comment {
     FormsModule,
     MatTabsModule,
     AgGridModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ManagerNavbarComponent
+    // FooterComponent
   ],
   providers: [DatePipe],
   templateUrl: './manager-dashboard.component.html',

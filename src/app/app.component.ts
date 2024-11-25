@@ -1,9 +1,7 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FooterComponent } from './Core/Footer/footer.component';
-
-
 
 @Component({
   selector: 'app-root',
@@ -11,13 +9,12 @@ import { FooterComponent } from './Core/Footer/footer.component';
   imports: [
     CommonModule,
     RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    FooterComponent,
+    FooterComponent
 ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
   title = 'FrontEnd';
+  role = signal('');
 }

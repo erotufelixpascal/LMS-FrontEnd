@@ -30,6 +30,8 @@ align-items: center;
   top: 0;
   height: 100vh; /* Ensure sidebar covers the full height */
   overflow-y: auto; /* Allow scrolling in the sidebar */
+  display: flex;
+  flex-direction: column; /* Align items vertically */
 }
 
 .navbar-nav {
