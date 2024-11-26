@@ -47,7 +47,6 @@ export class ManagerDashboardComponent {
   DataService = inject(CommonService);
   modalService = inject(NgbModal);
   datePipe = inject(DatePipe);
-
   currentDateTime :string='';
   dashboardData = signal(null);
   isOpen = signal<boolean>(false);

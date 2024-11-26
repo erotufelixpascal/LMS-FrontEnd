@@ -9,7 +9,6 @@ img {
 .navbar {
     background-color: #333;
     overflow: visible;
-    cursor: pointer;
     width: 100%;
     padding-top: 20px;
     position: sticky;
@@ -34,6 +33,7 @@ img {
   .nav-link {
     display: block;
     color: white;
+    cursor: pointer;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;

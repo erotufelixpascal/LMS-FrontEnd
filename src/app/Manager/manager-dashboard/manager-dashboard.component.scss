@@ -9,13 +9,11 @@ section {
   color: rgb(82, 23, 219);
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Align items to the end of the container */
+  justify-content: flex-end; 
   align-items: center;  
   
   }
-  
- 
-//   /* Style the content */
+
   article {
     -webkit-flex: 3;
     -ms-flex: 3;
@@ -24,7 +22,6 @@ section {
     //padding: 10px;
   }
   
-  /* Style the footer */
   footer {
     background-color: #777;
     padding: 2px;
