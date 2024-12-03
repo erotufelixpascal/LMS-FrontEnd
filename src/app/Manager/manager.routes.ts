@@ -5,6 +5,8 @@ import { StaffPerformanceComponent } from "./staff-performance/staff-performance
 import { UserRolesComponent } from "./user-roles/user-roles.component";
 import { ViewReportsComponent } from "./view-reports/view-reports.component";
 import { EmployeePayrollComponent } from "./employee-payroll/employee-payroll.component";
+import { ManagerNavbarComponent } from "../Navbar/manager-navbar/manager-navbar.component";
+import { ManagerComponent } from "./manager/manager.component";
 
 export const MANAGER_ROUTES :Routes = [
     {path:'', redirectTo: 'manager-dashboard', pathMatch: 'full'},
@@ -14,5 +16,6 @@ export const MANAGER_ROUTES :Routes = [
     {path:'manager-user-role', component:UserRolesComponent},
     {path:'manager-report', component:ViewReportsComponent},
     {path:'manager-payroll', component:EmployeePayrollComponent},
+
   
 ]

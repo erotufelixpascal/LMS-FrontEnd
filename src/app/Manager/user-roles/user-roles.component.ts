@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormsModule, FormGroup, FormBuilder, Validators } 
 import { CommonService } from '../../Services/common.service';
 import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ManagerNavbarComponent } from '../../Navbar/manager-navbar/manager-navbar.component';
 
 @Component({
   selector: 'app-user-roles',
@@ -12,7 +13,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ManagerNavbarComponent
   ],
   providers: [DatePipe],
   templateUrl: './user-roles.component.html',

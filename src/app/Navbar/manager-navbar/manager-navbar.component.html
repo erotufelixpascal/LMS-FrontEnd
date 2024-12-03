@@ -1,12 +1,12 @@
-<div class="flex w-full h-full">
+<div class="flex flex-col w-full h-full" style="background-color: #333;">
+  <img src="./../../../assets/Person.png" alt="testing">
     <nav class="navbar">
-      <img src="./../../../assets/Person.png" alt="testing">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/manager/manager-dashboard">Dashboard</a>
+          <a class="nav-link" (click)="goToChildRoute('/manager/manager-dashboard')">Dashboard</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/manager/manager-user-role" 
+        <li class="nav-item"> 
+          <a class="nav-link" (click)="goToChildRoute('/manager/manager-user-role')"  
              matTooltip="Define User Roles"
              matTooltipPosition="right"
              aria-tooltip="Button that displays and hides a tooltip triggered by other buttons">
@@ -14,10 +14,10 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/manager/manager-staff-performance">Staff Performance</a>
+          <a class="nav-link" (click)="goToChildRoute('/manager/manager-staff-performance')">Staff Performance</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/manager/manager-staff-performance" 
+          <a class="nav-link" (click)="goToChildRoute('/manager/manager-staff-performance')" 
              matTooltip="See charts that show performance"
              matTooltipPosition="right"
              aria-tooltip="Button that displays and hides a tooltip triggered by other buttons">
@@ -25,10 +25,10 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/manager/manager-performance">Risk Management</a>
+          <a class="nav-link" (click)="goToChildRoute('/manager/manager-performance')">Risk Management</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/manager/manager-payroll" 
+          <a class="nav-link" (click)="goToChildRoute('/manager/manager-payroll')" 
              matTooltip="Pay Employees"
              matTooltipPosition="right"
              aria-tooltip="Button that displays and hides a tooltip triggered by other buttons">
@@ -36,7 +36,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/manager/loan-applications" 
+          <a class="nav-link" (click)="goToChildRoute('/manager/loan-applications')" 
              matTooltip="See Outstanding Clients/Staff and reward them"
              matTooltipPosition="right"
              aria-tooltip="Button that displays and hides a tooltip triggered by other buttons">
@@ -44,12 +44,73 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/manager/manager-report">View Reports</a>
+          <a class="nav-link" (click)="goToChildRoute('/manager/manager-report')">View Reports</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/settings">Settings</a>
+          <a class="nav-link" (click)="goToChildRoute('/settings')">Settings</a>
         </li>
       </ul>
     </nav>
+
+    <!-- <div class="content">
+      <router-outlet></router-outlet>
+    </div> -->
   </div>
   
+
+
+   <!-- <div class="flex w-full h-full">
+    <nav class="navbar">
+      <img src="./../../../assets/Person.png" alt="testing">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="'/manager/manager-dashboard'">Dashboard</a>
+        </li>
+        <li class="nav-item"> 
+          <a class="nav-link" routerLink="'/manager/manager-user-role'"  
+             matTooltip="Define User Roles"
+             matTooltipPosition="right">
+            User Access Control
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="'/manager/manager-staff-performance'">Staff Performance</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="'/manager/manager-staff-performance'" 
+             matTooltip="See charts that show performance"
+             matTooltipPosition="right">
+            Organization Statistics/Performance
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="'/manager/manager-performance'">Risk Management</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="'/manager/manager-payroll'" 
+             matTooltip="Pay Employees"
+             matTooltipPosition="right">
+            Employee Payroll
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="'/manager/loan-applications'" 
+             matTooltip="See Outstanding Clients/Staff and reward them"
+             matTooltipPosition="right">
+            Rewards (Clients/Staff)
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="'/manager/manager-report'">View Reports</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="'/settings'">Settings</a>
+        </li>
+      </ul>
+    </nav>
+  
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+   -->
