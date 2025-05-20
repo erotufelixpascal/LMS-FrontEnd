@@ -167,21 +167,33 @@ export class CommonService {
         const headers = new HttpHeaders({
           "Content-Type": "application/json",
         });
-        return this.http.get<any>(this.apiURL + "/loan-application");
+        // return this.http.get<any>(this.apiURL + "/loan-application");
+        // return this.http.get<any>("https://api.mockaroo.com/api/a0374c10?count=10&key=97bd0420");
+        return this.http.get<any>("https://api.mockaroo.com/api/a0374c10?count=10&key=97bd0420");
+        
       }
+      // getPendingLoan() {
+      //   const headers = new HttpHeaders({
+      //     "Content-Type": "application/json",
+      //   });
+      //   // return this.http.get<any>(this.apiURL + "/loan-application");
+      //   return this.http.get<any>("https://my.api.mockaroo.com/loan_approval?key=97bd0420");
+      //   // return this.http.get<any>("true working")
+      // }
+      //
       getPendingLoan() {
+        const url = 'https://api.mockaroo.com/api/2821bee0?count=10&key=97bd0420';
         const headers = new HttpHeaders({
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         });
-        return this.http.get<any>(this.apiURL + "/loan-application");
-        // return this.http.get<any>("https://my.api.mockaroo.com/loan_application.json?key=97bd0420");
-        // return this.http.get<any>("true working")
+      
+        return this.http.get<any>(url, { headers });
       }
       getClosedLoan() {
         const headers = new HttpHeaders({
           "Content-Type": "application/json",
         });
-        return this.http.get<any>(this.apiURL + "/loan-application");
+        return this.http.get<any>("https://api.mockaroo.com/api/3bd84ed0?count=10&key=97bd0420");
       }
       getStaffList() {
         const headers = new HttpHeaders({

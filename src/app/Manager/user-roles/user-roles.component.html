@@ -1,54 +1,84 @@
 <section >
-    <article>
-      <div class="alert alert-warning">
-        <strong>Warning!</strong> This needs your urgent attention please!!.
+  <article>
+    <div class="alert alert-warning">
+      <strong>Warning!</strong> This needs your urgent attention, please!
     </div>
-        <div class="timeDate">
-          Current Date and Time: {{ currentDateTime }}
-        </div>
-        <div class="container">
-            <!-- <h2>Add a User</h2> -->
-            <form [formGroup]="assignRoleForm" (ngSubmit)="onSubmit()">
-              <h3>Add a User</h3>
-              <div class="form-group">
-                <label>First Name</label>
-                <input type="text" formControlName="firstName" id="firstName" class="form-control">
-              </div>
-              <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" formControlName="lastName" id="lastName" class="form-control">
-              </div>
-              <div class="form-group">
-                <label>Email</label>
-                <input type="email" formControlName="email" id="email" class="form-control" required>
-              </div>
-              <div class="form-group">
-                <label>Address</label>
-                <input type="text" formControlName="address" id="address" class="form-control">
-              </div>
-              <div class="form-group">
-                <label>Designation</label>
-                <input type="text" formControlName="designation" id="designation" class="form-control">
-              </div>
-              <div class="form-group">
-                <label>Phone Number</label>
-                <input type="text" formControlName="phone" id="phone" class="form-control">
-              </div>
-              <div class="form-group">
-                <label>Information</label>
-                <input type="text" formControlName="information" id="information" class="form-control">
-              </div>
-              <div class="form-group">
-                <label>Role</label>
-                <select formControlName="role" id="role" class="form-control">
-                  <option *ngFor="let role of roles" [value]="role.userType">{{ role.userType }}</option>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-primary">Assign Role</button>
-            </form>
-          </div>          
-    </article>
+  
+    <div class="timeDate my-3 text-muted">
+      <strong>Current Date and Time:</strong> {{ currentDateTime }}
+    </div>
 
+    <div class="form-group mb-3">
+      <label>Select User</label>
+      <!-- <select class="form-control" (change)="onUserSelect($event.target.value)"> -->
+        <select class="form-control" (change)="onUserSelect($event)">
+          <option value="">-- Select Existing User --</option>
+          <option *ngFor="let user of users" [value]="user.id">
+            {{ user.firstName }} {{ user.lastName }} ({{ user.email }})
+          </option>
+        </select>        
+        
+    </div>
+  
+    <div class="container">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Create New User</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="assignRoleForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label>First Name</label>
+                <input type="text" formControlName="firstName" class="form-control" placeholder="Enter first name">
+              </div>
+              <div class="col-md-6 form-group">
+                <label>Last Name</label>
+                <input type="text" formControlName="lastName" class="form-control" placeholder="Enter last name">
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" formControlName="email" class="form-control" placeholder="Enter email" required>
+            </div>
+  
+            <div class="form-group">
+              <label>Address</label>
+              <input type="text" formControlName="address" class="form-control" placeholder="Enter address">
+            </div>
+  
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label>Phone Number</label>
+                <input type="text" formControlName="phone" class="form-control" placeholder="Enter phone number">
+              </div>
+              <div class="col-md-6 form-group">
+                <label>Designation</label>
+                <input type="text" formControlName="designation" class="form-control" placeholder="Enter designation">
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <label>Additional Information</label>
+              <textarea formControlName="information" rows="2" class="form-control" placeholder="Any extra info"></textarea>
+            </div>
+  
+            <hr>
+            <div class="form-group">
+              <label>Assign Role</label>
+              <select formControlName="role" class="form-control">
+                <option *ngFor="let role of roles" [value]="role.userType">{{ role.userType }}</option>
+              </select>
+            </div>
+  
+            <button type="submit" class="btn btn-success mt-3">Save and Assign Role</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </article>
+  
 </section>
 
   <footer>

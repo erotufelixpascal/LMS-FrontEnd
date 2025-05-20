@@ -4,13 +4,13 @@ import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { CommonService } from '../../Services/common.service';
 import { MatTabsModule } from '@angular/material/tabs';
-import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoanCategoryComponent } from '../loan-category/loan-category.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ManagerNavbarComponent } from '../../Navbar/manager-navbar/manager-navbar.component';
-import { FooterComponent } from '../../Core/Footer/footer.component';
+import { CdkTableModule } from '@angular/cdk/table';
+import { MatCardModule } from '@angular/material/card';
+// import {mat-card-title} from '@'
 
 interface LoanFile {
   fileName: string;
@@ -32,10 +32,9 @@ interface Comment {
     ReactiveFormsModule,
     FormsModule,
     MatTabsModule,
-    AgGridModule,
     MatTooltipModule,
-    ManagerNavbarComponent
-    // FooterComponent
+    CdkTableModule,
+    MatCardModule
   ],
   providers: [DatePipe],
   templateUrl: './manager-dashboard.component.html',
@@ -66,21 +65,21 @@ export class ManagerDashboardComponent {
     resizable: true,
   };
 
-  loanApproval: ColDef[] = [
-    { field: 'loanNumber', headerName: 'Loan Number' },
-    { field: 'principleAmount', headerName: 'Principal Amount' },
-    { field: 'interestAmount', headerName: 'Interest Amount' },
-    { field: 'totalAmount', headerName: 'Loan Amount' },
-    { field: 'status', headerName: 'Change Loan Status' }
-  ];
+  // loanApproval = [
+  //   { field: 'loanNumber' },
+  //   { field: 'principalAmount' },
+  //   { field: 'interestAmount' },
+  //   { field: 'totalAmount' },
+  //   { field: 'status'}
+  // ];
 
-  loanDisbursement: ColDef[] = [
-    { field: 'loanNumber', headerName: 'Loan Number' },
-    { field: 'principleAmount', headerName: 'Principal Amount' },
-    { field: 'interestAmount', headerName: 'Interest Amount' },
-    { field: 'totalAmount', headerName: 'Loan Amount' },
-    { field: 'status', headerName: 'Loan Status' }
-  ];
+  // loanDisbursement = [
+  //   { field: 'loanNumber', headerName: 'Loan Number' },
+  //   { field: 'PrincipalAmount', headerName: 'Principal Amount' },
+  //   { field: 'InterestAmount' , headerName: 'Interest Amount'},
+  //   { field: 'TotalAmount', headerName: 'Total Amount' },
+  //   { field: 'email' , headerName: 'email'}
+  // ];
 
   loanClosed: ColDef[] = [
     { field: 'loanNumber', headerName: 'Loan Number' },
@@ -119,38 +118,41 @@ export class ManagerDashboardComponent {
     this.DataService.getPendingLoan().subscribe({
       next:(res)=>{
         this.loanApprovalList.set(res);
+        console.log(this.loanApprovalList())
       },
       error: (error) =>{
         console.error('Error fetching dashboard data:', error);
       },
       complete: () => {
-        console.log('All subscriptions complete');
+        console.log('Approved loans complete');
       }
   });
 }
   loanDisbursementListData(){
     this.DataService.getDisbusredLoan() .subscribe({
       next:(res)=>{
-        this.loanDisbursementList.set(res);        
+        this.loanDisbursementList.set(res); 
+        console.log(this.loanDisbursementList())       
       },
       error: (error) =>{
         console.error('Error fetching dashboard data:', error);
       },
       complete: () => {
-        console.log('All subscriptions complete');
+        console.log('Disbursed loans complete');
       }
   });
 }
   loanClosedListData(){
     this.DataService.getClosedLoan().subscribe({
       next:(res)=>{
-        this.loanClosedList.set(res);        
+        this.loanClosedList.set(res);  
+        console.log(this.loanClosedList())       
       },
       error: (error) =>{
         console.error('Error fetching dashboard data:', error);
       },
       complete: () => {
-        console.log('All subscriptions complete');
+        console.log('Closed loans complete');
       }
   });
   }
@@ -199,11 +201,23 @@ export class ManagerDashboardComponent {
     gridApi.sizeColumnsToFit();
   }
 
-  goToChildRoute(route: string) {
-    this.router.navigate([route]);
-  }
-
   ef = effect(() => {
     console.log('Dashboard data updated', this.dashboardData());
   });
+
+  visibleColumns: { [key: string]: boolean } = {
+    loanNumber: true, 
+    principalAmount : true,
+    interestAmount: true,
+    totalAmount: true,
+    status: true
+  };
+
+  displayedColumns: string[] = Object.keys(this.visibleColumns).filter(key => this.visibleColumns[key]);
+
+  toggleColumnVisibility(column: string): void {
+    this.visibleColumns[column] = !this.visibleColumns[column];
+    this.displayedColumns = Object.keys(this.visibleColumns).filter(key => this.visibleColumns[key]);
+  } 
+  
 }

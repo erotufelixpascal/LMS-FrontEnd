@@ -8,7 +8,6 @@ import { MANAGER_ROUTES } from '../../Manager/manager.routes';
   standalone: true,
   imports: [
     MatTooltipModule,
-    RouterOutlet,
     // RouterModule.forRoot(MANAGER_ROUTES),
     // RouterModule.forRoot([MANAGER_ROUTES])
     // RouterModule.forChild([MANAGER_ROUTES])
