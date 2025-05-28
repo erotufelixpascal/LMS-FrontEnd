@@ -195,6 +195,12 @@ export class CommonService {
         });
         return this.http.get<any>("https://api.mockaroo.com/api/3bd84ed0?count=10&key=97bd0420");
       }
+      getCollateral(){
+        const headers = new HttpHeaders({
+          "Content-Type": "application/json",
+        });
+        return this.http.get<any>("https://api.mockaroo.com/api/df53dca0?count=10&key=97bd0420" );
+      }
       getStaffList() {
         const headers = new HttpHeaders({
           "Content-Type": "application/json",

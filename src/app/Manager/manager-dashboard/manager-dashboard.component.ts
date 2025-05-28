@@ -10,7 +10,9 @@ import { LoanCategoryComponent } from '../loan-category/loan-category.component'
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkTableModule } from '@angular/cdk/table';
 import { MatCardModule } from '@angular/material/card';
-// import {mat-card-title} from '@'
+import { MatTableModule } from '@angular/material/table';
+import { MatExpansionModule } from '@angular/material/expansion';
+
 
 interface LoanFile {
   fileName: string;
@@ -34,7 +36,8 @@ interface Comment {
     MatTabsModule,
     MatTooltipModule,
     CdkTableModule,
-    MatCardModule
+    MatCardModule,
+    MatTableModule,
   ],
   providers: [DatePipe],
   templateUrl: './manager-dashboard.component.html',
@@ -57,6 +60,7 @@ export class ManagerDashboardComponent {
   loanApprovalList = signal<any[]>([]);
   loanDisbursementList = signal<any[]>([]);
   loanClosedList = signal<any[]>([]);
+  loanCollateralList = signal<any[]>([]);
 
   gridApi: any;
   defaultColDef: ColDef = {
@@ -90,10 +94,10 @@ export class ManagerDashboardComponent {
   ];
 
   loanFiles: LoanFile[] = [
-    { fileName: 'loan-agreement.pdf', fileType: 'PDF', uploadDate: new Date('2024-01-01') },
+    { fileName: 'loan-agreement.docx', fileType: 'DOCX', uploadDate: new Date('2024-01-01') },
     { fileName: 'credit-report.docx', fileType: 'DOCX', uploadDate: new Date('2024-02-01') },
-    { fileName: 'collateral.png', fileType: 'Image', uploadDate: new Date('2024-03-01') },
-    { fileName: 'loan-repayment-schedule.xlsx', fileType: 'Excel', uploadDate: new Date('2024-04-01') }
+    { fileName: 'collateral.docx', fileType: 'DOCX', uploadDate: new Date('2024-03-01') },
+    // { fileName: 'loan-repayment-schedule.xlsx', fileType: 'Excel', uploadDate: new Date('2024-04-01') }
   ];
 
   comments: Comment[] = [
@@ -111,7 +115,8 @@ export class ManagerDashboardComponent {
     this.loadLoanData();
     this.loanApprovalListData();
     this.loanClosedListData();
-    this.loanDisbursementListData()
+    this.loanDisbursementListData();
+    this.getCollateralList()
   }
 
   loanApprovalListData(){
@@ -135,7 +140,7 @@ export class ManagerDashboardComponent {
         console.log(this.loanDisbursementList())       
       },
       error: (error) =>{
-        console.error('Error fetching dashboard data:', error);
+        console.error('Error fetching loan disbursed data:', error);
       },
       complete: () => {
         console.log('Disbursed loans complete');
@@ -149,7 +154,7 @@ export class ManagerDashboardComponent {
         console.log(this.loanClosedList())       
       },
       error: (error) =>{
-        console.error('Error fetching dashboard data:', error);
+        console.error('Error fetching loans closed data:', error);
       },
       complete: () => {
         console.log('Closed loans complete');
@@ -162,12 +167,27 @@ export class ManagerDashboardComponent {
         this.loanCategories.set(res) ;
       },
       error: (error) => {
-        console.error('Error fetching dashboard data:', error);
+        console.error('Error fetching loan data data:', error);
       },
       complete: () => {
         console.log('All subscriptions complete');
       }
     });
+  }
+
+  getCollateralList(){
+    this.DataService.getCollateral().subscribe({
+      next: (res) => {
+        this.loanCollateralList.set(res) ;
+        console.log(this.loanCollateralList()) 
+      },
+      error: (error) => {
+        console.error('Error fetching collateral data:', error);
+      },
+      complete: () => {
+        console.log('Collateral list complete');
+      }
+    })
   }
 
   downloadFile(file: LoanFile): void {
@@ -178,12 +198,20 @@ export class ManagerDashboardComponent {
     console.log('Deleting file:', file);
   }
 
+  editFile(file: LoanFile): void {
+    console.log('Editing file:', file);
+  }
+
   addComment() {
     if (this.newComment.text.trim()) {
       this.newComment.timestamp = new Date();
       this.comments.push({ ...this.newComment });
       this.newComment.text = '';
     }
+  }
+
+  openAddCollateralDialog(){
+    console.log('Add Collateral:');
   }
 
   showModal() {

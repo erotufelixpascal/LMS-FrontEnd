@@ -136,18 +136,58 @@
                         </div>
                       </mat-tab>
 
-                    <mat-tab label="Loan Terms">Loan Terms <br>
-                      <!-- <ag-grid-angular
-                        style="width: 100%; height: 550px"
-                        [class]="themeClass"
-                        [defaultColDef]="defaultColDef"
-                        [rowData]="loanTerm"
-                        [columnDefs]="loanTerms"
-                        (gridSizeChanged)="onGridSizeChange($event)"
-                      > </ag-grid-angular> -->
-                    </mat-tab>
-                    <mat-tab label="Loan Collateral">Loan Collateral <br>
-                        <p>Here you will find the Loan Collateral</p>
+                    <!-- <mat-tab label="Loan Collateral">
+                      <div class="p-4">
+                        <h2>Loan Collateral Information</h2>
+                        <p>Below is a list of collateral attached to active or past loans.</p>
+                    
+                        <mat-card *ngFor="let collateralItem of loanCollateralList()" class="mb-4">
+                          <mat-card-title>{{ collateralItem.assetName }}</mat-card-title>
+                          <mat-card-content>
+                            <p><strong>Type:</strong> {{ collateralItem.assetType }}</p>
+                            <p><strong>Estimated Value:</strong> {{ collateralItem.estimatedValue | currency }}</p>
+                            <p><strong>Loan ID:</strong> {{ collateralItem.loanId }}</p>
+                            <p><strong>Status:</strong> {{ collateralItem.status }}</p>
+                          </mat-card-content>
+                        </mat-card>
+                    
+                        <p *ngIf="loanCollateralList().length === 0">No collateral currently recorded.</p>
+                    
+                        <button class="btn btn-success" (click)="openAddCollateralDialog()">Add Collateral</button>
+                      </div>
+                    </mat-tab> -->
+
+                    <mat-tab label="Loan Collateral">
+                    <table mat-table [dataSource]="loanCollateralList()" class="mat-elevation-z2 w-full">
+                      <ng-container matColumnDef="assetName">
+                        <th mat-header-cell *matHeaderCellDef>Asset</th>
+                        <td mat-cell *matCellDef="let item">{{ item.assetName }}</td>
+                      </ng-container>
+                    
+                      <ng-container matColumnDef="assetType">
+                        <th mat-header-cell *matHeaderCellDef>Type</th>
+                        <td mat-cell *matCellDef="let item">{{ item.assetType }}</td>
+                      </ng-container>
+                    
+                      <ng-container matColumnDef="estimatedValue">
+                        <th mat-header-cell *matHeaderCellDef>Value</th>
+                        <td mat-cell *matCellDef="let item">{{ item.estimatedValue | currency }}</td>
+                      </ng-container>
+                    
+                      <ng-container matColumnDef="loanId">
+                        <th mat-header-cell *matHeaderCellDef>Loan ID</th>
+                        <td mat-cell *matCellDef="let item">{{ item.loanId }}</td>
+                      </ng-container>
+                    
+                      <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>Status</th>
+                        <td mat-cell *matCellDef="let item">{{ item.status }}</td>
+                      </ng-container>
+                    
+                      <tr mat-header-row *matHeaderRowDef="['assetName', 'assetType', 'estimatedValue', 'loanId', 'status']"></tr>
+                      <tr mat-row *matRowDef="let row; columns: ['assetName', 'assetType', 'estimatedValue', 'loanId', 'status']"></tr>
+                    </table>
+                    
                     </mat-tab>
                     <mat-tab label="Loan Files"><br>
                         <div class="container mt-4">
@@ -168,7 +208,8 @@
                                   <td>{{ file.uploadDate | date }}</td>
                                   <td>
                                     <button class="btn btn-primary" (click)="downloadFile(file)">Download</button>
-                                    <button class="btn btn-danger" (click)="deleteFile(file)">Delete</button>
+                                    <!-- <button class="btn btn-danger" (click)="deleteFile(file)">Delete</button> -->
+                                    <button class="btn btn-success" (click)="editFile(file)">Edit</button>
                                   </td>
                                 </tr>
                               </tbody>
