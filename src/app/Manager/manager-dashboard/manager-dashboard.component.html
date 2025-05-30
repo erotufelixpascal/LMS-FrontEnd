@@ -181,14 +181,53 @@
                     
                       <ng-container matColumnDef="status">
                         <th mat-header-cell *matHeaderCellDef>Status</th>
-                        <td mat-cell *matCellDef="let item">{{ item.status }}</td>
+                        <td mat-cell *matCellDef="let item" [ngClass]="{'bg-green': item.status === 'Released'}">
+                          {{ item.status }}
+                        </td>
                       </ng-container>
+                      
                     
                       <tr mat-header-row *matHeaderRowDef="['assetName', 'assetType', 'estimatedValue', 'loanId', 'status']"></tr>
                       <tr mat-row *matRowDef="let row; columns: ['assetName', 'assetType', 'estimatedValue', 'loanId', 'status']"></tr>
                     </table>
                     
                     </mat-tab>
+    
+                    <!-- <mat-tab label="Loan Collateral">
+                    // <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2 w-full"> 
+
+                      <table mat-table [dataSource]="loanCollateralList()" class="mat-elevation-z2 w-full">
+                      <ng-container matColumnDef="assetName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Asset</th>
+                        <td mat-cell *matCellDef="let item">{{ item.assetName }}</td>
+                      </ng-container>
+                    
+                      <ng-container matColumnDef="assetType">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+                        <td mat-cell *matCellDef="let item">{{ item.assetType }}</td>
+                      </ng-container>
+                    
+                      <ng-container matColumnDef="estimatedValue">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
+                        <td mat-cell *matCellDef="let item">{{ item.estimatedValue | currency }}</td>
+                      </ng-container>
+                    
+                      <ng-container matColumnDef="loanId">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Loan ID</th>
+                        <td mat-cell *matCellDef="let item">{{ item.loanId }}</td>
+                      </ng-container>
+                    
+                      <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                        <td mat-cell *matCellDef="let item" [ngClass]="{'bg-green': item.status === 'Released'}">
+                          {{ item.status }}
+                        </td>
+                      </ng-container>
+                    
+                      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                    </table>
+                  </mat-tab> -->
                     <mat-tab label="Loan Files"><br>
                         <div class="container mt-4">
                             <!-- <h2>Loan Files</h2> -->

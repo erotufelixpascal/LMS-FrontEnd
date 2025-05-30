@@ -11,7 +11,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkTableModule } from '@angular/cdk/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { ViewChild, AfterViewInit } from '@angular/core';
+import { MatSortModule } from '@angular/material/sort';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
 
 
 interface LoanFile {
@@ -38,12 +44,15 @@ interface Comment {
     CdkTableModule,
     MatCardModule,
     MatTableModule,
+    // MatSortModule,
+    // MatFormFieldModule,
+    // MatInputModule    
   ],
   providers: [DatePipe],
   templateUrl: './manager-dashboard.component.html',
   styleUrls: ['./manager-dashboard.component.scss']
 })
-export class ManagerDashboardComponent {
+export class ManagerDashboardComponent implements AfterViewInit {
 
   router = inject(Router);
   DataService = inject(CommonService);
@@ -61,13 +70,28 @@ export class ManagerDashboardComponent {
   loanDisbursementList = signal<any[]>([]);
   loanClosedList = signal<any[]>([]);
   loanCollateralList = signal<any[]>([]);
+  displayedColumns: string[] = ['assetName', 'assetType', 'estimatedValue', 'loanId', 'status'];
+  dataSource = new MatTableDataSource(this.loanCollateralList());
 
-  gridApi: any;
-  defaultColDef: ColDef = {
-    sortable: true,
-    filter: true,
-    resizable: true,
-  };
+  @ViewChild(MatSort) sort!: MatSort;
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  // displayedColumns: string[] = Object.keys(this.visibleColumns).filter(key => this.visibleColumns[key]);
+
+  // gridApi: any;
+  // defaultColDef: ColDef = {
+  //   sortable: true,
+  //   filter: true,
+  //   resizable: true,
+  // };
 
   // loanApproval = [
   //   { field: 'loanNumber' },
@@ -241,11 +265,15 @@ export class ManagerDashboardComponent {
     status: true
   };
 
-  displayedColumns: string[] = Object.keys(this.visibleColumns).filter(key => this.visibleColumns[key]);
+  // displayedColumns: string[] = Object.keys(this.visibleColumns).filter(key => this.visibleColumns[key]);
 
   toggleColumnVisibility(column: string): void {
     this.visibleColumns[column] = !this.visibleColumns[column];
     this.displayedColumns = Object.keys(this.visibleColumns).filter(key => this.visibleColumns[key]);
   } 
+
+  
+
+ 
   
 }
