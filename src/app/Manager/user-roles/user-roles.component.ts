@@ -7,17 +7,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ManagerNavbarComponent } from '../../Navbar/manager-navbar/manager-navbar.component';
 
 @Component({
-  selector: 'app-user-roles',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatTooltipModule
-],
-  providers: [DatePipe],
-  templateUrl: './user-roles.component.html',
-  styleUrl: './user-roles.component.scss'
+    selector: 'app-user-roles',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatTooltipModule
+    ],
+    providers: [DatePipe],
+    templateUrl: './user-roles.component.html',
+    styleUrl: './user-roles.component.scss'
 })
 export class UserRolesComponent implements OnInit {
   assignRoleForm: FormGroup;

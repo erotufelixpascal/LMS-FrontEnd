@@ -9,17 +9,16 @@ import { AgGridModule } from 'ag-grid-angular';
 
 
 @Component({
-  selector: 'app-loan-category',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatTabsModule,
-    AgGridModule,
-  ],
-  templateUrl: './loan-category.component.html',
-  styleUrl: './loan-category.component.scss'
+    selector: 'app-loan-category',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatTabsModule,
+        AgGridModule,
+    ],
+    templateUrl: './loan-category.component.html',
+    styleUrl: './loan-category.component.scss'
 })
 
 

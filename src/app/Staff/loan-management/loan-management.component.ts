@@ -32,19 +32,18 @@ interface Comment {
 }
 
 @Component({
-  selector: 'app-loan-management',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatTabsModule,
-    AgGridModule,
-    MatTooltipModule
-  ],
-  providers: [DatePipe],
-  templateUrl: './loan-management.component.html',
-  styleUrl: './loan-management.component.scss'
+    selector: 'app-loan-management',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatTabsModule,
+        AgGridModule,
+        MatTooltipModule
+    ],
+    providers: [DatePipe],
+    templateUrl: './loan-management.component.html',
+    styleUrl: './loan-management.component.scss'
 })
 export class LoanManagementComponent implements OnInit {
   staffForm: FormGroup

@@ -5,17 +5,16 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { AgGridModule } from 'ag-grid-angular';
 
 @Component({
-  selector: 'app-loan-repayment',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatTabsModule,
-    AgGridModule,
-  ],
-  templateUrl: './loan-repayment.component.html',
-  styleUrl: './loan-repayment.component.scss'
+    selector: 'app-loan-repayment',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatTabsModule,
+        AgGridModule,
+    ],
+    templateUrl: './loan-repayment.component.html',
+    styleUrl: './loan-repayment.component.scss'
 })
 export class LoanRepaymentComponent implements OnInit {
   loanRepaymentForm:FormGroup

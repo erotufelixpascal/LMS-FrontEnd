@@ -32,19 +32,18 @@ interface Comment {
 }
 
 @Component({
-  selector: 'app-staff-dashboard',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatTabsModule,
-    AgGridModule,
-    MatTooltipModule
-  ],
-  providers: [DatePipe],
-  templateUrl: './staff-dashboard.component.html',
-  styleUrl: './staff-dashboard.component.scss'
+    selector: 'app-staff-dashboard',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatTabsModule,
+        AgGridModule,
+        MatTooltipModule
+    ],
+    providers: [DatePipe],
+    templateUrl: './staff-dashboard.component.html',
+    styleUrl: './staff-dashboard.component.scss'
 })
 export class StaffDashboardComponent implements OnInit{
   currentDateTime: string;

@@ -20,18 +20,17 @@ interface IRow {
 }
 
 @Component({
-  selector: 'app-staff-performance',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatTooltipModule,
-    AgGridModule
-  ],
-  providers: [DatePipe],
-  templateUrl: './staff-performance.component.html',
-  styleUrl: './staff-performance.component.scss'
+    selector: 'app-staff-performance',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatTooltipModule,
+        AgGridModule
+    ],
+    providers: [DatePipe],
+    templateUrl: './staff-performance.component.html',
+    styleUrl: './staff-performance.component.scss'
 })
 export class StaffPerformanceComponent implements OnInit {
 

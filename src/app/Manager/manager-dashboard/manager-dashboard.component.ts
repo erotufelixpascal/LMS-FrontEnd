@@ -33,24 +33,23 @@ interface Comment {
 }
 
 @Component({
-  selector: 'app-manager-dashboard',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatTabsModule,
-    MatTooltipModule,
-    CdkTableModule,
-    MatCardModule,
-    MatTableModule,
-    // MatSortModule,
-    // MatFormFieldModule,
-    // MatInputModule    
-  ],
-  providers: [DatePipe],
-  templateUrl: './manager-dashboard.component.html',
-  styleUrls: ['./manager-dashboard.component.scss']
+    selector: 'app-manager-dashboard',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatTabsModule,
+        MatTooltipModule,
+        CdkTableModule,
+        MatCardModule,
+        MatTableModule,
+        // MatSortModule,
+        // MatFormFieldModule,
+        // MatInputModule    
+    ],
+    providers: [DatePipe],
+    templateUrl: './manager-dashboard.component.html',
+    styleUrls: ['./manager-dashboard.component.scss']
 })
 export class ManagerDashboardComponent implements AfterViewInit {
 

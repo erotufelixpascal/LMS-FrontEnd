@@ -6,17 +6,16 @@ import { CommonService } from '../../Services/common.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
-  selector: 'app-view-reports',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatTooltipModule
-  ],
-  providers: [DatePipe],
-  templateUrl: './view-reports.component.html',
-  styleUrl: './view-reports.component.scss'
+    selector: 'app-view-reports',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatTooltipModule
+    ],
+    providers: [DatePipe],
+    templateUrl: './view-reports.component.html',
+    styleUrl: './view-reports.component.scss'
 })
 export class ViewReportsComponent implements OnInit{
 

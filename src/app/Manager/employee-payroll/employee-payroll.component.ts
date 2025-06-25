@@ -22,18 +22,17 @@ interface Comment {
 }
 
 @Component({
-  selector: 'app-employee-payroll',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatTabsModule,
-    AgGridModule,
-    MatTooltipModule
-  ],
-  templateUrl: './employee-payroll.component.html',
-  styleUrl: './employee-payroll.component.scss'
+    selector: 'app-employee-payroll',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatTabsModule,
+        AgGridModule,
+        MatTooltipModule
+    ],
+    templateUrl: './employee-payroll.component.html',
+    styleUrl: './employee-payroll.component.scss'
 })
 export class EmployeePayrollComponent implements OnInit{
   currentDateTime: string;

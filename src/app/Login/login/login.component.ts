@@ -7,16 +7,15 @@ import { CommonModule } from "@angular/common";
 
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [
-    // BrowserAnimationsModule,
-    ReactiveFormsModule,
-    FormsModule,
-    CommonModule
+    selector: 'app-login',
+    imports: [
+        // BrowserAnimationsModule,
+        ReactiveFormsModule,
+        FormsModule,
+        CommonModule
     ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.scss'
 })
 
 export class LoginComponent implements OnInit {

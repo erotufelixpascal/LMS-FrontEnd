@@ -6,16 +6,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-loan-application',
-  standalone: true,
-  imports: [
-    // BrowserAnimationsModule,
-    ReactiveFormsModule,
-    FormsModule,
-    CommonModule
+    selector: 'app-loan-application',
+    imports: [
+        // BrowserAnimationsModule,
+        ReactiveFormsModule,
+        FormsModule,
+        CommonModule
     ],
-  templateUrl: './loan-application.component.html',
-  styleUrl: './loan-application.component.scss'
+    templateUrl: './loan-application.component.html',
+    styleUrl: './loan-application.component.scss'
 })
 
 export class LoanApplicationComponent implements OnInit{

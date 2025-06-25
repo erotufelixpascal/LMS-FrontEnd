@@ -31,17 +31,16 @@ interface Comment {
   timestamp: Date;
 }
 @Component({
-  selector: 'app-client-home',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatTabsModule,
-    AgGridModule,
-  ],
-  templateUrl: './client-home.component.html',
-  styleUrl: './client-home.component.scss'
+    selector: 'app-client-home',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatTabsModule,
+        AgGridModule,
+    ],
+    templateUrl: './client-home.component.html',
+    styleUrl: './client-home.component.scss'
 })
 export class ClientHomeComponent implements OnInit{
   themeClass = "ag-theme-alpine";
