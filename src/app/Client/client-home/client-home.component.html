@@ -73,37 +73,16 @@
                     <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
                     <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center"> -->
                         <mat-tab label="Repayments"><br>
-                            <button (click)="showModal()">Add repayments</button>
+                           
                             <p>Here you will find the repayments</p>
-                            <ag-grid-angular
-                                style="width: 100%; height: 550px"
-                                [class]="themeClass"
-                                [defaultColDef]="defaultColDef"
-                                [rowData]="repaymentList"
-                                [columnDefs]="loanRepayment"
-                                (gridSizeChanged)="onGridSizeChange($event)"
-                                > </ag-grid-angular>
+                            
                         </mat-tab>
                         <mat-tab label="Loan Schedule">Loan Repayment Schedule <br>
                             <p>Here you will find the Loan Repayment Schedule</p>
-                            <ag-grid-angular
-                                style="width: 100%; height: 550px"
-                                [class]="themeClass"
-                                [defaultColDef]="defaultColDef"
-                                [rowData]="scheduleList"
-                                [columnDefs]="loanRepaymentSchedule"
-                                (gridSizeChanged)="onGridSizeChange($event)"
-                                > </ag-grid-angular>
+                            
                         </mat-tab>
                         <mat-tab label="Loan Terms">Loan Terms <br>
-                          <ag-grid-angular
-                            style="width: 100%; height: 550px"
-                            [class]="themeClass"
-                            [defaultColDef]="defaultColDef"
-                            [rowData]="loanTerm"
-                            [columnDefs]="loanTerms"
-                            (gridSizeChanged)="onGridSizeChange($event)"
-                          > </ag-grid-angular>
+                          
                         </mat-tab>
                         <mat-tab label="Loan Collateral">Loan Collateral <br>
                             <p>Here you will find the Loan Collateral</p>

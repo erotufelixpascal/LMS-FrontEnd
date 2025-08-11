@@ -4,8 +4,8 @@ import { ReactiveFormsModule, FormsModule, FormGroup, FormBuilder, Validators } 
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
-import { AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
+// import { AgGridModule } from 'ag-grid-angular';
+// import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
 import { forkJoin } from 'rxjs';
 
 interface IRow {
@@ -26,7 +26,7 @@ interface IRow {
         ReactiveFormsModule,
         FormsModule,
         MatTooltipModule,
-        AgGridModule
+        // AgGridModule
     ],
     providers: [DatePipe],
     templateUrl: './staff-performance.component.html',
@@ -42,22 +42,22 @@ export class StaffPerformanceComponent implements OnInit {
   staffPerformanceList : any[]=[];
   themeClass = "ag-theme-alpine";
   mergedData: IRow[] = [];
-  defaultColDef: ColDef = {
-    sortable: true,
-    filter: true,
-    resizable: true,
-  };
+  // defaultColDef: ColDef = {
+  //   sortable: true,
+  //   filter: true,
+  //   resizable: true,
+  // };
 
-  staffCol: ColDef[] = [
-    // { field: "StaffID", headerName: "Staff ID", width:150 },
-    { field: "lastName", headerName: "Last Name" },
-    { field: "firstName", headerName: "First Name" },
-    { field: "loans_applied", headerName: "Applied", width:140 },
-    { field: "loans_pending", headerName: "Pending", width:140 },
-    { field: "loans_disbursed", headerName: "Disbursed", width:150 },
-    { field: "loans_recovered", headerName: "Recovered", width:150 },
-    { field: "effectiveness", headerName: "Effectiveness(%)", width:180 }
-  ];
+  // staffCol: ColDef[] = [
+  //   // { field: "StaffID", headerName: "Staff ID", width:150 },
+  //   { field: "lastName", headerName: "Last Name" },
+  //   { field: "firstName", headerName: "First Name" },
+  //   { field: "loans_applied", headerName: "Applied", width:140 },
+  //   { field: "loans_pending", headerName: "Pending", width:140 },
+  //   { field: "loans_disbursed", headerName: "Disbursed", width:150 },
+  //   { field: "loans_recovered", headerName: "Recovered", width:150 },
+  //   { field: "effectiveness", headerName: "Effectiveness(%)", width:180 }
+  // ];
 
   constructor(
     private fb:FormBuilder,
@@ -98,9 +98,9 @@ export class StaffPerformanceComponent implements OnInit {
   goToChildRoute(route :string ){
     this.router.navigate([route]);
   }
-  onGridSizeChange(params: GridSizeChangedEvent) {
-    const gridApi = params.api;
-    gridApi.sizeColumnsToFit();
-  }
+  // onGridSizeChange(params: GridSizeChangedEvent) {
+  //   const gridApi = params.api;
+  //   gridApi.sizeColumnsToFit();
+  // }
 
 }

@@ -4,8 +4,6 @@ import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { CommonService } from '../../Services/common.service';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoanCategoryComponent } from '../loan-category/loan-category.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkTableModule } from '@angular/cdk/table';
@@ -55,7 +53,7 @@ export class ManagerDashboardComponent implements AfterViewInit {
 
   router = inject(Router);
   DataService = inject(CommonService);
-  modalService = inject(NgbModal);
+
   datePipe = inject(DatePipe);
   currentDateTime :string='';
   dashboardData = signal(null);
@@ -108,13 +106,7 @@ export class ManagerDashboardComponent implements AfterViewInit {
   //   { field: 'email' , headerName: 'email'}
   // ];
 
-  loanClosed: ColDef[] = [
-    { field: 'loanNumber', headerName: 'Loan Number' },
-    { field: 'principleAmount', headerName: 'Principal Amount' },
-    { field: 'interestAmount', headerName: 'Interest Amount' },
-    { field: 'totalAmount', headerName: 'Loan Amount' },
-    { field: 'status', headerName: 'Loan Status' }
-  ];
+  
 
   loanFiles: LoanFile[] = [
     { fileName: 'loan-agreement.docx', fileType: 'DOCX', uploadDate: new Date('2024-01-01') },
@@ -235,21 +227,6 @@ export class ManagerDashboardComponent implements AfterViewInit {
 
   openAddCollateralDialog(){
     console.log('Add Collateral:');
-  }
-
-  showModal() {
-    const modalRef = this.modalService.open(LoanCategoryComponent);
-    modalRef.closed.subscribe((data: any) => {
-      console.log('onclosed', data);
-      if (data === 1) {
-        // Logic to refresh or update upon modal close
-      }
-    });
-  }
-
-  onGridSizeChange(params: GridSizeChangedEvent) {
-    const gridApi = params.api;
-    gridApi.sizeColumnsToFit();
   }
 
   ef = effect(() => {

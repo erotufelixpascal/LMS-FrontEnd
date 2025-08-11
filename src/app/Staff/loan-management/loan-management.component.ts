@@ -4,9 +4,6 @@ import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } 
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
 import { CommonService } from '../../Services/common.service';
 
 interface IRow {
@@ -38,7 +35,7 @@ interface Comment {
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
-        AgGridModule,
+
         MatTooltipModule
     ],
     providers: [DatePipe],
@@ -54,18 +51,14 @@ export class LoanManagementComponent implements OnInit {
   loanPayment : IRow[] = [];
   loanNumber: string=''
   themeClass = "ag-theme-alpine";
-  defaultColDef: ColDef = {
-    sortable: true,
-    filter: true,
-    resizable: true,
-  };
+
   quauntity = signal(1)
 
   constructor (
     private router: Router,
     private formBuilder: FormBuilder,
     private DataService:CommonService,
-    private modalService:NgbModal,
+
     private datePipe: DatePipe
 ){ 
   this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
@@ -75,28 +68,8 @@ export class LoanManagementComponent implements OnInit {
 
 }
 
-schedule: ColDef[] = [
-  { field: "loanNumber", headerName: "Loan Number" },
-  { field: "principal", headerName: "Principal Amount" },
-  { field: "interest", headerName: "Interest Amount" },
-  { field: "totalAmount", headerName: "Total Amount" },
-  { field: "balance", headerName: "Balance" },
-  { field: "payment_date", headerName: "Due Date" },
-  { field: "next_payment_date", headerName: "Next Payment Date" },
-  { field: "Month", headerName: "Month" }
-  
-];
-payment: ColDef[] = [
-  { field: "loanNumber", headerName: "Loan Number" },
-  { field: "principal", headerName: "Principal Amount" },
-  { field: "interest", headerName: "Interest Amount" },
-  { field: "totalAmount", headerName: "Total Amount" },
-  { field: "balance", headerName: "Balance" },
-  { field: "payment_date", headerName: "Due Date" },
-  { field: "next_payment_date", headerName: "Next Payment Date" },
-  { field: "Month", headerName: "Month" }
-  
-];
+
+
 
   loanFiles: LoanFile[] = [
     { fileName: 'loan-agreement.pdf', fileType: 'PDF', uploadDate: new Date('2024-01-01') },
@@ -136,17 +109,7 @@ payment: ColDef[] = [
     })
   }
   
-  showModal(){
-    //const modalRef = this.modalService.open(LoanCategoryComponent);
-    const modalRef = this.modalService.open(LoanManagementComponent);
-    modalRef.closed.subscribe((data) => {
-      console.log("onclosed", data);
-      if (data == 1) {
-        //this.ClassList(this.courseIDInt);
   
-      }
-    });
-  }
   
   downloadFile(file: LoanFile): void {
     // Logic to download the file
@@ -166,10 +129,6 @@ payment: ColDef[] = [
     }
   }
   
-  onGridSizeChange(params: GridSizeChangedEvent) {
-    const gridApi = params.api;
-    gridApi.sizeColumnsToFit();
-  }
   
   goToChildRoute(route :string ){
       this.router.navigate([route]);

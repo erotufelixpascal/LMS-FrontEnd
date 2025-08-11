@@ -5,7 +5,6 @@ import { CommonService } from '../../Services/common.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
-import { AgGridModule } from 'ag-grid-angular';
 
 
 @Component({
@@ -15,7 +14,6 @@ import { AgGridModule } from 'ag-grid-angular';
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
-        AgGridModule,
     ],
     templateUrl: './loan-category.component.html',
     styleUrl: './loan-category.component.scss'

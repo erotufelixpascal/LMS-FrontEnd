@@ -4,11 +4,8 @@ import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup } 
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AgGridModule } from 'ag-grid-angular';
 import { CommonService } from '../../Services/common.service';
 import { LoanManagementComponent } from '../loan-management/loan-management.component';
-import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
 
 interface IRow {
   participant_PID: string;
@@ -38,7 +35,6 @@ interface Comment {
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
-        AgGridModule,
         MatTooltipModule
     ],
     providers: [DatePipe],
@@ -48,18 +44,12 @@ interface Comment {
 export class StaffDashboardComponent implements OnInit{
   currentDateTime: string;
   gridApi: any;
-  themeClass = "ag-theme-alpine";
-  defaultColDef: ColDef = {
-    sortable: true,
-    filter: true,
-    resizable: true,
-  };
+ 
 
   constructor (
     private router: Router,
     private formBuilder: FormBuilder,
     private dataService:CommonService,
-    private modalService:NgbModal,
     private datePipe: DatePipe
 ){ 
   this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
@@ -84,14 +74,7 @@ ngOnInit(): void { }
 
 showModal(){
   //const modalRef = this.modalService.open(LoanCategoryComponent);
-  const modalRef = this.modalService.open(LoanManagementComponent);
-  modalRef.closed.subscribe((data) => {
-    console.log("onclosed", data);
-    if (data == 1) {
-      //this.ClassList(this.courseIDInt);
 
-    }
-  });
 }
 
 downloadFile(file: LoanFile): void {
@@ -112,10 +95,6 @@ addComment() {
   }
 }
 
-onGridSizeChange(params: GridSizeChangedEvent) {
-  const gridApi = params.api;
-  gridApi.sizeColumnsToFit();
-}
 
 goToChildRoute(route :string ){
     this.router.navigate([route]);

@@ -1,14 +1,14 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 import { CommonService } from '../../Services/common.service';
-import { GridSizeChangedEvent } from 'ag-grid-community';
+
 import { LoanCategoryComponent } from '../loan-category/loan-category.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AgGridModule } from 'ag-grid-angular';
+
 
 interface LoanFile {
   fileName: string;
@@ -28,7 +28,7 @@ interface Comment {
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
-        AgGridModule,
+
         MatTooltipModule
     ],
     templateUrl: './employee-payroll.component.html',
@@ -40,7 +40,7 @@ export class EmployeePayrollComponent implements OnInit{
   constructor(
     private router: Router,
     private DataService:CommonService,
-    private modalService:NgbModal,
+    
     private datePipe: DatePipe 
   ){
     this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
@@ -82,21 +82,7 @@ export class EmployeePayrollComponent implements OnInit{
       this.newComment.text = '';
     }
   }
-  showModal(){
-    //const modalRef = this.modalService.open(LoanCategoryComponent);
-    const modalRef = this.modalService.open(LoanCategoryComponent);
-    modalRef.closed.subscribe((data) => {
-      console.log("onclosed", data);
-      if (data == 1) {
-        //this.ClassList(this.courseIDInt);
-
-      }
-    });
-  }
-  onGridSizeChange(params: GridSizeChangedEvent) {
-    const gridApi = params.api;
-    gridApi.sizeColumnsToFit();
-  }
+  
 
   goToChildRoute(route :string ){
       this.router.navigate([route]);

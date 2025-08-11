@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup ,Validators} from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
-import { AgGridModule } from 'ag-grid-angular';
+
 
 @Component({
     selector: 'app-loan-repayment',
@@ -11,7 +11,7 @@ import { AgGridModule } from 'ag-grid-angular';
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
-        AgGridModule,
+ 
     ],
     templateUrl: './loan-repayment.component.html',
     styleUrl: './loan-repayment.component.scss'

@@ -4,9 +4,9 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
 import {MatTabsModule} from '@angular/material/tabs';
-import { AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridReadyEvent,  GridSizeChangedEvent, createGrid } from "ag-grid-community";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+// import { AgGridModule } from 'ag-grid-angular';
+// import { ColDef, GridReadyEvent,  GridSizeChangedEvent, createGrid } from "ag-grid-community";
+// import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoanRepaymentComponent } from '../loan-repayment/loan-repayment.component';
 
 
@@ -37,7 +37,7 @@ interface Comment {
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
-        AgGridModule,
+        // AgGridModule,
     ],
     templateUrl: './client-home.component.html',
     styleUrl: './client-home.component.scss'
@@ -48,39 +48,39 @@ export class ClientHomeComponent implements OnInit{
   scheduleList: IRow[] = [];
   loanTerm: IRow[] = [];
   gridApi: any;
-  defaultColDef: ColDef = {
-    sortable: true,
-    filter: true,
-    resizable: true,
-  };
+  // defaultColDef: ColDef = {
+  //   sortable: true,
+  //   filter: true,
+  //   resizable: true,
+  // };
 
-  loanRepayment: ColDef[] = [
-    { field: "ParticipantFirstName", headerName: "Loan Number" },
-    { field: "ParticipantLastName", headerName: "Client ID" },
-    { field: "ParticipantNamesLike", headerName: "Loan Amount" },
-    { field: "course_partner_PID", headerName: "Processing Fee" },
-    { field: "course_partner_PID", headerName: "Principal Amount" },
-    { field: "course_partner_PID", headerName: "Interest Amount" },
-    { field: "CoursePartnerNamesLike", headerName: "Balance Remaining" },
-    { field: "CoursePartnerFirstName", headerName: "Date Paid" },
-    { field: "course_partner_PID", headerName: "Penalities" },
-    { field: "CoursePartnerLastName", headerName: "Mode of Payment" }
-  ];
+  // loanRepayment: ColDef[] = [
+  //   { field: "ParticipantFirstName", headerName: "Loan Number" },
+  //   { field: "ParticipantLastName", headerName: "Client ID" },
+  //   { field: "ParticipantNamesLike", headerName: "Loan Amount" },
+  //   { field: "course_partner_PID", headerName: "Processing Fee" },
+  //   { field: "course_partner_PID", headerName: "Principal Amount" },
+  //   { field: "course_partner_PID", headerName: "Interest Amount" },
+  //   { field: "CoursePartnerNamesLike", headerName: "Balance Remaining" },
+  //   { field: "CoursePartnerFirstName", headerName: "Date Paid" },
+  //   { field: "course_partner_PID", headerName: "Penalities" },
+  //   { field: "CoursePartnerLastName", headerName: "Mode of Payment" }
+  // ];
 
-  loanRepaymentSchedule: ColDef[] = [
-    { field: "ParticipantFirstName", headerName: "Loan Number" },
-    { field: "ParticipantLastName", headerName: "Client ID" },
-    { field: "course_partner_PID", headerName: "Principal Amount Due" },
-    { field: "course_partner_PID", headerName: "Interest Amount Due" },
-    { field: "CoursePartnerFirstName", headerName: "Due Date" },
-    { field: "CoursePartnerNamesLike", headerName: "Balance Remaining" },
-  ];
+  // loanRepaymentSchedule: ColDef[] = [
+  //   { field: "ParticipantFirstName", headerName: "Loan Number" },
+  //   { field: "ParticipantLastName", headerName: "Client ID" },
+  //   { field: "course_partner_PID", headerName: "Principal Amount Due" },
+  //   { field: "course_partner_PID", headerName: "Interest Amount Due" },
+  //   { field: "CoursePartnerFirstName", headerName: "Due Date" },
+  //   { field: "CoursePartnerNamesLike", headerName: "Balance Remaining" },
+  // ];
 
-  loanTerms: ColDef[] = [
-    { field: "loanType", headerName: "Loan Type" },
-    { field: "typicalPeriod", headerName: "Typical Period" },
-    { field: "commonUseCases", headerName: "Common Use Cases" }
-  ];
+  // loanTerms:  [
+  //   { field: "loanType", headerName: "Loan Type" },
+  //   { field: "typicalPeriod", headerName: "Typical Period" },
+  //   { field: "commonUseCases", headerName: "Common Use Cases" }
+  // ];
 
   loanFiles: LoanFile[] = [
     { fileName: 'loan-agreement.pdf', fileType: 'PDF', uploadDate: new Date('2024-01-01') },
@@ -101,7 +101,7 @@ export class ClientHomeComponent implements OnInit{
     private fb: FormBuilder,
     private router: Router,
     private DataService: CommonService,
-    private modalService:NgbModal,
+    // private modalService:NgbModal,
    ){ }
 
   ngOnInit(): void {
@@ -131,27 +131,27 @@ export class ClientHomeComponent implements OnInit{
   // addRepayment(){}
 
   // showModal(data: any) {
-    showModal() {
-    const modalRef = this.modalService.open(LoanRepaymentComponent);
+    // showModal() {
+    // const modalRef = this.modalService.open(LoanRepaymentComponent);
     //modalRef.componentInstance.data = data.data;
 
-    modalRef.closed.subscribe((data) => {
-      console.log("onclosed", data);
-      if (data == 1) {
-        //this.ClassList(this.courseIDInt);
+    // modalRef.closed.subscribe((data) => {
+    //   console.log("onclosed", data);
+    //   if (data == 1) {
+    //     //this.ClassList(this.courseIDInt);
 
-      }
-    });
-  }
+    //   }
+    // });
+  // }
   goToChildRoute(route :string ){
       console.log('Navigating to:', route);
       this.router.navigate([route]);
   }
 
-  onGridSizeChange(params: GridSizeChangedEvent) {
-    const gridApi = params.api;
-    gridApi.sizeColumnsToFit();
-  }
+  // onGridSizeChange(params: GridSizeChangedEvent) {
+  //   const gridApi = params.api;
+  //   gridApi.sizeColumnsToFit();
+  // }
 
   
 
