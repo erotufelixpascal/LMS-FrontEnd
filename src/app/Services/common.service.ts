@@ -14,12 +14,12 @@ export class CommonService {
     apiURL: string = 'http://127.0.0.1:8000';
 
   constructor(private http: HttpClient) { }
-  getUsers() {
-    const headers = new HttpHeaders({
-      "Content-Type": "application/json",
-    });
-    return this.http.get<any>(this.apiURL + "/users");
-  }
+  // getUsers() {
+  //   const headers = new HttpHeaders({
+  //     "Content-Type": "application/json",
+  //   });
+  //   return this.http.get<any>(this.apiURL + "/users");
+  // }
   loginUser(email:string) {
     const headers = new HttpHeaders({
       "Content-Type": "application/json",
@@ -194,6 +194,12 @@ export class CommonService {
           "Content-Type": "application/json",
         });
         return this.http.get<any>("https://api.mockaroo.com/api/3bd84ed0?count=10&key=97bd0420");
+      }
+      getUsers() {
+        const headers = new HttpHeaders({
+          "Content-Type": "application/json",
+        });
+        return this.http.get<any>("https://api.mockaroo.com/api/bb4450c0?count=10&key=97bd0420");
       }
       getCollateral(){
         const headers = new HttpHeaders({
