@@ -32,14 +32,15 @@ export class UserRolesComponent  {
     ){
       this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
       this.assignRoleForm = this.fb.group({
+        userId: ["", Validators.required],
         role: ["", Validators.required],
         firstName :["", Validators.required],
         lastName :["", Validators.required],
         email :["", Validators.required],
         address :["", Validators.required],
-        designation :["", Validators.required],
+        // designation :["", Validators.required],
         phone :["", Validators.required],
-        information :["", Validators.required],
+        // information :["", Validators.required],
       });
       this.getUsers();
       this.getRoles();
@@ -68,6 +69,7 @@ export class UserRolesComponent  {
     const selectedUser = this.users().find(user => user.userId.toString() === userId);
     if (selectedUser) {
       this.assignRoleForm.patchValue({
+        userId: selectedUser.userId,
         firstName: selectedUser.firstName,
         lastName: selectedUser.lastName,
         email: selectedUser.email,
@@ -80,14 +82,30 @@ export class UserRolesComponent  {
   }
 
   getRoles(){
-    this.DataService.getRoles().subscribe((res) =>{
-      this.roles = res
-    })
+    this.DataService.getRoles().subscribe({
+      next:(res)=>{
+        this.roles.set(res);
+        console.log(this.roles())
+      },
+      error: (error) =>{
+        console.error('Roles data error:', error);
+      },
+      complete: () => {
+        console.log('Roles fetched complete');
+      }
+    });
   }
 
   onSubmit(){
     const formValue = this.assignRoleForm.value;
     this.DataService.addUser(formValue.role,formValue.firstName,formValue.lastName,formValue.email,formValue.address,formValue.designation,formValue.phone,formValue.information).subscribe(response => {
+      console.log('User role updated', response);
+    });
+  }
+
+  onSubmitRole(){
+    const formValue = this.assignRoleForm.value;
+    this.DataService.addUserRole(formValue.userId,formValue.role,formValue.firstName,formValue.lastName,formValue.email,formValue.address,formValue.phone).subscribe(response => {
       console.log('User role updated', response);
     });
   }

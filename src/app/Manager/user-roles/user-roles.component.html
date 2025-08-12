@@ -22,7 +22,7 @@
           <h5 class="mb-0">Create New User</h5>
         </div>
         <div class="card-body">
-          <form [formGroup]="assignRoleForm" (ngSubmit)="onSubmit()">
+          <form [formGroup]="assignRoleForm" (ngSubmit)="onSubmitRole()">
             <div class="row">
               <div class="col-md-6 form-group">
                 <label>First Name:  </label>
@@ -64,12 +64,12 @@
             <div class="form-group">
               <label>Assign Role</label>
               <select formControlName="role" class="form-control">
-                <option *ngFor="let role of roles()" [value]="role.userType">{{ role.userType }}</option>
+                <option *ngFor="let role of roles()" [value]="role.roleId">{{ role.roleName }}</option>
               </select>
             </div>
   
             <!-- <button type="submit" class="btn btn-success mt-3">Save and Assign Role</button> -->
-            <button type="submit" class="btn btn-success btn-lg fw-bold mt-3 shadow">
+            <button type="submit" class="btn btn-success btn-lg fw-bold mt-3 shadow" >
               Save and Assign Role
             </button>
             <!-- <button type="button" class="btn btn-secondary btn-lg fw-bold mt-3 shadow" (click)="onCancel()"> -->
