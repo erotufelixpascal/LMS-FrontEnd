@@ -1,10 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { CommonService } from '../../Services/common.service';
-
-import { LoanCategoryComponent } from '../loan-category/loan-category.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -28,7 +25,6 @@ interface Comment {
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
-
         MatTooltipModule
     ],
     templateUrl: './employee-payroll.component.html',

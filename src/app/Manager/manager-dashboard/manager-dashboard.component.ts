@@ -262,4 +262,9 @@ export class ManagerDashboardComponent implements AfterViewInit {
     }
     return '';
   }
+  
+  goToChildRoute(route :string ){      
+    this.router.navigate([route]);
+
+  }
 }

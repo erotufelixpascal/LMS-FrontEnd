@@ -56,7 +56,7 @@
                     <div class="category-list">
                         <p *ngFor="let category of loanCategories()">{{ category.loanName }}</p>
                     </div>
-                    <button class="btn btn-primary">+ Add loan categories</button>
+                    <button class="btn btn-primary" (click)="goToChildRoute('/manager/manager-loan-category')">+ Add loan categories</button>
                 </div>
                 <div class="setup-card">
                     <h4>Loan Categories</h4>
