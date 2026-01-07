@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './Login/login/login.component';
-import { ManagerComponent } from './Manager/manager/manager.component';
+import { ManagerComponent } from './Manager/manager-navbar/manager.component';
 
 
 export const routes: Routes = [
