@@ -246,10 +246,20 @@ export class ManagerDashboardComponent implements AfterViewInit {
   toggleColumnVisibility(column: string): void {
     this.visibleColumns[column] = !this.visibleColumns[column];
     this.displayedColumns = Object.keys(this.visibleColumns).filter(key => this.visibleColumns[key]);
-  } 
+  }
 
-  
-
- 
-  
+  getStatusClass(status: string | undefined): string {
+    if (!status) return '';
+    const statusLower = status.toLowerCase();
+    if (statusLower.includes('approved') || statusLower.includes('disbursed') || statusLower === 'released') {
+      return 'status-approved';
+    }
+    if (statusLower.includes('pending')) {
+      return 'status-pending';
+    }
+    if (statusLower.includes('rejected') || statusLower.includes('closed')) {
+      return 'status-rejected';
+    }
+    return '';
+  }
 }

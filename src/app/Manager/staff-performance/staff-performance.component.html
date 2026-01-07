@@ -1,29 +1,153 @@
 <section>
     <article>
         <div class="timeDate">
-          Current Date and Time: {{ currentDateTime }}
+            Current Date and Time: {{ currentDateTime }}
         </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-content">
+                    <h3>Total Staff</h3>
+                    <p class="stat-value">{{ totalStaff() }}</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-content">
+                    <h3>Total Loans Applied</h3>
+                    <p class="stat-value">{{ totalLoansApplied() }}</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-content">
+                    <h3>Total Loans Disbursed</h3>
+                    <p class="stat-value">{{ totalLoansDisbursed() }}</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <h3>Total Loans Recovered</h3>
+                    <p class="stat-value">{{ totalLoansRecovered() }}</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <h3>Average Effectiveness</h3>
+                    <p class="stat-value">{{ averageEffectiveness() | number:'1.1-1' }}%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Actions -->
         <div class="container">
-              <div class="form-group">
-                <label for="customerID">Choose a Staff Member</label>
-                <select formControlName="staffID" id="staffID" class="form-control">
-                  <option *ngFor="let staff of staffList" [value]="staff.customerID">{{ staff.firstName }} - {{ staff.lastName }}</option>
-                </select>
-              </div> 
-            <form [formGroup]="staffForm">
-                        <!-- <ag-grid-angular
-                            style="width: 100%; height: 550px"
-                            [class]="themeClass"
-                            [defaultColDef]="defaultColDef"
-                            [rowData]="staffPerformanceList"
-                            [columnDefs]="staffCol"
-                            (gridSizeChanged)="onGridSizeChange($event)"
-                            > </ag-grid-angular> -->
+            <h2>Staff Performance Report</h2>
+            
+            <form [formGroup]="staffForm" class="filters-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="staffID">Filter by Staff Member</label>
+                        <select formControlName="staffID" id="staffID" class="form-control" (change)="onStaffSelected()">
+                            <option value="">All Staff</option>
+                            <option *ngFor="let staff of staffList()" [value]="staff.staffID || staff.customerID">
+                                {{ staff.firstName }} {{ staff.lastName }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group search-group">
+                        <label for="searchTerm">Search</label>
+                        <input 
+                            formControlName="searchTerm" 
+                            id="searchTerm" 
+                            type="text" 
+                            class="form-control"
+                            placeholder="Search by name..."
+                            (input)="applyFilter($event)">
+                    </div>
+
+                    <div class="form-group button-group">
+                        <button type="button" class="btn btn-secondary" (click)="clearFilters()">
+                            Clear Filters
+                        </button>
+                        <button type="button" class="btn btn-success" (click)="exportToCSV()">
+                            Export CSV
+                        </button>
+                    </div>
+                </div>
             </form>
-          </div>          
+
+            <!-- Performance Table -->
+            <div class="table-container">
+                <table mat-table [dataSource]="filteredDataSource" matSort class="performance-table">
+                    
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="firstName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>First Name</th>
+                        <td mat-cell *matCellDef="let staff">{{ staff.firstName || 'N/A' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="lastName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</th>
+                        <td mat-cell *matCellDef="let staff">{{ staff.lastName || 'N/A' }}</td>
+                    </ng-container>
+
+                    <!-- Loans Applied Column -->
+                    <ng-container matColumnDef="loans_applied">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Loans Applied</th>
+                        <td mat-cell *matCellDef="let staff">{{ staff.loans_applied || 0 }}</td>
+                    </ng-container>
+
+                    <!-- Loans Pending Column -->
+                    <ng-container matColumnDef="loans_pending">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Loans Pending</th>
+                        <td mat-cell *matCellDef="let staff">{{ staff.loans_pending || 0 }}</td>
+                    </ng-container>
+
+                    <!-- Loans Disbursed Column -->
+                    <ng-container matColumnDef="loans_disbursed">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Loans Disbursed</th>
+                        <td mat-cell *matCellDef="let staff">{{ staff.loans_disbursed || 0 }}</td>
+                    </ng-container>
+
+                    <!-- Loans Recovered Column -->
+                    <ng-container matColumnDef="loans_recovered">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Loans Recovered</th>
+                        <td mat-cell *matCellDef="let staff">{{ staff.loans_recovered || 0 }}</td>
+                    </ng-container>
+
+                    <!-- Effectiveness Column -->
+                    <ng-container matColumnDef="effectiveness">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Effectiveness (%)</th>
+                        <td mat-cell *matCellDef="let staff" [ngClass]="getEffectivenessColor(staff.effectiveness)">
+                            {{ staff.effectiveness ? (staff.effectiveness | number:'1.1-1') : '0' }}%
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                    <!-- No data row -->
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                            No staff performance data found
+                        </td>
+                    </tr>
+                </table>
+
+                <mat-paginator 
+                    [pageSizeOptions]="[5, 10, 20, 50]" 
+                    showFirstLastButtons>
+                </mat-paginator>
+            </div>
+        </div>
     </article>
 </section>
 
-
-
-  
+<footer>
+    <p>© 2024 Loan Management System - Staff Performance Report</p>
+</footer>

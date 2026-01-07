@@ -1,22 +1,30 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, inject, ViewChild, AfterViewInit } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
-// import { AgGridModule } from 'ag-grid-angular';
-// import { ColDef, GridSizeChangedEvent } from 'ag-grid-community';
-import { forkJoin } from 'rxjs';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
-interface IRow {
-  participant_PID: string;
-  ParticipantFirstName: string;
-  ParticipantLastName: string;
-  ParticipantNamesLike: string;
-  course_partner_PID: string;
-  CoursePartnerFirstName: string;
-  CoursePartnerLastName: string;
-  CoursePartnerNamesLike: string;
+interface StaffPerformance {
+  staffID?: string;
+  firstName?: string;
+  lastName?: string;
+  loans_applied?: number;
+  loans_pending?: number;
+  loans_disbursed?: number;
+  loans_recovered?: number;
+  effectiveness?: number;
+  totalAmount?: number;
+  recoveredAmount?: number;
 }
 
 @Component({
@@ -26,81 +34,177 @@ interface IRow {
         ReactiveFormsModule,
         FormsModule,
         MatTooltipModule,
-        // AgGridModule
+        MatTableModule,
+        MatSortModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatPaginatorModule
     ],
     providers: [DatePipe],
     templateUrl: './staff-performance.component.html',
     styleUrl: './staff-performance.component.scss'
 })
-export class StaffPerformanceComponent implements OnInit {
+export class StaffPerformanceComponent implements OnInit, AfterViewInit {
+  
+  router = inject(Router);
+  dataService = inject(CommonService);
+  datePipe = inject(DatePipe);
 
-  staffForm: FormGroup
-  currentDateTime:string=""
-  // no-dd-sa:typescript-best-practices/no-explicit-any
-  staffList: any[]=[];
-  // no-dd-sa:typescript-best-practices/no-explicit-any
-  staffPerformanceList : any[]=[];
-  themeClass = "ag-theme-alpine";
-  mergedData: IRow[] = [];
-  // defaultColDef: ColDef = {
-  //   sortable: true,
-  //   filter: true,
-  //   resizable: true,
-  // };
+  staffForm: FormGroup;
+  currentDateTime: string = "";
+  staffList = signal<any[]>([]);
+  staffPerformanceList = signal<StaffPerformance[]>([]);
+  
+  displayedColumns: string[] = [
+    'firstName', 
+    'lastName', 
+    'loans_applied', 
+    'loans_pending', 
+    'loans_disbursed', 
+    'loans_recovered', 
+    'effectiveness'
+  ];
+  
+  dataSource = new MatTableDataSource<StaffPerformance>([]);
+  filteredDataSource = new MatTableDataSource<StaffPerformance>([]);
+  
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  // staffCol: ColDef[] = [
-  //   // { field: "StaffID", headerName: "Staff ID", width:150 },
-  //   { field: "lastName", headerName: "Last Name" },
-  //   { field: "firstName", headerName: "First Name" },
-  //   { field: "loans_applied", headerName: "Applied", width:140 },
-  //   { field: "loans_pending", headerName: "Pending", width:140 },
-  //   { field: "loans_disbursed", headerName: "Disbursed", width:150 },
-  //   { field: "loans_recovered", headerName: "Recovered", width:150 },
-  //   { field: "effectiveness", headerName: "Effectiveness(%)", width:180 }
-  // ];
+  // Statistics
+  totalStaff = signal<number>(0);
+  totalLoansApplied = signal<number>(0);
+  totalLoansDisbursed = signal<number>(0);
+  totalLoansRecovered = signal<number>(0);
+  averageEffectiveness = signal<number>(0);
 
   constructor(
-    private fb:FormBuilder,
-    private dataService:CommonService,
-    private router: Router,
-    private datePipe: DatePipe){
-
+    private fb: FormBuilder
+  ) {
     this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
     this.staffForm = this.fb.group({
-      staffID :["", Validators.required],
-
-    })
-
+      staffID: ["", Validators.required],
+      searchTerm: [""]
+    });
   }
-  // ngOnInit(): void {
-  //   forkJoin({
-  //     // staffList: this.dataService.getStaffList(),
-  //     staffPerformanceList: this.dataService.getStatistics()
-  //     // staffPerformanceList: this.dataService.getLoanCategories()
-  //   }).subscribe((result) => {
-             
-  //       // since staffList and staffPerformanceList are both arrays
-  //       // this.mergedData = [...result.staffList, ...result.staffPerformanceList]  
-  //       this.mergedData = [ result.staffPerformanceList]
-  //       console.log(this.mergedData)    
-  //     // If you want to use them separately, you can still do that
-  //     // this.staffList = result.staffList;
-  //     //this.staffPerformanceList = result.staffPerformanceList;
-  //   });
-  // }
+
   ngOnInit(): void {
-    this.dataService.getStatistics().subscribe((data)=>{
-      this.staffPerformanceList= data
-    })
-    
+    this.loadStaffList();
+    this.loadStaffPerformance();
   }
 
-  goToChildRoute(route :string ){
+  ngAfterViewInit(): void {
+    this.filteredDataSource.sort = this.sort;
+    this.filteredDataSource.paginator = this.paginator;
+  }
+
+  loadStaffList(): void {
+    this.dataService.getStaffList().subscribe({
+      next: (data) => {
+        this.staffList.set(data || []);
+      },
+      error: (error) => {
+        console.error('Error fetching staff list:', error);
+      }
+    });
+  }
+
+  loadStaffPerformance(): void {
+    this.dataService.getStatistics().subscribe({
+      next: (data) => {
+        const performanceData = Array.isArray(data) ? data : [data];
+        this.staffPerformanceList.set(performanceData);
+        this.dataSource.data = performanceData;
+        this.filteredDataSource.data = performanceData;
+        this.calculateStatistics(performanceData);
+      },
+      error: (error) => {
+        console.error('Error fetching staff performance:', error);
+      }
+    });
+  }
+
+  calculateStatistics(data: StaffPerformance[]): void {
+    if (!data || data.length === 0) return;
+
+    this.totalStaff.set(data.length);
+    
+    const totalApplied = data.reduce((sum, staff) => sum + (staff.loans_applied || 0), 0);
+    const totalDisbursed = data.reduce((sum, staff) => sum + (staff.loans_disbursed || 0), 0);
+    const totalRecovered = data.reduce((sum, staff) => sum + (staff.loans_recovered || 0), 0);
+    const totalEffectiveness = data.reduce((sum, staff) => sum + (staff.effectiveness || 0), 0);
+
+    this.totalLoansApplied.set(totalApplied);
+    this.totalLoansDisbursed.set(totalDisbursed);
+    this.totalLoansRecovered.set(totalRecovered);
+    this.averageEffectiveness.set(data.length > 0 ? totalEffectiveness / data.length : 0);
+  }
+
+  onStaffSelected(): void {
+    const selectedStaffID = this.staffForm.get('staffID')?.value;
+    if (selectedStaffID) {
+      const filtered = this.staffPerformanceList().filter(
+        staff => staff.staffID === selectedStaffID
+      );
+      this.filteredDataSource.data = filtered;
+    } else {
+      this.filteredDataSource.data = this.staffPerformanceList();
+    }
+  }
+
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.filteredDataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.filteredDataSource.paginator) {
+      this.filteredDataSource.paginator.firstPage();
+    }
+  }
+
+  clearFilters(): void {
+    this.staffForm.patchValue({
+      staffID: "",
+      searchTerm: ""
+    });
+    this.filteredDataSource.data = this.staffPerformanceList();
+    this.filteredDataSource.filter = "";
+  }
+
+  exportToCSV(): void {
+    const data = this.filteredDataSource.filteredData.length > 0 
+      ? this.filteredDataSource.filteredData 
+      : this.filteredDataSource.data;
+    
+    const headers = this.displayedColumns.join(',');
+    const rows = data.map(staff => 
+      this.displayedColumns.map(col => {
+        const value = staff[col as keyof StaffPerformance];
+        return value !== undefined && value !== null ? value : '';
+      }).join(',')
+    );
+    
+    const csvContent = [headers, ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `staff-performance-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  goToChildRoute(route: string): void {
     this.router.navigate([route]);
   }
-  // onGridSizeChange(params: GridSizeChangedEvent) {
-  //   const gridApi = params.api;
-  //   gridApi.sizeColumnsToFit();
-  // }
 
+  getEffectivenessColor(effectiveness: number | undefined): string {
+    if (!effectiveness) return '';
+    if (effectiveness >= 80) return 'text-green-600 font-bold';
+    if (effectiveness >= 60) return 'text-yellow-600 font-semibold';
+    return 'text-red-600';
+  }
 }
