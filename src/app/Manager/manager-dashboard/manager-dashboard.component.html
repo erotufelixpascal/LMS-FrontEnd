@@ -1,285 +1,318 @@
-
 <section>
     <article>
-    <div class="bg-yellow-100 text-yellow-800 px-4 py-3 rounded mb-4 shadow-md">
-      <strong>⚠️ Warning:</strong> This needs your urgent attention!
-    </div>
-
-    <!-- Current Date/Time -->
-    <div class="text-center text-purple-700 font-semibold mb-6">
-      Current Date and Time: {{ currentDateTime }}
-    </div>
-
-    <!-- Loan Officers Section -->
-    <h2 class="text-xl font-bold text-gray-700 mb-2">🏅 Outstanding Loan Performers - Loan Officers</h2>
-    <div class="grid md:grid-cols-3 gap-4 bg-blue-100 p-4 rounded-lg shadow">
-      <div class="bg-white p-4 rounded shadow">
-        <h3 class="font-semibold text-gray-600">Loan Officer A</h3>
-        <p>💰 Disbursed: $500,000</p>
-        <p>📉 Outstanding: $200,000</p>
-        <p>💵 Interest Earned: $50,000</p>
-      </div>
-      <div class="bg-white p-4 rounded shadow">
-        <h3 class="font-semibold text-gray-600">Loan Officer B</h3>
-        <p>💰 Disbursed: $500,000</p>
-        <p>📉 Outstanding: $200,000</p>
-        <p>💵 Interest Earned: $50,000</p>
-      </div>
-      <div class="bg-white p-4 rounded shadow">
-        <h3 class="font-semibold text-gray-600">Loan Officer C</h3>
-        <p>💰 Disbursed: $500,000</p>
-        <p>📉 Outstanding: $200,000</p>
-        <p>💵 Interest Earned: $50,000</p>
-      </div>
-    </div>
-
-    <!-- Loan Setup Section -->
-    <h2 class="text-xl font-bold text-gray-700 mt-6 mb-2">🛠️ Loan Setup</h2>
-    <div class="grid md:grid-cols-3 gap-4">
-      <div class="bg-gray-100 p-4 rounded shadow">
-        <h3 class="font-semibold text-gray-700">Loan Categories</h3>
-        <div class="mb-2">
-          <p *ngFor="let category of loanCategories()">{{category.loanName}}</p>
+        <div class="alert alert-warning">
+            <strong>⚠️ Warning!</strong> This needs your urgent attention please!!
         </div>
-        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">+ Add loan categories</button>
-      </div>
-      <div class="bg-yellow-50 p-4 rounded shadow">
-        <h3 class="font-semibold text-gray-700">Loan Categories </h3>
-        <p>🎓 Student Loan </p>
-        <p>💼 Business Loan </p>
-        <p>🏠 Mortgage Loan </p>
-        <!-- <p class="text-gray-500 text-sm">📍 London has over 13 million inhabitants.</p> -->
-      </div>
-      <div class="bg-yellow-50 p-4 rounded shadow">
-        <h3 class="font-semibold text-gray-700">Rome</h3>
-        <p>Rome is the capital city of Italy.</p>
-        <p class="text-gray-500 text-sm">📍 Almost 3 million inhabitants.</p>
-      </div>
-    </div>
 
-    <!-- Client Section -->
-    <h2 class="text-xl font-bold text-gray-700 mt-6 mb-2">🏅 Outstanding Loan Performers - Clients</h2>
+        <!-- Current Date/Time -->
+        <div class="timeDate">
+            Current Date and Time: {{ currentDateTime }}
+        </div>
 
-            <div class="container">
-              <div>
-                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-                <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center"> -->
-                  <mat-tab label="Loan application approval"><br>
-                    <button>Approve Application</button>
-                    <p>Here you will find the Loan application</p>
-                  
-                    <div class="overflow-x-auto">
-                      <table class="table-auto border-collapse border border-gray-300 w-full text-left">
-                        <thead>
-                          <tr>
-                            <th *ngIf="visibleColumns['loanNumber']">Loan Number</th>
-                            <th *ngIf="visibleColumns['principalAmount']">Principal Amount</th>
-                            <th *ngIf="visibleColumns['interestAmount']">Interest Amount</th>
-                            <th *ngIf="visibleColumns['totalAmount']">Total Amount</th>
-                            <th *ngIf="visibleColumns['status']">Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let row of loanApprovalList()">
-                            <td *ngIf="visibleColumns['loanNumber']">{{ row.loanNumber }}</td>
-                            <td *ngIf="visibleColumns['principalAmount']">{{ row.principalAmount | currency }}</td>
-                            <td *ngIf="visibleColumns['interestAmount']">{{ row.interestAmount | currency }}</td>
-                            <td *ngIf="visibleColumns['totalAmount']">{{ row.totalAmount | currency }}</td>
-                            <td *ngIf="visibleColumns['status']">{{ row.status }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
+        <div class="container">
+            <h2>Manager Dashboard</h2>
+
+            <!-- Loan Officers Section -->
+            <div class="section-header">
+                <h3>🏅 Outstanding Loan Performers - Loan Officers</h3>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👤</div>
+                    <div class="stat-content">
+                        <h4>Loan Officer A</h4>
+                        <p>💰 Disbursed: $500,000</p>
+                        <p>📉 Outstanding: $200,000</p>
+                        <p>💵 Interest Earned: $50,000</p>
                     </div>
-                  </mat-tab>
-                    <mat-tab label="Loan Disbursed">Loan Disbursed<br>
-                        <p>Here you will find the Loan Disbursment</p>
-                        <div >
-                          <table class="table-auto border-collapse border border-gray-300 w-full text-left">
-                            <thead class="bg-gray-200">
-                              <tr>
-                                <!-- <th *ngIf="visibleColumns['loanNumber']">Loan Number</th>
-                                <th *ngIf="visibleColumns['PrincipalAmount']">Principal Amount</th>
-                                <th *ngIf="visibleColumns['InterestAmount']">Interest Amount</th>
-                                <th *ngIf="visibleColumns['TotalAmount']">Total Amount</th>
-                                <th *ngIf="visibleColumns['email']">Email</th> -->
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👤</div>
+                    <div class="stat-content">
+                        <h4>Loan Officer B</h4>
+                        <p>💰 Disbursed: $500,000</p>
+                        <p>📉 Outstanding: $200,000</p>
+                        <p>💵 Interest Earned: $50,000</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👤</div>
+                    <div class="stat-content">
+                        <h4>Loan Officer C</h4>
+                        <p>💰 Disbursed: $500,000</p>
+                        <p>📉 Outstanding: $200,000</p>
+                        <p>💵 Interest Earned: $50,000</p>
+                    </div>
+                </div>
+            </div>
 
-                                <th >Loan Number</th>
-                                <th >Principal Amount</th>
-                                <th >Interest Amount</th>
-                                <th >Total Amount</th>
-                                <th >Email</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr *ngFor="let disbursment of loanDisbursementList()">
-                                <td >{{ disbursment.loanNumber }}</td>
-                                <td >{{ disbursment.PrincipalAmount | currency  }}</td>
-                                <td >{{ disbursment.InterestAmount | currency  }}</td>
-                                <td >{{ disbursment.TotalAmount | currency }}</td>
-                                <td >{{ disbursment.email }}</td>
-                              </tr>
-                            </tbody>
-                          </table>
+            <!-- Loan Setup Section -->
+            <div class="section-header">
+                <h3>🛠️ Loan Setup</h3>
+            </div>
+            <div class="loan-setup-grid">
+                <div class="setup-card">
+                    <h4>Loan Categories</h4>
+                    <div class="category-list">
+                        <p *ngFor="let category of loanCategories()">{{ category.loanName }}</p>
+                    </div>
+                    <button class="btn btn-primary" (click)="goToChildRoute('/manager/manager-loan-category')">+ Add loan categories</button>
+                </div>
+                <div class="setup-card">
+                    <h4>Loan Categories</h4>
+                    <p>🎓 Student Loan</p>
+                    <p>💼 Business Loan</p>
+                    <p>🏠 Mortgage Loan</p>
+                </div>
+                <div class="setup-card">
+                    <h4>Loan Terms</h4>
+                    <p>View and manage loan terms</p>
+                </div>
+            </div>
+
+            <!-- Client Section -->
+            <div class="section-header">
+                <h3>📊 Loan Management</h3>
+            </div>
+
+            <div class="tabs-container">
+                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                    <!-- Loan Application Approval Tab -->
+                    <mat-tab label="Loan Application Approval">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Application Approval</h4>
+                                <button class="btn btn-success">Approve Application</button>
+                            </div>
+                            <p class="tab-description">Here you will find the Loan application</p>
+                            
+                            <div class="table-wrapper">
+                                <table mat-table [dataSource]="loanApprovalList()" class="dashboard-table">
+                                    <ng-container matColumnDef="loanNumber">
+                                        <th mat-header-cell *matHeaderCellDef>Loan Number</th>
+                                        <td mat-cell *matCellDef="let row">{{ row.loanNumber }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="principalAmount">
+                                        <th mat-header-cell *matHeaderCellDef>Principal Amount</th>
+                                        <td mat-cell *matCellDef="let row">{{ row.principalAmount | currency }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="interestAmount">
+                                        <th mat-header-cell *matHeaderCellDef>Interest Amount</th>
+                                        <td mat-cell *matCellDef="let row">{{ row.interestAmount | currency }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="totalAmount">
+                                        <th mat-header-cell *matHeaderCellDef>Total Amount</th>
+                                        <td mat-cell *matCellDef="let row">{{ row.totalAmount | currency }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="status">
+                                        <th mat-header-cell *matHeaderCellDef>Status</th>
+                                        <td mat-cell *matCellDef="let row" [ngClass]="getStatusClass(row.status)">
+                                            {{ row.status }}
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="['loanNumber', 'principalAmount', 'interestAmount', 'totalAmount', 'status']"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: ['loanNumber', 'principalAmount', 'interestAmount', 'totalAmount', 'status']"></tr>
+
+                                    <tr class="mat-row" *matNoDataRow>
+                                        <td class="mat-cell" colspan="5">No loan applications found</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </mat-tab>
-                    <mat-tab label="Closed Off Loans">Closed Off Loans<br>
-                      <!-- <mat-tab label="Closed Off Loans"> -->
-                        <div class="loan-cards" fxLayout="row wrap" fxLayoutGap="16px">
-                          <mat-card *ngFor="let loanClosed of loanClosedList()">
-                            <mat-card-title>Loan ID: {{loanClosed.loanNumber}} </mat-card-title>
-                            <mat-card-content>
-                              <p><strong>Amount:</strong> {{loanClosed.totalAmount | currency}}</p>
-                              <!-- <p><strong>Email:</strong> {{loanClosed.email }}</p> -->
-                              <p><strong>Closed On:</strong> {{loanClosed.closureDate | date}}</p>
-                            </mat-card-content>
-                          </mat-card>
+
+                    <!-- Loan Disbursed Tab -->
+                    <mat-tab label="Loan Disbursed">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Disbursed</h4>
+                            </div>
+                            <p class="tab-description">Here you will find the Loan Disbursement</p>
+                            
+                            <div class="table-wrapper">
+                                <table mat-table [dataSource]="loanDisbursementList()" class="dashboard-table">
+                                    <ng-container matColumnDef="loanNumber">
+                                        <th mat-header-cell *matHeaderCellDef>Loan Number</th>
+                                        <td mat-cell *matCellDef="let disbursment">{{ disbursment.loanNumber }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="PrincipalAmount">
+                                        <th mat-header-cell *matHeaderCellDef>Principal Amount</th>
+                                        <td mat-cell *matCellDef="let disbursment">{{ disbursment.PrincipalAmount | currency }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="InterestAmount">
+                                        <th mat-header-cell *matHeaderCellDef>Interest Amount</th>
+                                        <td mat-cell *matCellDef="let disbursment">{{ disbursment.InterestAmount | currency }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="TotalAmount">
+                                        <th mat-header-cell *matHeaderCellDef>Total Amount</th>
+                                        <td mat-cell *matCellDef="let disbursment">{{ disbursment.TotalAmount | currency }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="email">
+                                        <th mat-header-cell *matHeaderCellDef>Email</th>
+                                        <td mat-cell *matCellDef="let disbursment">{{ disbursment.email }}</td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="['loanNumber', 'PrincipalAmount', 'InterestAmount', 'TotalAmount', 'email']"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: ['loanNumber', 'PrincipalAmount', 'InterestAmount', 'TotalAmount', 'email']"></tr>
+
+                                    <tr class="mat-row" *matNoDataRow>
+                                        <td class="mat-cell" colspan="5">No disbursed loans found</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
-                      </mat-tab>
+                    </mat-tab>
 
-                    <!-- <mat-tab label="Loan Collateral">
-                      <div class="p-4">
-                        <h2>Loan Collateral Information</h2>
-                        <p>Below is a list of collateral attached to active or past loans.</p>
-                    
-                        <mat-card *ngFor="let collateralItem of loanCollateralList()" class="mb-4">
-                          <mat-card-title>{{ collateralItem.assetName }}</mat-card-title>
-                          <mat-card-content>
-                            <p><strong>Type:</strong> {{ collateralItem.assetType }}</p>
-                            <p><strong>Estimated Value:</strong> {{ collateralItem.estimatedValue | currency }}</p>
-                            <p><strong>Loan ID:</strong> {{ collateralItem.loanId }}</p>
-                            <p><strong>Status:</strong> {{ collateralItem.status }}</p>
-                          </mat-card-content>
-                        </mat-card>
-                    
-                        <p *ngIf="loanCollateralList().length === 0">No collateral currently recorded.</p>
-                    
-                        <button class="btn btn-success" (click)="openAddCollateralDialog()">Add Collateral</button>
-                      </div>
-                    </mat-tab> -->
+                    <!-- Closed Off Loans Tab -->
+                    <mat-tab label="Closed Off Loans">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Closed Off Loans</h4>
+                            </div>
+                            
+                            <div class="loan-cards-grid">
+                                <mat-card *ngFor="let loanClosed of loanClosedList()" class="loan-card">
+                                    <mat-card-title>Loan ID: {{ loanClosed.loanNumber }}</mat-card-title>
+                                    <mat-card-content>
+                                        <p><strong>Amount:</strong> {{ loanClosed.totalAmount | currency }}</p>
+                                        <p><strong>Closed On:</strong> {{ loanClosed.closureDate | date }}</p>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                            
+                            <p *ngIf="loanClosedList().length === 0" class="no-data">No closed loans found</p>
+                        </div>
+                    </mat-tab>
 
+                    <!-- Loan Collateral Tab -->
                     <mat-tab label="Loan Collateral">
-                    <table mat-table [dataSource]="loanCollateralList()" class="mat-elevation-z2 w-full">
-                      <ng-container matColumnDef="assetName">
-                        <th mat-header-cell *matHeaderCellDef>Asset</th>
-                        <td mat-cell *matCellDef="let item">{{ item.assetName }}</td>
-                      </ng-container>
-                    
-                      <ng-container matColumnDef="assetType">
-                        <th mat-header-cell *matHeaderCellDef>Type</th>
-                        <td mat-cell *matCellDef="let item">{{ item.assetType }}</td>
-                      </ng-container>
-                    
-                      <ng-container matColumnDef="estimatedValue">
-                        <th mat-header-cell *matHeaderCellDef>Value</th>
-                        <td mat-cell *matCellDef="let item">{{ item.estimatedValue | currency }}</td>
-                      </ng-container>
-                    
-                      <ng-container matColumnDef="loanId">
-                        <th mat-header-cell *matHeaderCellDef>Loan ID</th>
-                        <td mat-cell *matCellDef="let item">{{ item.loanId }}</td>
-                      </ng-container>
-                    
-                      <ng-container matColumnDef="status">
-                        <th mat-header-cell *matHeaderCellDef>Status</th>
-                        <td mat-cell *matCellDef="let item" [ngClass]="{'bg-green': item.status === 'Released'}">
-                          {{ item.status }}
-                        </td>
-                      </ng-container>
-                      
-                    
-                      <tr mat-header-row *matHeaderRowDef="['assetName', 'assetType', 'estimatedValue', 'loanId', 'status']"></tr>
-                      <tr mat-row *matRowDef="let row; columns: ['assetName', 'assetType', 'estimatedValue', 'loanId', 'status']"></tr>
-                    </table>
-                    
-                    </mat-tab>
-    
-                    <!-- <mat-tab label="Loan Collateral">
-                    // <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2 w-full"> 
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Collateral Information</h4>
+                                <button class="btn btn-success" (click)="openAddCollateralDialog()">Add Collateral</button>
+                            </div>
+                            <p class="tab-description">Below is a list of collateral attached to active or past loans.</p>
+                            
+                            <div class="table-wrapper">
+                                <table mat-table [dataSource]="loanCollateralList()" class="dashboard-table">
+                                    <ng-container matColumnDef="assetName">
+                                        <th mat-header-cell *matHeaderCellDef>Asset</th>
+                                        <td mat-cell *matCellDef="let item">{{ item.assetName }}</td>
+                                    </ng-container>
 
-                      <table mat-table [dataSource]="loanCollateralList()" class="mat-elevation-z2 w-full">
-                      <ng-container matColumnDef="assetName">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Asset</th>
-                        <td mat-cell *matCellDef="let item">{{ item.assetName }}</td>
-                      </ng-container>
-                    
-                      <ng-container matColumnDef="assetType">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
-                        <td mat-cell *matCellDef="let item">{{ item.assetType }}</td>
-                      </ng-container>
-                    
-                      <ng-container matColumnDef="estimatedValue">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
-                        <td mat-cell *matCellDef="let item">{{ item.estimatedValue | currency }}</td>
-                      </ng-container>
-                    
-                      <ng-container matColumnDef="loanId">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Loan ID</th>
-                        <td mat-cell *matCellDef="let item">{{ item.loanId }}</td>
-                      </ng-container>
-                    
-                      <ng-container matColumnDef="status">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-                        <td mat-cell *matCellDef="let item" [ngClass]="{'bg-green': item.status === 'Released'}">
-                          {{ item.status }}
-                        </td>
-                      </ng-container>
-                    
-                      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-                    </table>
-                  </mat-tab> -->
-                    <mat-tab label="Loan Files"><br>
-                        <div class="container mt-4">
-                            <!-- <h2>Loan Files</h2> -->
-                            <table class="table table-bordered">
-                              <thead>
-                                <tr>
-                                  <th>File Name</th>
-                                  <th>Type</th>
-                                  <th>Upload Date</th>
-                                  <th>Action</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr *ngFor="let file of loanFiles">
-                                  <td>{{ file.fileName }}</td>
-                                  <td>{{ file.fileType }}</td>
-                                  <td>{{ file.uploadDate | date }}</td>
-                                  <td>
-                                    <button class="btn btn-primary" (click)="downloadFile(file)">Download</button>
-                                    <!-- <button class="btn btn-danger" (click)="deleteFile(file)">Delete</button> -->
-                                    <button class="btn btn-success" (click)="editFile(file)">Edit</button>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>                              
+                                    <ng-container matColumnDef="assetType">
+                                        <th mat-header-cell *matHeaderCellDef>Type</th>
+                                        <td mat-cell *matCellDef="let item">{{ item.assetType }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="estimatedValue">
+                                        <th mat-header-cell *matHeaderCellDef>Value</th>
+                                        <td mat-cell *matCellDef="let item">{{ item.estimatedValue | currency }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="loanId">
+                                        <th mat-header-cell *matHeaderCellDef>Loan ID</th>
+                                        <td mat-cell *matCellDef="let item">{{ item.loanId }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="status">
+                                        <th mat-header-cell *matHeaderCellDef>Status</th>
+                                        <td mat-cell *matCellDef="let item" [ngClass]="getStatusClass(item.status)">
+                                            {{ item.status }}
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+                                    <tr class="mat-row" *matNoDataRow>
+                                        <td class="mat-cell" [attr.colspan]="displayedColumns.length">No collateral currently recorded.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </mat-tab>
-                    <mat-tab label="Loan Comments">Loan Comments/Reminders<br>
-                        <div class="loan-comments">                              
-                            <!-- Display existing comments -->
-                            <div *ngFor="let comment of comments" class="comment">
-                              <div class="comment-header">
-                                <strong>{{ comment.userName }}</strong>
-                                <span class="timestamp">{{ comment.timestamp | date:'short' }}</span>
-                              </div>
-                              <p>{{ comment.text }}</p>
+
+                    <!-- Loan Files Tab -->
+                    <mat-tab label="Loan Files">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Files</h4>
                             </div>
-                          
-                            <!-- Add new comment -->
-                            <div class="add-comment">
-                              <h4>Add a Comment</h4>
-                              <textarea [(ngModel)]="newComment.text" rows="3" placeholder="Write your comment..."></textarea>
-                              <button (click)="addComment()">Submit</button>
+                            
+                            <div class="table-wrapper">
+                                <table mat-table [dataSource]="loanFiles" class="dashboard-table">
+                                    <ng-container matColumnDef="fileName">
+                                        <th mat-header-cell *matHeaderCellDef>File Name</th>
+                                        <td mat-cell *matCellDef="let file">{{ file.fileName }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="fileType">
+                                        <th mat-header-cell *matHeaderCellDef>Type</th>
+                                        <td mat-cell *matCellDef="let file">{{ file.fileType }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="uploadDate">
+                                        <th mat-header-cell *matHeaderCellDef>Upload Date</th>
+                                        <td mat-cell *matCellDef="let file">{{ file.uploadDate | date }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="action">
+                                        <th mat-header-cell *matHeaderCellDef>Action</th>
+                                        <td mat-cell *matCellDef="let file">
+                                            <button class="btn btn-primary btn-sm" (click)="downloadFile(file)">Download</button>
+                                            <button class="btn btn-success btn-sm" (click)="editFile(file)">Edit</button>
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="['fileName', 'fileType', 'uploadDate', 'action']"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: ['fileName', 'fileType', 'uploadDate', 'action']"></tr>
+                                </table>
                             </div>
-                          </div>
+                        </div>
+                    </mat-tab>
+
+                    <!-- Loan Comments Tab -->
+                    <mat-tab label="Loan Comments">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Comments/Reminders</h4>
+                            </div>
+                            
+                            <div class="comments-section">
+                                <!-- Display existing comments -->
+                                <div *ngFor="let comment of comments" class="comment-card">
+                                    <div class="comment-header">
+                                        <strong>{{ comment.userName }}</strong>
+                                        <span class="timestamp">{{ comment.timestamp | date:'short' }}</span>
+                                    </div>
+                                    <p class="comment-text">{{ comment.text }}</p>
+                                </div>
+
+                                <!-- Add new comment -->
+                                <div class="add-comment-card">
+                                    <h4>Add a Comment</h4>
+                                    <textarea [(ngModel)]="newComment.text" rows="3" placeholder="Write your comment..." class="comment-textarea"></textarea>
+                                    <button class="btn btn-primary" (click)="addComment()">Submit</button>
+                                </div>
+                            </div>
+                        </div>
                     </mat-tab>
                 </mat-tab-group>
             </div>
-            </div>
-    
+        </div>
     </article>
-
 </section>
 
-  
+<footer>
+    <p>© 2024 Loan Management System - Manager Dashboard</p>
+</footer>

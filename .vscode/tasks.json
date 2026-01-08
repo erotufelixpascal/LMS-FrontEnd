@@ -12,10 +12,10 @@
         "background": {
           "activeOnStart": true,
           "beginsPattern": {
-            "regexp": "(.*?)"
+            "regexp": ".*"
           },
           "endsPattern": {
-            "regexp": "bundle generation complete"
+            "regexp": "(Application bundle generation complete|Local:.*http://localhost:4200|✔ Compiled successfully|✔ Browser application bundle generation complete)"
           }
         }
       }

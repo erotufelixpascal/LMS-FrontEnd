@@ -1,74 +1,164 @@
+
 <section>
-   <article>
-        <div class="alert alert-warning">
-            <strong>Warning!</strong> This needs your urgent attention please!!.
-        </div>
-        <div class="timeDate">
-          Current Date and Time: {{ currentDateTime }}
-        </div>
-        <p> Outstanding Loan Perfomers - Loan Officers</p>
-        <div class="container">
-            <div class="column">
-              <h3>Financial Metrics</h3>
-              <p>Total Loan Amount Disbursed: $500,000</p>
-              <p>Total Outstanding Amount: $200,000</p>
-              <p>Interest Earned: $50,000</p>
-            </div>
-            <div class="column">
-              <h3>Customer Information</h3>
-              <p>Total Customers: 100</p>
-              <p>Active Loans: 75</p>
-              <p>Closed Loans: 18282</p>
-            </div>
-            <div class="column">
-              <h3>Loan Application Overview</h3>
-              <p>Pending Applications: 20</p>
-              <p>Approved Applications: 50</p>
-              <p>Rejected Applications: 10</p>
-            </div>
-        </div>
-        <!-- new -->
-        <p> Outstanding Loan Perfomers - Clients</p>
-            <div class="container">
-              <div>
-                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-                <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center"> -->
-                    <mat-tab label="Loan application approval"><br>
-                        <button >Approve Application</button>
-                        <p>Here you will find the Loan application</p>
-                        <!-- <ag-grid-angular
-                            style="width: 100%; height: 550px"
-                            [class]="themeClass"
-                            [defaultColDef]="defaultColDef"
-                            [rowData]="loanApprovalList"
-                            [columnDefs]="loanApproval"
-                            (gridSizeChanged)="onGridSizeChange($event)"
-                            > </ag-grid-angular> -->
-                    </mat-tab>
-                    <mat-tab label="Loan Collateral">Loan Collateral <br>
-                        <p>Here you will find the Loan Collateral</p>
-                    </mat-tab>
-                    <mat-tab label="Loan Files"><br>
-                        <div class="container mt-4">
-                            <h2>Loan Files</h2>
-                          </div>                              
-                    </mat-tab>
-                    <mat-tab label="Loan Comments">Loan Comments/Reminders<br>
-                        <div class="loan-comments">  
-                            <h2>Testing</h2>                            
-                          </div>
-                    </mat-tab>
-                </mat-tab-group>
-            </div>
-            </div>
-    
+  <article>
+    <div class="alert alert-warning">
+      <strong>⚠️ Payroll Overview</strong> Review and manage staff payroll information.
+    </div>
 
-    </article>
+    <div class="timeDate">
+      Current Date and Time: {{ currentDateTime }}
+    </div>
 
+    <div class="container">
+      <h2>Employee Payroll Dashboard</h2>
+
+      <!-- Summary cards -->
+      <div class="summary-cards">
+        <div class="summary-card">
+          <h3>Total Employees Paid</h3>
+          <p class="summary-value">120</p>
+        </div>
+        <div class="summary-card">
+          <h3>Monthly Payroll Cost</h3>
+          <p class="summary-value">$450,000</p>
+        </div>
+        <div class="summary-card">
+          <h3>Pending Payments</h3>
+          <p class="summary-value">$35,000</p>
+        </div>
+        <div class="summary-card">
+          <h3>Overtime This Month</h3>
+          <p class="summary-value">320 hrs</p>
+        </div>
+      </div>
+
+      <!-- Payroll details tabs -->
+      <div class="tabs-container">
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+          <!-- Current Payroll Tab -->
+          <mat-tab label="Current Payroll">
+            <div class="tab-content">
+              <div class="tab-header">
+                <h4>Current Month Payroll</h4>
+              </div>
+              <p class="tab-description">
+                Overview of all staff and their payroll details for the current month.
+              </p>
+
+              <div class="table-wrapper">
+                <table class="dashboard-table">
+                  <thead>
+                    <tr>
+                      <th>Employee</th>
+                      <th>Department</th>
+                      <th>Base Salary</th>
+                      <th>Overtime</th>
+                      <th>Deductions</th>
+                      <th>Net Pay</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>John Doe</td>
+                      <td>Credit</td>
+                      <td>$3,500</td>
+                      <td>$250</td>
+                      <td>$100</td>
+                      <td>$3,650</td>
+                    </tr>
+                    <tr>
+                      <td>Jane Smith</td>
+                      <td>Loans</td>
+                      <td>$4,200</td>
+                      <td>$0</td>
+                      <td>$150</td>
+                      <td>$4,050</td>
+                    </tr>
+                    <tr>
+                      <td>Michael Johnson</td>
+                      <td>Operations</td>
+                      <td>$3,000</td>
+                      <td>$180</td>
+                      <td>$90</td>
+                      <td>$3,090</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Payroll Files Tab -->
+          <mat-tab label="Payroll Files">
+            <div class="tab-content">
+              <div class="tab-header">
+                <h4>Payroll Files</h4>
+              </div>
+              <p class="tab-description">
+                Download payroll reports, payslips, and supporting documents.
+              </p>
+
+              <div class="table-wrapper">
+                <table class="dashboard-table">
+                  <thead>
+                    <tr>
+                      <th>File Name</th>
+                      <th>Type</th>
+                      <th>Upload Date</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let file of loanFiles">
+                      <td>{{ file.fileName }}</td>
+                      <td>{{ file.fileType }}</td>
+                      <td>{{ file.uploadDate | date }}</td>
+                      <td>
+                        <button class="btn btn-primary" (click)="downloadFile(file)">Download</button>
+                        <button class="btn btn-secondary" (click)="deleteFile(file)">Delete</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Payroll Comments Tab -->
+          <mat-tab label="Payroll Notes">
+            <div class="tab-content">
+              <div class="tab-header">
+                <h4>Payroll Comments & Reminders</h4>
+              </div>
+
+              <div class="comments-section">
+                <!-- Existing comments -->
+                <div *ngFor="let comment of comments" class="comment-card">
+                  <div class="comment-header">
+                    <strong>{{ comment.userName }}</strong>
+                    <span class="timestamp">{{ comment.timestamp | date:'short' }}</span>
+                  </div>
+                  <p class="comment-text">{{ comment.text }}</p>
+                </div>
+
+                <!-- Add new comment -->
+                <div class="add-comment-card">
+                  <h4>Add a Note</h4>
+                  <textarea [(ngModel)]="newComment.text"
+                            rows="3"
+                            placeholder="Write your comment..."
+                            class="comment-textarea"></textarea>
+                  <button class="btn btn-primary" (click)="addComment()">Submit</button>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+  </article>
 </section>
 
-  <footer>
-    <p>Footer</p>
-  </footer>
-
-  
+<footer>
+  <p>© 2024 Loan Management System - Employee Payroll</p>
+</footer>
