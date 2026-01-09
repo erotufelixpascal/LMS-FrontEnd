@@ -1,52 +1,7 @@
+<!-- <app-staff-navbar></app-staff-navbar> -->
 <section>
-    <nav class="navbar" >
-        <!-- <img src="src\assets\Person.png" alt=""> -->
-        <img src="./../../../assets/Person.png" alt="testing">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link"  (click)="goToChildRoute('/staff/staff-dashboard')" >Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link"  (click)="goToChildRoute('/staff/loan-management')" #tooltip="matTooltip"
-            matTooltip="Define User Roles"
-            matTooltipPosition="right"
-            aria-tooltip="Button that displays and hides a tooltip triggered by other buttons">Loan Management </a>
-          </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" (click)="goToChildRoute('/staff/manager-performance')" >Loan Applications</a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a class="nav-link" (click)="goToChildRoute('/manager/manager-performance')"  #tooltip="matTooltip"
-            matTooltip="See charts that show performance"
-            matTooltipPosition="right"
-            aria-tooltip="Button that displays and hides a tooltip triggered by other buttons">Organization Statistics/Perfomance</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link"  (click)="goToChildRoute('/manager/manager-performance')">Risk Management</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="goToChildRoute('/client/client-home')"  #tooltip="matTooltip"
-            matTooltip="Pay Employees"
-            matTooltipPosition="right"
-            aria-tooltip="Button that displays and hides a tooltip triggered by other buttons">Employee Payroll</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="manager/loan-applications" #tooltip="matTooltip"
-            matTooltip="See Outstanding Clients/Staff and reward them"
-            matTooltipPosition="right"
-            aria-tooltip="Button that displays and hides a tooltip triggered by other buttons">Rewards(Clients/Staff)</a>
-          </li> -->
-          <li class="nav-item">
-            <a class="nav-link" (click)="goToChildRoute('/staff/staff-report')" >View Reports</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link"  (click)="goToChildRoute('/settings')">Settings</a>
-          </li>
-          <!-- <li class="nav-item"><a class="nav-link" (click)="goToChildRoute('/loan-applications')" >Home page</a></li>
-          <li class="nav-item"><a class="nav-link" href="/loan-applications" >Home</a></li>
-          <li><a href="/loan-applications">new</a></li> -->
-        </ul>
-      </nav>
+    <app-staff-navbar></app-staff-navbar>
+
     <article>
       <div class="alert alert-warning">
         <strong>Warning!</strong> A Customer <b>MUST</b> have <b>ONLY</b> one loan at a time!!.
@@ -196,8 +151,8 @@
 
 </section>
 
-  <footer>
+  <!-- <footer>
     <p>Footer</p>
-  </footer>
+  </footer> -->
 
   
