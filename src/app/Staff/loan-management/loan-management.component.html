@@ -1,4 +1,4 @@
-<!-- <app-staff-navbar></app-staff-navbar> -->
+
 <section>
     <app-staff-navbar></app-staff-navbar>
 
@@ -23,31 +23,7 @@
       </form>
       <!-- <button color="accent" type="submit" (click)="schedules(loanNumber)" >Search</button > -->
       <div>
-        <!-- <p>{{loanPayment|json}}</p> -->
-        <!-- <div class="container">
-          <table border="1">
-            <tr>
-              <th>loanNumber</th>
-              <th>principal</th>
-              <th>interest</th>
-              <th>totalAmount</th>
-              <th>balance</th>
-              <th>payment_date</th>
-              <th>next_payment_date</th>
-              <th>Month</th>
-            </tr>
-            <tr *ngFor="let pay of loanPayment">
-              <td>{{pay.loanNumber}}</td>
-              <td>{{pay.principal}}</td>
-              <td>{{pay.interest}}</td>
-              <td>{{pay.totalAmount}}</td>
-              <td>{{pay.balance}}</td>
-              <td>{{pay.payment_date}}</td>
-              <td>{{pay.next_payment_date}}</td>
-              <td>{{pay.Month}}</td>
-            </tr>
-          </table>
-        </div> -->
+        
         <!-- new -->
             <div class="container">
             <!-- <div id="myGrid" style="height: 20px; width: 600px" class="ag-theme-quartz"></div> -->
@@ -55,7 +31,7 @@
                 <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
                 <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center"> -->
                     <mat-tab label="Loan Payment Schedule"><br>
-                        <p>Here you will find the Loan application</p>
+                        <p>Here you will find the Loan Schedule Plan</p>
                         <!-- <ag-grid-angular
                             style="width: 100%; height: 550px"
                             [class]="themeClass"
@@ -95,9 +71,6 @@
                         [columnDefs]="loanTerms"
                         (gridSizeChanged)="onGridSizeChange($event)"
                       > </ag-grid-angular> -->
-                    </mat-tab>
-                    <mat-tab label="Loan Collateral">Loan Collateral <br>
-                        <p>Here you will find the Loan Collateral</p>
                     </mat-tab>
                     <mat-tab label="Loan Files"><br>
                         <div class="container mt-4">
@@ -148,9 +121,7 @@
             </div>   
           </div>
     </article>
-
 </section>
-
   <!-- <footer>
     <p>Footer</p>
   </footer> -->

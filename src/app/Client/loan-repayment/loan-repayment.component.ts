@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup ,Validators} from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ClientNavbarComponent } from '../client-navbar/client-navbar.component';
 
 
 @Component({
@@ -11,6 +12,7 @@ import { MatTabsModule } from '@angular/material/tabs';
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
+        ClientNavbarComponent
  
     ],
     templateUrl: './loan-repayment.component.html',

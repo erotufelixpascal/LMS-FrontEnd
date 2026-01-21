@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
+import { ClientNavbarComponent } from '../client-navbar/client-navbar.component';
 
 @Component({
     selector: 'app-loan-application',
@@ -11,7 +12,8 @@ import { CommonModule } from '@angular/common';
         // BrowserAnimationsModule,
         ReactiveFormsModule,
         FormsModule,
-        CommonModule
+        CommonModule,
+        ClientNavbarComponent
     ],
     templateUrl: './loan-application.component.html',
     styleUrl: './loan-application.component.scss'

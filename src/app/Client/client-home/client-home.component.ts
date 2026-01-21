@@ -7,7 +7,8 @@ import {MatTabsModule} from '@angular/material/tabs';
 // import { AgGridModule } from 'ag-grid-angular';
 // import { ColDef, GridReadyEvent,  GridSizeChangedEvent, createGrid } from "ag-grid-community";
 // import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoanRepaymentComponent } from '../loan-repayment/loan-repayment.component';
+// import { LoanRepaymentComponent } from '../loan-repayment/loan-repayment.component';
+import { ClientNavbarComponent } from '../client-navbar/client-navbar.component';
 
 
 interface IRow {
@@ -37,6 +38,7 @@ interface Comment {
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
+        ClientNavbarComponent
         // AgGridModule,
     ],
     templateUrl: './client-home.component.html',
