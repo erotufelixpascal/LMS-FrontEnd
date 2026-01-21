@@ -1,129 +1,144 @@
-
-<section>
-    <app-staff-navbar></app-staff-navbar>
-
-    <article>
-      <div class="alert alert-warning">
-        <strong>Warning!</strong> A Customer <b>MUST</b> have <b>ONLY</b> one loan at a time!!.
-    </div>
-    <div class="timeDate">
-      Current Date and Time: {{ currentDateTime }}
-    </div>
-    <p> Outstanding Loan Perfomers - Clients</p>
-      <form [formGroup]="staffForm">
-        <div>
-          <label>Loan Number:</label>
-          <!-- <input type="text"  placeholder="Select Loan Number" name="loanNumber" formControlName=""/><br /><br /> -->
-          <select placeholder="Select Loan Number" formControlName="loanNumber" id="loanNumber" name="loanNumber">
-            <option *ngFor="let loan of loanNumbers" [value]="loan.loanNumber">{{ loan.loanNumber }} </option>
-          </select>
-          <button color="accent" type="submit" (click)="schedules(loanNumber)" >Search</button >
+<!-- <div class="flex flex-row" style="background-color: #333; ">
+    <app-staff-navbar></app-staff-navbar> -->
+    <section>
+        <app-staff-navbar></app-staff-navbar>
+        <article>
+        <div class="alert alert-warning">
+            <strong>⚠️ Warning!</strong> A Customer <b>MUST</b> have <b>ONLY</b> one loan at a time!!.
         </div>
-        
-      </form>
-      <!-- <button color="accent" type="submit" (click)="schedules(loanNumber)" >Search</button > -->
-      <div>
-        
-        <!-- new -->
-            <div class="container">
-            <!-- <div id="myGrid" style="height: 20px; width: 600px" class="ag-theme-quartz"></div> -->
-               
+
+        <!-- Current Date/Time -->
+        <div class="timeDate">
+            Current Date and Time: {{ currentDateTime }}
+        </div>
+
+        <div class="container">
+            <h2>Loan Management</h2>
+
+            <div class="section-header">
+                <h3>Outstanding Loan Performers - Clients</h3>
+            </div>
+
+            <form [formGroup]="staffForm" class="search-form">
+                <div class="form-group">
+                    <label>Loan Number:</label>
+                    <select formControlName="loanNumber" id="loanNumber" name="loanNumber" class="form-control">
+                        <option *ngFor="let loan of loanNumbers" [value]="loan.loanNumber">{{ loan.loanNumber }}</option>
+                    </select>
+                    <button class="btn btn-primary" type="submit" (click)="schedules(loanNumber)">Search</button>
+                </div>
+            </form>
+
+            <div class="tabs-container">
                 <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-                <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center"> -->
-                    <mat-tab label="Loan Payment Schedule"><br>
-                        <p>Here you will find the Loan Schedule Plan</p>
-                        <!-- <ag-grid-angular
-                            style="width: 100%; height: 550px"
-                            [class]="themeClass"
-                            [defaultColDef]="defaultColDef"
-                            [rowData]="loanSchedule"
-                            [columnDefs]="schedule"
-                            (gridSizeChanged)="onGridSizeChange($event)"
-                            > </ag-grid-angular> -->
-                    </mat-tab>
-                    <mat-tab label="Loan Repayments">Loan Disbursed<br>
-                        <p>Here you will find the Loan Disbursment</p>
-                        <!-- <ag-grid-angular
-                            style="width: 100%; height: 550px"
-                            [class]="themeClass"
-                            [defaultColDef]="defaultColDef"
-                            [rowData]="loanPayment"
-                            [columnDefs]="payment"
-                            (gridSizeChanged)="onGridSizeChange($event)"
-                            > </ag-grid-angular> -->
-                    </mat-tab>
-                    <mat-tab label="Closed Off Loans">Closed Off Loans<br>
-                      <!-- <ag-grid-angular
-                        style="width: 100%; height: 550px"
-                        [class]="themeClass"
-                        [defaultColDef]="defaultColDef"
-                        [rowData]="loanClosedList"
-                        [columnDefs]="loanClosed"
-                        (gridSizeChanged)="onGridSizeChange($event)"
-                      > </ag-grid-angular> -->
-                    </mat-tab>
-                    <mat-tab label="Loan Terms">Loan Terms <br>
-                      <!-- <ag-grid-angular
-                        style="width: 100%; height: 550px"
-                        [class]="themeClass"
-                        [defaultColDef]="defaultColDef"
-                        [rowData]="loanTerm"
-                        [columnDefs]="loanTerms"
-                        (gridSizeChanged)="onGridSizeChange($event)"
-                      > </ag-grid-angular> -->
-                    </mat-tab>
-                    <mat-tab label="Loan Files"><br>
-                        <div class="container mt-4">
-                            <!-- <h2>Loan Files</h2> -->
-                            <table class="table table-bordered">
-                              <thead>
-                                <tr>
-                                  <th>File Name</th>
-                                  <th>Type</th>
-                                  <th>Upload Date</th>
-                                  <th>Action</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr *ngFor="let file of loanFiles">
-                                  <td>{{ file.fileName }}</td>
-                                  <td>{{ file.fileType }}</td>
-                                  <td>{{ file.uploadDate | date }}</td>
-                                  <td>
-                                    <button class="btn btn-primary" (click)="downloadFile(file)">Download</button>
-                                    <button class="btn btn-danger" (click)="deleteFile(file)">Delete</button>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>                              
-                    </mat-tab>
-                    <mat-tab label="Loan Comments">Loan Comments/Reminders<br>
-                        <div class="loan-comments">                              
-                            <!-- Display existing comments -->
-                            <div *ngFor="let comment of comments" class="comment">
-                              <div class="comment-header">
-                                <strong>{{ comment.userName }}</strong>
-                                <span class="timestamp">{{ comment.timestamp | date:'short' }}</span>
-                              </div>
-                              <p>{{ comment.text }}</p>
+                    <mat-tab label="Loan Payment Schedule">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Payment Schedule</h4>
                             </div>
-                          
-                            <!-- Add new comment -->
-                            <div class="add-comment">
-                              <h4>Add a Comment</h4>
-                              <textarea [(ngModel)]="newComment.text" rows="3" placeholder="Write your comment..."></textarea>
-                              <button (click)="addComment()">Submit</button>
+                            <p class="tab-description">Here you will find the Loan Schedule Plan</p>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Loan Repayments">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Repayments</h4>
                             </div>
-                          </div>
+                            <p class="tab-description">Here you will find the Loan Disbursement</p>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Closed Off Loans">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Closed Off Loans</h4>
+                            </div>
+                            <p class="tab-description">List of closed loans</p>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Loan Terms">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Terms</h4>
+                            </div>
+                            <p class="tab-description">Loan terms information</p>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Loan Files">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Files</h4>
+                            </div>
+                            
+                            <div class="table-wrapper">
+                                <table mat-table [dataSource]="loanFiles" class="dashboard-table">
+                                    <ng-container matColumnDef="fileName">
+                                        <th mat-header-cell *matHeaderCellDef>File Name</th>
+                                        <td mat-cell *matCellDef="let file">{{ file.fileName }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="fileType">
+                                        <th mat-header-cell *matHeaderCellDef>Type</th>
+                                        <td mat-cell *matCellDef="let file">{{ file.fileType }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="uploadDate">
+                                        <th mat-header-cell *matHeaderCellDef>Upload Date</th>
+                                        <td mat-cell *matCellDef="let file">{{ file.uploadDate | date }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="action">
+                                        <th mat-header-cell *matHeaderCellDef>Action</th>
+                                        <td mat-cell *matCellDef="let file">
+                                            <button class="btn btn-primary btn-sm" (click)="downloadFile(file)">Download</button>
+                                            <button class="btn btn-success btn-sm" (click)="editFile(file)">Edit</button>
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="['fileName', 'fileType', 'uploadDate', 'action']"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: ['fileName', 'fileType', 'uploadDate', 'action']"></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Loan Comments">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Comments/Reminders</h4>
+                            </div>
+                            
+                            <div class="comments-section">
+                                <!-- Display existing comments -->
+                                <div *ngFor="let comment of comments" class="comment-card">
+                                    <div class="comment-header">
+                                        <strong>{{ comment.userName }}</strong>
+                                        <span class="timestamp">{{ comment.timestamp | date:'short' }}</span>
+                                    </div>
+                                    <p class="comment-text">{{ comment.text }}</p>
+                                </div>
+
+                                <!-- Add new comment -->
+                                <div class="add-comment-card">
+                                    <h4>Add a Comment</h4>
+                                    <textarea [(ngModel)]="newComment.text" rows="3" placeholder="Write your comment..." class="comment-textarea"></textarea>
+                                    <button class="btn btn-primary" (click)="addComment()">Submit</button>
+                                </div>
+                            </div>
+                        </div>
                     </mat-tab>
                 </mat-tab-group>
-            </div>   
-          </div>
-    </article>
-</section>
-  <!-- <footer>
-    <p>Footer</p>
-  </footer> -->
+            </div>
+        </div>
+        </article>
+    </section>
+
+    <footer>
+        <p>© 2024 Loan Management System - Staff Dashboard</p>
+    </footer>
+<!-- </div> -->
 
   

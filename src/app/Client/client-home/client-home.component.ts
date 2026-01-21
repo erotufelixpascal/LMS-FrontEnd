@@ -1,14 +1,15 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
-import {MatTabsModule} from '@angular/material/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
+import { ClientNavbarComponent } from '../client-navbar/client-navbar.component';
 // import { AgGridModule } from 'ag-grid-angular';
 // import { ColDef, GridReadyEvent,  GridSizeChangedEvent, createGrid } from "ag-grid-community";
 // import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 // import { LoanRepaymentComponent } from '../loan-repayment/loan-repayment.component';
-import { ClientNavbarComponent } from '../client-navbar/client-navbar.component';
 
 
 interface IRow {
@@ -38,13 +39,16 @@ interface Comment {
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
+        MatTableModule,
         ClientNavbarComponent
         // AgGridModule,
     ],
+    providers: [DatePipe],
     templateUrl: './client-home.component.html',
     styleUrl: './client-home.component.scss'
 })
 export class ClientHomeComponent implements OnInit{
+  currentDateTime: string;
   themeClass = "ag-theme-alpine";
   repaymentList: IRow[] = [];
   scheduleList: IRow[] = [];
@@ -103,8 +107,11 @@ export class ClientHomeComponent implements OnInit{
     private fb: FormBuilder,
     private router: Router,
     private DataService: CommonService,
+    private datePipe: DatePipe
     // private modalService:NgbModal,
-   ){ }
+   ){
+    this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
+   }
 
   ngOnInit(): void {
     this.DataService.loanTerms().subscribe((res) =>{
@@ -120,6 +127,11 @@ export class ClientHomeComponent implements OnInit{
   deleteFile(file: LoanFile): void {
     // Logic to delete the file
     console.log('Deleting file:', file);
+  }
+
+  editFile(file: LoanFile): void {
+    // Logic to edit the file
+    console.log('Editing file:', file);
   }
 
   addComment() {

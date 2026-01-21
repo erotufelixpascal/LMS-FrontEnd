@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
-    selector: 'app-manager',
+    selector: 'app-manager-navbar',
     imports: [
         RouterOutlet
     ],

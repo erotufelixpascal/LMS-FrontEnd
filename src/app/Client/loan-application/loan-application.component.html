@@ -1,73 +1,87 @@
+<div class="flex flex-row" style="background-color: #333; ">
+    <app-client-navbar></app-client-navbar>
+    <section>
+        <article>
+        <div class="alert alert-warning">
+            <strong>⚠️ Warning!</strong> Please ensure all information is accurate before submitting your loan application.
+        </div>
 
-<app-client-navbar></app-client-navbar>
-<div class="container my-5">
-    <div class="row mb-5">
-        <div class="p-5 m-auto rounded shadow-lg col-md-6 bg-body">
-            <h3 class="text-center text-success"> Request Form For A Loan</h3>
-            
-            <form method="POST" class="my-5" [formGroup]="loanForm">
+        <!-- Current Date/Time -->
+        <div class="timeDate">
+            Current Date and Time: {{ currentDateTime }}
+        </div>
+
+        <div class="container">
+            <h2>Loan Application</h2>
+
+            <div class="form-container">
+                <h3 class="form-title">Request Form For A Loan</h3>
+                
+                <form method="POST" [formGroup]="loanForm" class="loan-form">
                 <!-- <div class="mb-4 input-group">
                     <div class="input-group-text">Loan Category</div>    
                 </div> -->
-                <div class="mb-4 form-outline"> 
-                    <label class="form-label">Loan Category</label><br>
-                    <select class="wide-input" [(ngModel)]="loanCategory"  name="loanCategory" formControlName="loanCategory" >
-                        <option *ngFor="let loanCategory of loanCategorys" [value]="loanCategory.id"> {{ loanCategory.loanName }}</option> 
-                      </select><br /> <br />
-                </div>
-                <div class="mb-4 form-outline">
-                    <label>Selected customerID Name:</label><br>
-                    <select class="wide-input" [(ngModel)]="customerID"  name="customerID" formControlName="customerID" >
-                        <option *ngFor="let customer of customerIDs" [value]="customer.customerID"> {{ customer.firstName }} {{ customer.lastName }} </option> 
-                      </select><br /> <br />
-                    
-                </div>
-                
-                <div class="mb-4 form-outline">                      
-                    <label class="form-label">Request Amount</label><br>
-                    <input type="text" [(ngModel)]="amount" required id="amount" name="amount" formControlName="amount">
-                </div>
-                <div class="mb-4 form-outline"> 
-                    <label class="form-label">Reason For Loan</label><br>
-                    <input type="text" [(ngModel)]="loanReason" required id="loanReason" name="loanReason" formControlName="loanReason">
-                </div>
-                <div class="mb-4 form-outline">                        
-                    <label class="form-label">Loan Period</label><br>
-                    <input type="number" [(ngModel)]="term" required id="term" name="term" formControlName="term">
-                </div>
-                <!-- <div class="mb-4 form-outline">                        
-                    <label class="form-label">Security</label><br>
-                    <input type="text" required id="loanSecurity" name="loanSecurity" formControlName="loanSecurity">
-                </div> -->
-                <div class="mb-4 form-outline">                        
-                    <label class="form-label">Loan Status</label><br>
-                    <input type="text" [(ngModel)]="status" required id="status" name="status" formControlName="status">
-                </div>
-                <div class="mb-4 form-outline">                        
-                    <label class="form-label">Applied Date</label><br>
-                    <input type="date"  [(ngModel)]="appliedAt" required id="appliedAt" name="appliedAt" formControlName="appliedAt">
-                </div>
-                <div class="mb-4 form-outline">                        
-                    <label class="form-label">Interest Rate</label><br>
-                    <input type="number" [(ngModel)]="interestRate" required id="interestRate" name="interestRate" formControlName="interestRate">
-                </div>
-
-
-                <!-- 2 column grid layout for inline styling -->
-                <div class="mb-4 row ">
-                    <div class="col">
-                        <!-- Checkbox -->
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" checked />
-                            <label class="form-check-label"> Remember me </label>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Loan Category</label>
+                        <select class="form-control" [(ngModel)]="loanCategory" name="loanCategory" formControlName="loanCategory">
+                            <option value="">Select Loan Category</option>
+                            <option *ngFor="let loanCategory of loanCategorys" [value]="loanCategory.id">{{ loanCategory.loanName }}</option> 
+                        </select>
                     </div>
-                    <div class="col">
-                            <button type="submit" class="mb-4 btn btn-primary btn-block" (click)="loanApplication(amount, loanReason,status,term, interestRate, customerID, loanCategory)">Send Request</button>
-                    </div>        
-                </div>                    
-            </form>
+
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <select class="form-control" [(ngModel)]="customerID" name="customerID" formControlName="customerID">
+                            <option value="">Select Customer</option>
+                            <option *ngFor="let customer of customerIDs" [value]="customer.customerID">{{ customer.firstName }} {{ customer.lastName }}</option> 
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Request Amount</label>
+                        <input type="text" class="form-control" [(ngModel)]="amount" required id="amount" name="amount" formControlName="amount" placeholder="Enter loan amount">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Reason For Loan</label>
+                        <input type="text" class="form-control" [(ngModel)]="loanReason" required id="loanReason" name="loanReason" formControlName="loanReason" placeholder="Enter reason for loan">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Loan Period (Months)</label>
+                        <input type="number" class="form-control" [(ngModel)]="term" required id="term" name="term" formControlName="term" placeholder="Enter loan period">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Loan Status</label>
+                        <input type="text" class="form-control" [(ngModel)]="status" required id="status" name="status" formControlName="status" placeholder="Enter loan status">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Applied Date</label>
+                        <input type="date" class="form-control" [(ngModel)]="appliedAt" required id="appliedAt" name="appliedAt" formControlName="appliedAt">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Interest Rate (%)</label>
+                        <input type="number" class="form-control" [(ngModel)]="interestRate" required id="interestRate" name="interestRate" formControlName="interestRate" placeholder="Enter interest rate">
+                    </div>
+
+                    <div class="form-actions">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" checked id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary" (click)="loanApplication(amount, loanReason,status,term, interestRate, customerID, loanCategory)">Send Request</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
+        </article>
+    </section>
+
+    <footer>
+        <p>© 2024 Loan Management System - Client Dashboard</p>
+    </footer>
 </div>
 

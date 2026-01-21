@@ -1,120 +1,133 @@
-<section>
-  <app-client-navbar></app-client-navbar>
-    <article>
+<div class="flex flex-row" style="background-color: #333; ">
+    <app-client-navbar></app-client-navbar>
+    <section>
+        <article>
         <div class="alert alert-warning">
-            <strong>Warning!</strong> This needs your urgent attention please!!.
-          </div>
+            <strong>⚠️ Warning!</strong> This needs your urgent attention please!!
+        </div>
 
-        <p> Outstanding Loan Perfomers - Loan Officers</p>
+        <!-- Current Date/Time -->
+        <div class="timeDate">
+            Current Date and Time: {{ currentDateTime }}
+        </div>
+
         <div class="container">
-            <div class="column">
-                <h2>Oslo</h2>
-                <p>Oslo is the capital city of Norway.</p>
-                <p>Oslo has over 600.000 inhabitants.</p>
+            <h2>Client Dashboard</h2>
+
+            <!-- Loan Management Section -->
+            <div class="section-header">
+                <h3>📊 Loan Management</h3>
             </div>
-            <div class="column">
-                <h2>London</h2>
-                <p>London is the capital city of England.</p>
-                <p>London has over 13 million inhabitants.</p>
-            </div>
-            <div class="column">
-                <h2>Rome</h2>
-                <p>Rome is the capital city of Italy.</p>
-                <p>Rome has almost 3 million inhabitants.</p>
+
+            <div class="tabs-container">
+                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                    <mat-tab label="Repayments">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Repayments</h4>
+                            </div>
+                            <p class="tab-description">Here you will find the repayments</p>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Loan Schedule">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Repayment Schedule</h4>
+                            </div>
+                            <p class="tab-description">Here you will find the Loan Repayment Schedule</p>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Loan Terms">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Terms</h4>
+                            </div>
+                            <p class="tab-description">Loan terms information</p>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Loan Collateral">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Collateral</h4>
+                            </div>
+                            <p class="tab-description">Here you will find the Loan Collateral</p>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Loan Files">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Files</h4>
+                            </div>
+                            
+                            <div class="table-wrapper">
+                                <table mat-table [dataSource]="loanFiles" class="dashboard-table">
+                                    <ng-container matColumnDef="fileName">
+                                        <th mat-header-cell *matHeaderCellDef>File Name</th>
+                                        <td mat-cell *matCellDef="let file">{{ file.fileName }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="fileType">
+                                        <th mat-header-cell *matHeaderCellDef>Type</th>
+                                        <td mat-cell *matCellDef="let file">{{ file.fileType }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="uploadDate">
+                                        <th mat-header-cell *matHeaderCellDef>Upload Date</th>
+                                        <td mat-cell *matCellDef="let file">{{ file.uploadDate | date }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="action">
+                                        <th mat-header-cell *matHeaderCellDef>Action</th>
+                                        <td mat-cell *matCellDef="let file">
+                                            <button class="btn btn-primary btn-sm" (click)="downloadFile(file)">Download</button>
+                                            <button class="btn btn-success btn-sm" (click)="editFile(file)">Edit</button>
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="['fileName', 'fileType', 'uploadDate', 'action']"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: ['fileName', 'fileType', 'uploadDate', 'action']"></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Loan Comments">
+                        <div class="tab-content">
+                            <div class="tab-header">
+                                <h4>Loan Comments/Reminders</h4>
+                            </div>
+                            
+                            <div class="comments-section">
+                                <!-- Display existing comments -->
+                                <div *ngFor="let comment of comments" class="comment-card">
+                                    <div class="comment-header">
+                                        <strong>{{ comment.userName }}</strong>
+                                        <span class="timestamp">{{ comment.timestamp | date:'short' }}</span>
+                                    </div>
+                                    <p class="comment-text">{{ comment.text }}</p>
+                                </div>
+
+                                <!-- Add new comment -->
+                                <div class="add-comment-card">
+                                    <h4>Add a Comment</h4>
+                                    <textarea [(ngModel)]="newComment.text" rows="3" placeholder="Write your comment..." class="comment-textarea"></textarea>
+                                    <button class="btn btn-primary" (click)="addComment()">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
             </div>
         </div>
-        <!-- new -->
-        <p> Outstanding Loan Perfomers - Clients</p>
-        <!-- <img src="src\assets\woman300x400a.PNG" alt=""> -->
-            <div class="container">
-                <div class="column">
-                    <h2>Oslo</h2>
-                    <p>Oslo is the capital city of Norway.</p>
-                    <p>Oslo has over 600.000 inhabitants.</p>
-                </div>
-                <div class="column">
-                    <h2>London</h2>
-                    <p>London is the capital city of England.</p>
-                    <p>London has over 13 million inhabitants.</p>
-                </div>
-                <div class="column">
-                    <p>Rome is the capital city of Italy.</p>
-                    <p>Rome has almost 3 million inhabitants.</p>
-                </div>
-            </div>
-        <p>Current loan categories</p>
-            <div class="container">
-                <div>
-                    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-                    <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center"> -->
-                        <mat-tab label="Repayments"><br>
-                           
-                            <p>Here you will find the repayments</p>
-                            
-                        </mat-tab>
-                        <mat-tab label="Loan Schedule">Loan Repayment Schedule <br>
-                            <p>Here you will find the Loan Repayment Schedule</p>
-                            
-                        </mat-tab>
-                        <mat-tab label="Loan Terms">Loan Terms <br>
-                          
-                        </mat-tab>
-                        <mat-tab label="Loan Collateral">Loan Collateral <br>
-                            <p>Here you will find the Loan Collateral</p>
-                        </mat-tab>
-                        <mat-tab label="Loan Files"><br>
-                            <div class="container mt-4">
-                                <!-- <h2>Loan Files</h2> -->
-                                <table class="table table-bordered">
-                                  <thead>
-                                    <tr>
-                                      <th>File Name</th>
-                                      <th>Type</th>
-                                      <th>Upload Date</th>
-                                      <th>Action</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr *ngFor="let file of loanFiles">
-                                      <td>{{ file.fileName }}</td>
-                                      <td>{{ file.fileType }}</td>
-                                      <td>{{ file.uploadDate | date }}</td>
-                                      <td>
-                                        <button class="btn btn-primary" (click)="downloadFile(file)">Download</button>
-                                        <button class="btn btn-danger" (click)="deleteFile(file)">Delete</button>
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>                              
-                        </mat-tab>
-                        <mat-tab label="Loan Comments">Loan Comments/Reminders<br>
-                            <div class="loan-comments">                              
-                                <!-- Display existing comments -->
-                                <div *ngFor="let comment of comments" class="comment">
-                                  <div class="comment-header">
-                                    <strong>{{ comment.userName }}</strong>
-                                    <span class="timestamp">{{ comment.timestamp | date:'short' }}</span>
-                                  </div>
-                                  <p>{{ comment.text }}</p>
-                                </div>
-                              
-                                <!-- Add new comment -->
-                                <div class="add-comment">
-                                  <h4>Add a Comment</h4>
-                                  <textarea [(ngModel)]="newComment.text" rows="3" placeholder="Write your comment..."></textarea>
-                                  <button (click)="addComment()">Submit</button>
-                                </div>
-                              </div>
-                        </mat-tab>
-                    </mat-tab-group>
-                </div>
-            </div>
+        </article>
+    </section>
 
-    </article>
-
-</section>
-<footer>
-  <p>Footer</p>
-</footer>
+    <footer>
+        <p>© 2024 Loan Management System - Client Dashboard</p>
+    </footer>
+</div>
 
