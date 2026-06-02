@@ -1,1 +1,191 @@
-<p>reports works!</p>
+<!-- <div class="flex flex-row" style="background-color: #333; ">
+    <app-staff-navbar></app-staff-navbar> -->
+    <section>
+        <app-staff-navbar></app-staff-navbar>
+        <article>
+        <div class="alert alert-warning">
+            <strong>⚠️ Warning!</strong> This needs your urgent attention please!!
+        </div>
+
+        <!-- Current Date/Time -->
+        <div class="timeDate">
+            Current Date and Time: {{ currentDateTime }}
+        </div>
+
+        <div class="container">
+            <h2>View Reports</h2>
+            
+            <form [formGroup]="reportForm" (ngSubmit)="onSubmit()" class="report-form">
+                <!-- Report Type Selection -->
+                <div class="form-group">
+                    <label for="reportType">Report Type</label>
+                    <select formControlName="reportType" id="reportType" class="form-control">
+                        <option *ngFor="let type of reportTypes" [value]="type.value">
+                            {{ type.label }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Filters Row -->
+                <div class="filters-row">
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select formControlName="status" id="status" class="form-control">
+                            <option *ngFor="let status of statusOptions" [value]="status">
+                                {{ status }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select formControlName="category" id="category" class="form-control">
+                            <option *ngFor="let cat of categoryOptions()" [value]="cat">
+                                {{ cat }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <input formControlName="startDate" id="startDate" type="date" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="endDate">End Date</label>
+                        <input formControlName="endDate" id="endDate" type="date" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="searchTerm">Search</label>
+                        <input 
+                            formControlName="searchTerm" 
+                            id="searchTerm" 
+                            type="text" 
+                            class="form-control"
+                            placeholder="Search loans...">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary">
+                        <mat-icon>search</mat-icon>
+                        Generate Report
+                    </button>
+                    <button type="button" class="btn btn-secondary" (click)="clearFilters()">
+                        <mat-icon>clear</mat-icon>
+                        Clear Filters
+                    </button>
+                    <button type="button" class="btn btn-success" (click)="exportToCSV()">
+                        <mat-icon>download</mat-icon>
+                        Export CSV
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="exportToPDF()">
+                        <mat-icon>picture_as_pdf</mat-icon>
+                        Export PDF
+                    </button>
+                    <button type="button" class="btn btn-warning" (click)="printReport()">
+                        <mat-icon>print</mat-icon>
+                        Print
+                    </button>
+                </div>
+            </form>
+
+            <!-- Report Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <h3>Total Records</h3>
+                    <p class="summary-value">{{ dataSource.data.length }}</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Filtered Records</h3>
+                    <p class="summary-value">{{ dataSource.filteredData.length }}</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Total Amount</h3>
+                    <p class="summary-value">
+                        {{ totalAmount | currency:'USD':'symbol':'1.0-0' }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Report Table -->
+            <div class="table-container">
+                <h3 class="report-title">
+                    {{ reportTitle }}
+                </h3>
+                
+                <div class="table-wrapper">
+                    <table mat-table [dataSource]="dataSource" class="report-table">
+                        
+                        <!-- Loan Number Column -->
+                        <ng-container matColumnDef="loanNumber">
+                            <th mat-header-cell *matHeaderCellDef>Loan Number</th>
+                            <td mat-cell *matCellDef="let item">{{ item.loanNumber || 'N/A' }}</td>
+                        </ng-container>
+
+                        <!-- Customer Name Column -->
+                        <ng-container matColumnDef="customerName">
+                            <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+                            <td mat-cell *matCellDef="let item">
+                                {{ item.customerName || (item.firstName && item.lastName ? item.firstName + ' ' + item.lastName : 'N/A') }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Amount Column -->
+                        <ng-container matColumnDef="amount">
+                            <th mat-header-cell *matHeaderCellDef>Amount</th>
+                            <td mat-cell *matCellDef="let item">
+                                {{ (item.amount || item.principalAmount || item.totalAmount || 0) | currency:'USD':'symbol':'1.0-0' }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Status Column -->
+                        <ng-container matColumnDef="status">
+                            <th mat-header-cell *matHeaderCellDef>Status</th>
+                            <td mat-cell *matCellDef="let item" [ngClass]="getStatusColor(item.status)">
+                                {{ item.status || 'N/A' }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Date Column -->
+                        <ng-container matColumnDef="date">
+                            <th mat-header-cell *matHeaderCellDef>Date</th>
+                            <td mat-cell *matCellDef="let item">
+                                {{ item.date || item.appliedAt || item.disbursedAt || 'N/A' }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Category Column -->
+                        <ng-container matColumnDef="category">
+                            <th mat-header-cell *matHeaderCellDef>Category</th>
+                            <td mat-cell *matCellDef="let item">{{ item.category || item.loanName || 'N/A' }}</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                        <!-- No data row -->
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                                No report data found. Please adjust your filters or select a different report type.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <mat-paginator 
+                    [pageSizeOptions]="[10, 25, 50, 100]" 
+                    [pageSize]="10"
+                    showFirstLastButtons>
+                </mat-paginator>
+            </div>
+        </div>
+        </article>
+    </section>
+
+    <footer>
+        <p>© 2024 Loan Management System - Staff Dashboard</p>
+    </footer>
+<!-- </div> -->

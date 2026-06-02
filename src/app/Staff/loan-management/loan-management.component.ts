@@ -3,8 +3,10 @@ import { Component, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
+import { StaffNavbarComponent } from '../staff-navbar/staff-navbar.component';
 
 interface IRow {
   loanNumber : string;
@@ -35,8 +37,9 @@ interface Comment {
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
-
-        MatTooltipModule
+        StaffNavbarComponent,
+        MatTooltipModule,
+        MatTableModule
     ],
     providers: [DatePipe],
     templateUrl: './loan-management.component.html',
@@ -119,6 +122,11 @@ export class LoanManagementComponent implements OnInit {
   deleteFile(file: LoanFile): void {
     // Logic to delete the file
     console.log('Deleting file:', file);
+  }
+
+  editFile(file: LoanFile): void {
+    // Logic to edit the file
+    console.log('Editing file:', file);
   }
   
   addComment() {

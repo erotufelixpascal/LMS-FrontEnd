@@ -5,7 +5,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
-import { LoanManagementComponent } from '../loan-management/loan-management.component';
+import { StaffNavbarComponent } from '../staff-navbar/staff-navbar.component';
 
 interface IRow {
   participant_PID: string;
@@ -35,6 +35,7 @@ interface Comment {
         ReactiveFormsModule,
         FormsModule,
         MatTabsModule,
+        StaffNavbarComponent,
         MatTooltipModule
     ],
     providers: [DatePipe],

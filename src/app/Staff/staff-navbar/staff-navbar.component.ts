@@ -2,14 +2,12 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
-    selector: 'app-manager-navbar',
-    imports: [
-        RouterOutlet
-    ],
-    templateUrl: './manager.component.html',
-    styleUrl: './manager.component.scss'
+    selector: 'app-staff-navbar',
+    imports: [RouterOutlet],
+    templateUrl: './staff-navbar.component.html',
+    styleUrl: './staff-navbar.component.scss'
 })
-export class ManagerComponent {
+export class StaffNavbarComponent {
 
   router= inject(Router)
 

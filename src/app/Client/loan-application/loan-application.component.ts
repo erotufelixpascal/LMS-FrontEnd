@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
+import { ClientNavbarComponent } from '../client-navbar/client-navbar.component';
 
 @Component({
     selector: 'app-loan-application',
@@ -11,13 +12,16 @@ import { CommonModule } from '@angular/common';
         // BrowserAnimationsModule,
         ReactiveFormsModule,
         FormsModule,
-        CommonModule
+        CommonModule,
+        ClientNavbarComponent
     ],
+    providers: [DatePipe],
     templateUrl: './loan-application.component.html',
     styleUrl: './loan-application.component.scss'
 })
 
 export class LoanApplicationComponent implements OnInit{
+    currentDateTime: string;
     loanForm: FormGroup
     loanCategory: string=""
     loanReason: string=""
@@ -44,8 +48,10 @@ export class LoanApplicationComponent implements OnInit{
     constructor(
         private formBuilder: FormBuilder,
         private router: Router,
-        private DataService: CommonService
+        private DataService: CommonService,
+        private datePipe: DatePipe
     ){
+        this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
         this.loanForm = this.formBuilder.group({
             loanCategory: ["", Validators.required],
             loanReason: ["", Validators.required],

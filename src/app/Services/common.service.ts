@@ -25,7 +25,8 @@ export class CommonService {
       "Content-Type": "application/json",
     });
     return this.http.get<any>(this.apiURL + `/users/${email}`);
-    //return this.http.get<any>(`${this.apiURL}/users/${email}`);
+    // return this.http.get<any>("https://api.mockaroo.com/api/dec13330?count=10&key=97bd0420");
+  
 
   }
 
