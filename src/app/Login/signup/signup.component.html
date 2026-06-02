@@ -1,0 +1,53 @@
+<div class="signup-container">
+  <h2>Create Account</h2>
+
+  <form [formGroup]="signupForm" (ngSubmit)="register()">
+    <div class="form-row">
+      <div class="field">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" formControlName="firstName" placeholder="First name" />
+        <div class="field-error" *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched">
+          First name is required.
+        </div>
+      </div>
+      <div class="field">
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" formControlName="lastName" placeholder="Last name" />
+        <div class="field-error" *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched">
+          Last name is required.
+        </div>
+      </div>
+    </div>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" formControlName="email" placeholder="your@email.com" autocomplete="email" />
+    <div class="field-error" *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+      Please enter a valid email address.
+    </div>
+
+    <label for="phone">Phone</label>
+    <input type="tel" id="phone" formControlName="phone" placeholder="+256 700 000 000" />
+    <div class="field-error" *ngIf="signupForm.get('phone')?.invalid && signupForm.get('phone')?.touched">
+      Phone number is required.
+    </div>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" formControlName="password" placeholder="Min. 6 characters" autocomplete="new-password" />
+    <div class="field-error" *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
+      Password must be at least 6 characters.
+    </div>
+
+    <label for="confirmPassword">Confirm Password</label>
+    <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="Re-enter password" autocomplete="new-password" />
+    <div class="field-error" *ngIf="signupForm.get('confirmPassword')?.touched && signupForm.hasError('passwordMismatch')">
+      Passwords do not match.
+    </div>
+
+    <div class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <div class="button-row">
+      <button type="submit" class="btn btn-primary">Register</button>
+      <button type="button" class="btn btn-secondary" routerLink="/">Back to Login</button>
+    </div>
+  </form>
+</div>
