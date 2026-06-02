@@ -15,4 +15,24 @@
         </div>
       </form>
     </div>
-  </body> 
+
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      formControlName="password"
+      placeholder="Enter your password"
+      autocomplete="current-password"
+    />
+    <div class="field-error" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+      Password is required.
+    </div>
+
+    <div class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <div class="button-row">
+      <button type="submit" class="btn btn-primary">Login</button>
+      <button type="button" class="btn btn-secondary" routerLink="/signIn">Create Account</button>
+    </div>
+  </form>
+</div>

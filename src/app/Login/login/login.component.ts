@@ -1,7 +1,7 @@
 
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { CommonService } from "../../Services/common.service";
 import { CommonModule } from "@angular/common";
 
@@ -21,10 +21,10 @@ interface User {
 @Component({
     selector: 'app-login',
     imports: [
-        // BrowserAnimationsModule,
         ReactiveFormsModule,
         FormsModule,
-        CommonModule
+        CommonModule,
+        RouterLink
     ],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss'
@@ -108,12 +108,12 @@ export class LoginComponent implements OnInit {
     private DataService: CommonService
   ) {
     this.loginForm = this.fb.group({
-        email: ["", Validators.required],
-        password: ["", Validators.required],
-      });
+      email: ["", [Validators.required, Validators.email]],
+      password: ["", Validators.required],
+    });
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   // login(email: string, password: string) {
   //   if (this.loginForm.valid) {

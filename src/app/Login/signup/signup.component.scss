@@ -1,16 +1,7 @@
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  background-color: #f0f2f5;
-}
-
-.login-container {
-  max-width: 380px;
+.signup-container {
+  max-width: 480px;
   width: 100%;
-  margin: 80px auto;
+  margin: 60px auto;
   padding: 40px 36px;
   border: 1px solid #dde3ea;
   border-radius: 10px;
@@ -30,7 +21,19 @@ form {
   flex-direction: column;
 }
 
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
 label {
+  margin-top: 12px;
   margin-bottom: 4px;
   font-size: 0.9rem;
   font-weight: 600;
@@ -38,7 +41,6 @@ label {
 }
 
 input {
-  margin-bottom: 4px;
   padding: 10px 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -55,7 +57,8 @@ input {
 .field-error {
   color: #dc2626;
   font-size: 0.8rem;
-  margin-bottom: 10px;
+  margin-top: 3px;
+  margin-bottom: 4px;
 }
 
 .error-banner {
@@ -65,18 +68,19 @@ input {
   border-radius: 6px;
   padding: 10px 14px;
   font-size: 0.88rem;
-  margin-bottom: 16px;
+  margin-top: 12px;
+  margin-bottom: 4px;
 }
 
 .button-row {
   display: flex;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: 20px;
 }
 
 .btn {
   flex: 1;
-  padding: 10px;
+  padding: 11px;
   border: none;
   border-radius: 6px;
   font-size: 0.95rem;
@@ -105,5 +109,16 @@ input {
 
   &:hover {
     background-color: #e5e7eb;
+  }
+}
+
+@media (max-width: 480px) {
+  .signup-container {
+    margin: 20px;
+    padding: 24px 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
   }
 }
