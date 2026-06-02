@@ -11,8 +11,7 @@ interface User {
   lastName: string;
   email: string;
   phone: string;
-  password: string;
-  role: string;
+  role: string;          // "manager", "staff", "client"
   branch: string | null;
   status: string;
   createdAt: string;
@@ -33,76 +32,76 @@ interface User {
 
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  errorMessage = '';
+  // roles: number = 0;
+  // email: string='';
+  // password: string=''
+  // customerID : string =''
+  // users : any[] = [];
+  userLogin :any[]=[]
 
   private systemUsers: User[] = [
     {
-      id: 1,
-      firstName: "Aisha",
-      lastName: "Nakato",
-      email: "aisha.nakato@company.co.ug",
-      phone: "+256771234567",
-      password: "Manager@2025",
-      role: "manager",
-      branch: "Kampala Central",
-      status: "active",
-      createdAt: "2025-06-15T09:30:00Z",
-      lastLogin: "2026-01-20T14:45:00Z"
+      "id": 1,
+      "firstName": "Nakato",
+      "lastName": "Aisha",
+      "email": "aisha.nakato@company.co.ug",
+      "phone": "+256771234567",
+      "role": "manager",
+      "branch": "Kampala Central",
+      "status": "active",
+      "createdAt": "2025-06-15T09:30:00Z",
+      "lastLogin": "2026-01-20T14:45:00Z"
     },
     {
-      id: 2,
-      firstName: "James",
-      lastName: "Okello",
-      email: "james.okello@company.co.ug",
-      phone: "+256772345678",
-      password: "Staff@2025",
-      role: "staff",
-      branch: "Kampala Central",
-      status: "active",
-      createdAt: "2025-08-02T11:15:00Z",
-      lastLogin: "2026-01-19T09:12:00Z"
+      "id": 2,
+      "firstName": "Okello",
+      "lastName": "James",
+      "email": "james.okello@company.co.ug",
+      "phone": "+256772345678",
+      "role": "staff",
+      "branch": "Kampala Central",
+      "status": "active",
+      "createdAt": "2025-08-02T11:15:00Z",
+      "lastLogin": "2026-01-19T09:12:00Z"
     },
     {
-      id: 3,
-      firstName: "Fatuma",
-      lastName: "Nalwanga",
-      email: "fatuma.nalwanga@gmail.com",
-      phone: "+256753456789",
-      password: "Client@2025",
-      role: "client",
-      branch: null,
-      status: "active",
-      createdAt: "2025-11-10T16:20:00Z",
-      lastLogin: "2026-01-18T18:30:00Z"
+      "id": 3,
+      "firstName": "Nalwanga",
+      "lastName": "Fatuma",
+      "email": "fatuma.nalwanga@gmail.com",
+      "phone": "+256753456789",
+      "role": "client",
+      "branch": null,
+      "status": "active",
+      "createdAt": "2025-11-10T16:20:00Z",
+      "lastLogin": "2026-01-18T18:30:00Z"
     },
     {
-      id: 4,
-      firstName: "Ronald",
-      lastName: "Mugisha",
-      email: "ronald.mugisha@company.co.ug",
-      phone: "+256704567890",
-      password: "Manager@2025",
-      role: "manager",
-      branch: "Entebbe",
-      status: "active",
-      createdAt: "2025-07-20T10:00:00Z",
-      lastLogin: "2026-01-21T08:55:00Z"
+      "id": 4,
+      "firstName": "Mugisha",
+      "lastName": "Ronald",
+      "email": "ronald.mugisha@company.co.ug",
+      "phone": "+256704567890",
+      "role": "manager",
+      "branch": "Entebbe",
+      "status": "active",
+      "createdAt": "2025-07-20T10:00:00Z",
+      "lastLogin": "2026-01-21T08:55:00Z"
     },
     {
-      id: 5,
-      firstName: "Sarah",
-      lastName: "Kizza",
-      email: "sarah.kizza@yahoo.com",
-      phone: "+256701234567",
-      password: "Client@2025",
-      role: "client",
-      branch: null,
-      status: "active",
-      createdAt: "2025-12-05T13:40:00Z",
-      lastLogin: "2026-01-20T22:10:00Z"
+      "id": 5,
+      "firstName": "Kizza",
+      "lastName": "Sarah",
+      "email": "sarah.kizza@yahoo.com",
+      "phone": "+256701234567",
+      "role": "client",
+      "branch": null,
+      "status": "active",
+      "createdAt": "2025-12-05T13:40:00Z",
+      "lastLogin": "2026-01-20T22:10:00Z"
     }
   ];
-
+  
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -116,48 +115,69 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {}
 
-  login() {
-    this.errorMessage = '';
+  // login(email: string, password: string) {
+  //   if (this.loginForm.valid) {
+  //     console.log(this.loginForm.value);
+      
+  //     this.DataService.loginUser(this.loginForm.value.email).subscribe((data)=>{
+  //       this.userLogin = data
+  //       console.log(this.userLogin)
 
-    if (this.loginForm.invalid) {
+  //       localStorage.setItem('currentUser', JSON.stringify(this.userLogin));
+  //       this.redirectUser(data.userRole);
+  //     })
+  //     }
+  //    };
+
+  login(){
+    if(this.loginForm.invalid){
       this.loginForm.markAllAsTouched();
-      return;
     }
+  
+  const email = this.loginForm.value.email.trim().toLowerCase();
+  const password = this.loginForm.value.password;
 
-    const email = this.loginForm.value.email.trim().toLowerCase();
-    const password = this.loginForm.value.password;
+  // Find user by email (case-insensitive)
+  const foundUser = this.systemUsers.find(
+    u => u.email.toLowerCase() === email
+  );
 
-    // Check hardcoded system users first
-    let foundUser: any = this.systemUsers.find(
-      u => u.email.toLowerCase() === email && u.password === password
-    );
+  if(foundUser) {
+    localStorage.setItem('currentUser', JSON.stringify(foundUser));
 
-    // Fall back to localStorage-registered users (self-signup)
-    if (!foundUser) {
-      const registered: any[] = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-      foundUser = registered.find(
-        u => u.email.toLowerCase() === email && u.password === password
-      );
-    }
-
-    if (foundUser) {
-      const { password: _pw, ...safeUser } = foundUser;
-      localStorage.setItem('currentUser', JSON.stringify(safeUser));
-      this.redirectUser(foundUser.role);
-    } else {
-      this.errorMessage = 'Invalid email or password. Please try again.';
-    }
+    this.redirectUser(foundUser.role);
+  }else {
+    alert('User not found: Contact Support')
+  }
   }
 
   redirectUser(role: string) {
+    if (!this.userLogin) {
+      this.router.navigate(['/login']);
+      alert('Please log in first');
+      return;
+    }
+  
     if (role === 'client') {
       this.router.navigate(['/client']);
-    } else if (role === 'manager') {
+    } 
+    else if (role === 'manager') {
       this.router.navigate(['/manager']);
-    } else if (role === 'staff') {
+    } 
+    else if (role === 'staff') {
       this.router.navigate(['/staff']);
-    } else {
-      this.errorMessage = 'Unknown role. Please contact support.';
+    } 
+    else {
+      this.router.navigate(['/login']);
+      alert('Unknown role: ' + role);
+    }
+  }
+  
+  onSubmit(event: Event) {
+    if (this.loginForm.valid) {
+      event.preventDefault();
+      this.router.navigate(["/signIn"]);
     }
   }
 }
+
