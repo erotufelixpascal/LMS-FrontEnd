@@ -16,63 +16,42 @@
 
             <div class="form-container">
                 <h3 class="form-title">Request Form For A Loan</h3>
-                
-                <form method="POST" [formGroup]="loanForm" class="loan-form">
-                <!-- <div class="mb-4 input-group">
-                    <div class="input-group-text">Loan Category</div>    
-                </div> -->
+
+                <form [formGroup]="loanForm" class="loan-form" (ngSubmit)="loanApplication()">
                     <div class="form-group">
                         <label class="form-label">Loan Category</label>
-                        <select class="form-control" [(ngModel)]="loanCategory" name="loanCategory" formControlName="loanCategory">
+                        <select class="form-control" formControlName="categoryId" [disabled]="loadingCategories">
                             <option value="">Select Loan Category</option>
-                            <option *ngFor="let loanCategory of loanCategorys" [value]="loanCategory.id">{{ loanCategory.loanName }}</option> 
+                            <option *ngFor="let category of loanCategories" [value]="category.id">{{ category.name }}</option>
                         </select>
+                        <div class="loading-indicator" *ngIf="loadingCategories">Loading loan categories...</div>
+                        <div class="empty-state" *ngIf="!loadingCategories && loanCategories.length === 0">
+                            No loan categories available yet.
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Customer Name</label>
-                        <select class="form-control" [(ngModel)]="customerID" name="customerID" formControlName="customerID">
-                            <option value="">Select Customer</option>
-                            <option *ngFor="let customer of customerIDs" [value]="customer.customerID">{{ customer.firstName }} {{ customer.lastName }}</option> 
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
                         <label class="form-label">Request Amount</label>
-                        <input type="text" class="form-control" [(ngModel)]="amount" required id="amount" name="amount" formControlName="amount" placeholder="Enter loan amount">
+                        <input type="number" class="form-control" id="amount" name="amount" formControlName="amount" placeholder="Enter loan amount">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Reason For Loan</label>
-                        <input type="text" class="form-control" [(ngModel)]="loanReason" required id="loanReason" name="loanReason" formControlName="loanReason" placeholder="Enter reason for loan">
+                        <input type="text" class="form-control" id="reason" name="reason" formControlName="reason" placeholder="Enter reason for loan">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Loan Period (Months)</label>
-                        <input type="number" class="form-control" [(ngModel)]="term" required id="term" name="term" formControlName="term" placeholder="Enter loan period">
+                        <input type="number" class="form-control" id="term" name="term" formControlName="term" placeholder="Enter loan period">
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Loan Status</label>
-                        <input type="text" class="form-control" [(ngModel)]="status" required id="status" name="status" formControlName="status" placeholder="Enter loan status">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Applied Date</label>
-                        <input type="date" class="form-control" [(ngModel)]="appliedAt" required id="appliedAt" name="appliedAt" formControlName="appliedAt">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Interest Rate (%)</label>
-                        <input type="number" class="form-control" [(ngModel)]="interestRate" required id="interestRate" name="interestRate" formControlName="interestRate" placeholder="Enter interest rate">
-                    </div>
+                    <div class="error-message" *ngIf="submitError">{{ submitError }}</div>
+                    <div class="success-message" *ngIf="submitSuccess">{{ submitSuccess }}</div>
 
                     <div class="form-actions">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" checked id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">Remember me</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary" (click)="loanApplication(amount, loanReason,status,term, interestRate, customerID, loanCategory)">Send Request</button>
+                        <button type="submit" class="btn btn-primary" [disabled]="loanForm.invalid || submitting">
+                            {{ submitting ? 'Submitting...' : 'Send Request' }}
+                        </button>
                     </div>
                 </form>
             </div>
@@ -84,4 +63,3 @@
         <p>© 2024 Loan Management System - Client Dashboard</p>
     </footer>
 </div>
-

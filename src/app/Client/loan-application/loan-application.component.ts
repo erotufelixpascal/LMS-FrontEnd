@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ClientNavbarComponent } from '../client-navbar/client-navbar.component';
+import { LoanCategory } from '../../Services/models/api.models';
 
 @Component({
     selector: 'app-loan-application',
     imports: [
-        // BrowserAnimationsModule,
         ReactiveFormsModule,
         FormsModule,
         CommonModule,
@@ -20,29 +19,27 @@ import { ClientNavbarComponent } from '../client-navbar/client-navbar.component'
     styleUrl: './loan-application.component.scss'
 })
 
-export class LoanApplicationComponent implements OnInit{
+export class LoanApplicationComponent implements OnInit {
     currentDateTime: string;
-    loanForm: FormGroup
-    loanCategory: string=""
-    loanReason: string=""
-    amount: number = 0
-    interestRate: number = 0
-    term: number = 0
-    //loanSecurity: string=""
-    status: string=""
-    appliedAt: string=""
-    customerID :string=""
-    loanApplicationData!: string[];
-    customerIDs : any[] = [];
-    loanCategorys : any[] = [];
+    loanForm: FormGroup;
+    loanCategories: LoanCategory[] = [];
 
-    ngOnInit(): void { 
-        this.DataService.selectCustomerID( ).subscribe((data) => {
-            this.customerIDs = data;
-          });
-          this.DataService.selectloanCategory( ).subscribe((data) => {
-            this.loanCategorys = data;
-          });
+    loadingCategories = false;
+    submitting = false;
+    submitError: string | null = null;
+    submitSuccess: string | null = null;
+
+    ngOnInit(): void {
+        this.loadingCategories = true;
+        this.DataService.getLoanCategories().subscribe({
+            next: (data) => {
+                this.loanCategories = data;
+                this.loadingCategories = false;
+            },
+            error: () => {
+                this.loadingCategories = false;
+            }
+        });
     }
 
     constructor(
@@ -50,39 +47,41 @@ export class LoanApplicationComponent implements OnInit{
         private router: Router,
         private DataService: CommonService,
         private datePipe: DatePipe
-    ){
+    ) {
         this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
         this.loanForm = this.formBuilder.group({
-            loanCategory: ["", Validators.required],
-            loanReason: ["", Validators.required],
-            amount: [null, [Validators.required, Validators.pattern(/^\d+$/)]],
-            term: [null, [Validators.required, Validators.pattern(/^\d+$/)]],
-            //loanSecurity: ["", Validators.required],
-            status: ["", Validators.required],
-            appliedAt : ["", Validators.required],
-            interestRate:[null, [Validators.required, Validators.pattern(/^\d+$/)]],
-            customerID :["", Validators.required],
-        })
+            categoryId: ["", Validators.required],
+            reason: ["", Validators.required],
+            amount: [null, [Validators.required, Validators.min(1)]],
+            term: [null, [Validators.required, Validators.min(1)]],
+        });
     }
-    loanApplication(amount: number, reason: string,status: string, term: number,interestRate: number, customerID: string, category: string){
-        if (this.loanForm.valid) {
-            console.log(this.loanForm.value);
-            const formData = this.loanForm.value;
-        this.DataService.loanApplication(
-            formData.amount,
-            formData.loanReason,
-            formData.status,
-            formData.term,
-            formData.interestRate,
-            formData.customerID,
-            formData.loanCategory
-        ).subscribe((data) => {
-            console.log('Sending data to backend:', data); // Add this line for logging
-            this.loanApplicationData = data;
-        })
+
+    loanApplication() {
+        if (this.loanForm.invalid) {
+            return;
+        }
+
+        this.submitError = null;
+        this.submitSuccess = null;
+        this.submitting = true;
+
+        const formData = this.loanForm.value;
+        this.DataService.submitLoanApplication({
+            categoryId: Number(formData.categoryId),
+            amount: Number(formData.amount),
+            term: Number(formData.term),
+            reason: formData.reason
+        }).subscribe({
+            next: (data) => {
+                this.submitting = false;
+                this.submitSuccess = `Application submitted - status: ${data.status}`;
+                this.loanForm.reset();
+            },
+            error: (error) => {
+                this.submitting = false;
+                this.submitError = error?.error?.message || 'Failed to submit loan application. Please try again.';
+            }
+        });
     }
 }
-
-
-}
-
