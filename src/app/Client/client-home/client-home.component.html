@@ -22,25 +22,16 @@
             <div class="empty-state" *ngIf="!loadingLoans && activeLoans.length === 0">
                 You have no loans yet.
             </div>
-            <div class="table-wrapper" *ngIf="!loadingLoans && activeLoans.length > 0">
-                <table class="dashboard-table">
-                    <thead>
-                        <tr>
-                            <th>Loan ID</th>
-                            <th>Principal</th>
-                            <th>Outstanding Balance</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let loan of activeLoans">
-                            <td>{{ loan.id }}</td>
-                            <td>{{ loan.principal }}</td>
-                            <td>{{ loan.outstandingBalance }}</td>
-                            <td>{{ loan.status }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="loan-cards" *ngIf="!loadingLoans && activeLoans.length > 0">
+                <div class="loan-card" *ngFor="let loan of activeLoans">
+                    <div class="loan-card-icon">💳</div>
+                    <div class="loan-card-content">
+                        <h4>Loan #{{ loan.id }}</h4>
+                        <p class="loan-card-amount">{{ loan.outstandingBalance | currency }} <span>outstanding</span></p>
+                        <p class="loan-card-meta">Principal: {{ loan.principal | currency }}</p>
+                        <span class="status-badge" [ngClass]="'status-' + loan.status">{{ loan.status }}</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Application Status History -->
@@ -65,8 +56,8 @@
                     <tbody>
                         <tr *ngFor="let application of applications">
                             <td>{{ application.id }}</td>
-                            <td>{{ application.amount }}</td>
-                            <td>{{ application.status }}</td>
+                            <td>{{ application.amount | currency }}</td>
+                            <td><span class="status-badge" [ngClass]="'status-' + application.status">{{ application.status }}</span></td>
                             <td>{{ application.appliedAt | date }}</td>
                             <td>{{ application.decisionComment || '-' }}</td>
                         </tr>
