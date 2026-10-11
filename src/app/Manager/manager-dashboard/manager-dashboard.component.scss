@@ -274,6 +274,18 @@ h4 {
     font-style: italic;
 }
 
+.loading-text {
+    color: #667eea;
+    font-style: italic;
+    padding: 10px 0;
+}
+
+.error-text {
+    color: #dc2626;
+    font-weight: 600;
+    padding: 10px 0;
+}
+
 // Comments Section
 .comments-section {
     margin-top: 20px;

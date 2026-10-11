@@ -15,6 +15,13 @@ import { ViewChild, AfterViewInit } from '@angular/core';
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import {
+  Collateral,
+  Loan,
+  LoanApplication,
+  LoanCategory,
+  Statistics,
+} from '../../Services/models/api.models';
 
 
 
@@ -43,7 +50,7 @@ interface Comment {
         MatTableModule,
         // MatSortModule,
         // MatFormFieldModule,
-        // MatInputModule    
+        // MatInputModule
     ],
     providers: [DatePipe],
     templateUrl: './manager-dashboard.component.html',
@@ -56,19 +63,34 @@ export class ManagerDashboardComponent implements AfterViewInit {
 
   datePipe = inject(DatePipe);
   currentDateTime :string='';
-  dashboardData = signal(null);
+  dashboardData = signal<Statistics | null>(null);
   isOpen = signal<boolean>(false);
   registeredParticipantsList = signal<any[]>([]);
   // currentDateTime = signal('');
-  loanCategories = signal<any[]>([]);
+  loanCategories = signal<LoanCategory[]>([]);
   loanName = signal('');
   themeClass = 'ag-theme-alpine';
-  loanApprovalList = signal<any[]>([]);
-  loanDisbursementList = signal<any[]>([]);
-  loanClosedList = signal<any[]>([]);
-  loanCollateralList = signal<any[]>([]);
-  displayedColumns: string[] = ['assetName', 'assetType', 'estimatedValue', 'loanId', 'status'];
+  loanApprovalList = signal<LoanApplication[]>([]);
+  loanDisbursementList = signal<Loan[]>([]);
+  loanClosedList = signal<Loan[]>([]);
+  loanCollateralList = signal<Collateral[]>([]);
+  displayedColumns: string[] = ['description', 'estimatedValue', 'applicationId', 'documentUrl'];
   dataSource = new MatTableDataSource(this.loanCollateralList());
+
+  // Loading / error state (per section)
+  loadingStats = signal<boolean>(true);
+  loadingApprovals = signal<boolean>(true);
+  loadingDisbursed = signal<boolean>(true);
+  loadingClosed = signal<boolean>(true);
+  loadingCollateral = signal<boolean>(true);
+  loadingCategories = signal<boolean>(true);
+
+  statsError = signal<string | null>(null);
+  approvalsError = signal<string | null>(null);
+  disbursedError = signal<string | null>(null);
+  closedError = signal<string | null>(null);
+  collateralError = signal<string | null>(null);
+  categoriesError = signal<string | null>(null);
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -80,33 +102,6 @@ export class ManagerDashboardComponent implements AfterViewInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-
-  // displayedColumns: string[] = Object.keys(this.visibleColumns).filter(key => this.visibleColumns[key]);
-
-  // gridApi: any;
-  // defaultColDef: ColDef = {
-  //   sortable: true,
-  //   filter: true,
-  //   resizable: true,
-  // };
-
-  // loanApproval = [
-  //   { field: 'loanNumber' },
-  //   { field: 'principalAmount' },
-  //   { field: 'interestAmount' },
-  //   { field: 'totalAmount' },
-  //   { field: 'status'}
-  // ];
-
-  // loanDisbursement = [
-  //   { field: 'loanNumber', headerName: 'Loan Number' },
-  //   { field: 'PrincipalAmount', headerName: 'Principal Amount' },
-  //   { field: 'InterestAmount' , headerName: 'Interest Amount'},
-  //   { field: 'TotalAmount', headerName: 'Total Amount' },
-  //   { field: 'email' , headerName: 'email'}
-  // ];
-
-  
 
   loanFiles: LoanFile[] = [
     { fileName: 'loan-agreement.docx', fileType: 'DOCX', uploadDate: new Date('2024-01-01') },
@@ -123,7 +118,7 @@ export class ManagerDashboardComponent implements AfterViewInit {
   ];
   newComment: Comment = { userName: 'Current User', text: '', timestamp: new Date() };
 
-  constructor(  
+  constructor(
     // private datePipe: DatePipe
   ) {
     this.currentDateTime =(this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime'));
@@ -131,76 +126,106 @@ export class ManagerDashboardComponent implements AfterViewInit {
     this.loanApprovalListData();
     this.loanClosedListData();
     this.loanDisbursementListData();
-    this.getCollateralList()
+    this.getCollateralList();
+    this.loadStatistics();
+  }
+
+  loadStatistics(): void {
+    this.loadingStats.set(true);
+    this.statsError.set(null);
+    this.DataService.getStatistics().subscribe({
+      next: (res) => {
+        this.dashboardData.set(res);
+      },
+      error: (error) => {
+        console.error('Error fetching dashboard statistics:', error);
+        this.statsError.set('Unable to load portfolio statistics.');
+      },
+      complete: () => {
+        this.loadingStats.set(false);
+      }
+    });
   }
 
   loanApprovalListData(){
-    this.DataService.getPendingLoan().subscribe({
+    this.loadingApprovals.set(true);
+    this.approvalsError.set(null);
+    this.DataService.getLoanApplications().subscribe({
       next:(res)=>{
-        this.loanApprovalList.set(res);
-        console.log(this.loanApprovalList())
+        this.loanApprovalList.set((res || []).filter(app => app.status === 'pending'));
       },
       error: (error) =>{
         console.error('Error fetching dashboard data:', error);
+        this.approvalsError.set('Unable to load pending loan applications.');
       },
       complete: () => {
-        console.log('Approved loans complete');
+        this.loadingApprovals.set(false);
       }
   });
 }
   loanDisbursementListData(){
-    this.DataService.getDisbusredLoan() .subscribe({
+    this.loadingDisbursed.set(true);
+    this.disbursedError.set(null);
+    this.DataService.getLoans().subscribe({
       next:(res)=>{
-        this.loanDisbursementList.set(res); 
-        console.log(this.loanDisbursementList())       
+        this.loanDisbursementList.set(res || []);
       },
       error: (error) =>{
         console.error('Error fetching loan disbursed data:', error);
+        this.disbursedError.set('Unable to load disbursed loans.');
       },
       complete: () => {
-        console.log('Disbursed loans complete');
+        this.loadingDisbursed.set(false);
       }
   });
 }
   loanClosedListData(){
-    this.DataService.getClosedLoan().subscribe({
+    this.loadingClosed.set(true);
+    this.closedError.set(null);
+    this.DataService.getLoans('closed').subscribe({
       next:(res)=>{
-        this.loanClosedList.set(res);  
-        console.log(this.loanClosedList())       
+        this.loanClosedList.set(res || []);
       },
       error: (error) =>{
         console.error('Error fetching loans closed data:', error);
+        this.closedError.set('Unable to load closed loans.');
       },
       complete: () => {
-        console.log('Closed loans complete');
+        this.loadingClosed.set(false);
       }
   });
   }
   loadLoanData() {
+      this.loadingCategories.set(true);
+      this.categoriesError.set(null);
       this.DataService.getLoanCategories().subscribe({
       next: (res) => {
-        this.loanCategories.set(res) ;
+        this.loanCategories.set(res || []);
       },
       error: (error) => {
         console.error('Error fetching loan data data:', error);
+        this.categoriesError.set('Unable to load loan categories.');
       },
       complete: () => {
-        console.log('All subscriptions complete');
+        this.loadingCategories.set(false);
       }
     });
   }
 
   getCollateralList(){
+    this.loadingCollateral.set(true);
+    this.collateralError.set(null);
     this.DataService.getCollateral().subscribe({
       next: (res) => {
-        this.loanCollateralList.set(res) ;
-        console.log(this.loanCollateralList()) 
+        this.loanCollateralList.set(res || []);
+        this.dataSource.data = this.loanCollateralList();
       },
       error: (error) => {
         console.error('Error fetching collateral data:', error);
+        this.collateralError.set('Unable to load collateral records.');
       },
       complete: () => {
-        console.log('Collateral list complete');
+        this.loadingCollateral.set(false);
       }
     })
   }
@@ -234,14 +259,11 @@ export class ManagerDashboardComponent implements AfterViewInit {
   });
 
   visibleColumns: { [key: string]: boolean } = {
-    loanNumber: true, 
-    principalAmount : true,
-    interestAmount: true,
-    totalAmount: true,
-    status: true
+    description: true,
+    estimatedValue: true,
+    applicationId: true,
+    documentUrl: true
   };
-
-  // displayedColumns: string[] = Object.keys(this.visibleColumns).filter(key => this.visibleColumns[key]);
 
   toggleColumnVisibility(column: string): void {
     this.visibleColumns[column] = !this.visibleColumns[column];
@@ -251,19 +273,19 @@ export class ManagerDashboardComponent implements AfterViewInit {
   getStatusClass(status: string | undefined): string {
     if (!status) return '';
     const statusLower = status.toLowerCase();
-    if (statusLower.includes('approved') || statusLower.includes('disbursed') || statusLower === 'released') {
+    if (statusLower.includes('approved') || statusLower.includes('disbursed') || statusLower.includes('active') || statusLower === 'released') {
       return 'status-approved';
     }
     if (statusLower.includes('pending')) {
       return 'status-pending';
     }
-    if (statusLower.includes('rejected') || statusLower.includes('closed')) {
+    if (statusLower.includes('rejected') || statusLower.includes('closed') || statusLower.includes('defaulted')) {
       return 'status-rejected';
     }
     return '';
   }
-  
-  goToChildRoute(route :string ){      
+
+  goToChildRoute(route :string ){
     this.router.navigate([route]);
 
   }
