@@ -8,40 +8,40 @@
         <nav class="navbar">
             <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" (click)="goToChildRoute('/client')">Dashboard</a>
+                <a class="nav-link" (click)="goToChildRoute('/client')">
+                  <mat-icon>dashboard</mat-icon><span>Dashboard</span>
+                </a>
             </li>
-            <li class="nav-item"> 
-                <a class="nav-link" (click)="goToChildRoute('/client/loan-application')"  
+            <li class="nav-item">
+                <a class="nav-link" (click)="goToChildRoute('/client/loan-application')"
                 matTooltip="Define User Roles"
                 matTooltipPosition="right"
                 aria-tooltip="Button that displays and hides a tooltip triggered by other buttons">
-                Loan Application
+                <mat-icon>request_quote</mat-icon><span>Loan Application</span>
                 </a>
-            </li>     
-            <!-- <li class="nav-item">
-                <a class="nav-link" (click)="goToChildRoute('/manager/loan-applications')" 
-                matTooltip="See Outstanding Clients/Staff and reward them"
-                matTooltipPosition="right"
-                aria-tooltip="Button that displays and hides a tooltip triggered by other buttons">
-                Rewards (Clients/Staff)
-                </a>
-            </li> -->
+            </li>
             <li class="nav-item">
-              <a class="nav-link" (click)="goToChildRoute('/client/loan-repayment')">Loan Repayment</a>
+              <a class="nav-link" (click)="goToChildRoute('/client/loan-repayment')">
+                <mat-icon>payments</mat-icon><span>Loan Repayment</span>
+              </a>
           </li>
             <li class="nav-item">
-                <a class="nav-link" (click)="goToChildRoute('/staff/staff-report')">View Reports</a>
+                <a class="nav-link" (click)="goToChildRoute('/staff/staff-report')">
+                  <mat-icon>assessment</mat-icon><span>View Reports</span>
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" (click)="goToChildRoute('/settings')">Settings</a>
+                <a class="nav-link" (click)="goToChildRoute('/settings')">
+                  <mat-icon>settings</mat-icon><span>Settings</span>
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" routerLink="/logout">Logout</a>
+                <a class="nav-link" routerLink="/logout">
+                  <mat-icon>logout</mat-icon><span>Logout</span>
+                </a>
             </li>
             </ul>
         </nav>
     </div>
     <!-- <router-outlet></router-outlet> -->
   </div>
-  
-  

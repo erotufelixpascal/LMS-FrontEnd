@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
 
 @Component({
@@ -9,8 +10,8 @@ import { AuthService } from '../../Services/auth.service';
     imports: [
         CommonModule,
         MatTooltipModule,
+        MatIconModule,
         RouterLink,
-        // RouterOutlet
     ],
     templateUrl: './client-navbar.component.html',
     styleUrl: './client-navbar.component.scss'

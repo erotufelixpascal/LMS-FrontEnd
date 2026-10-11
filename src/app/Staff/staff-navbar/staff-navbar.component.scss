@@ -29,14 +29,22 @@ img {
   }
   
   .nav-link {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     color: white;
     cursor: pointer;
-    text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
   }
-  
+
   .nav-link:hover {
     background-color: #575757;
   }
