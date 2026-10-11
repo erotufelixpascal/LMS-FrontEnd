@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
     selector: 'app-staff-navbar',
-    imports: [RouterOutlet],
+    imports: [RouterOutlet, RouterLink],
     templateUrl: './staff-navbar.component.html',
     styleUrl: './staff-navbar.component.scss'
 })
