@@ -1,16 +1,99 @@
-<body>
-    <div class="login-container">
-      <h2>Add loan categories</h2>
-      <!-- <form [formGroup]="loginForm" > -->
-      <form [formGroup]="categoryForm">     
-    
-        <label for="loanCategory">Loan Category:</label>
-        <input type="text" id="loanName" name="loanName" formControlName="loanName" ><br><br>
-    
-        <div class="example-button-row">
-          <button mat-raised-button color="accent" type="submit" (click)="Category(loanName)">Add Category</button>
-          <button mat-raised-button color="warn" type="submit" (click)="Category(loanName)">Cancel</button>
+<div class="page-container">
+  <div class="form-card">
+    <h2>{{ editingId != null ? 'Edit Loan Category' : 'Add Loan Category' }}</h2>
+
+    <form [formGroup]="categoryForm" (ngSubmit)="submitCategory()">
+
+      <div class="form-group">
+        <label for="name">Category Name</label>
+        <input type="text" id="name" formControlName="name" class="form-control" placeholder="e.g. Personal Loan">
+        <small class="error-text" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+          Name is required.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description (optional)</label>
+        <textarea id="description" formControlName="description" class="form-control" rows="2" placeholder="Short description"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="interestRateMin">Min Interest Rate (%)</label>
+          <input type="number" id="interestRateMin" formControlName="interestRateMin" class="form-control" step="0.01" min="0">
         </div>
-      </form>
+        <div class="form-group">
+          <label for="interestRateMax">Max Interest Rate (%)</label>
+          <input type="number" id="interestRateMax" formControlName="interestRateMax" class="form-control" step="0.01" min="0">
+        </div>
+      </div>
+      <small class="error-text" *ngIf="rangeInvalid">Min interest rate should not exceed max interest rate.</small>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="termMinMonths">Min Term (months)</label>
+          <input type="number" id="termMinMonths" formControlName="termMinMonths" class="form-control" step="1" min="1">
+        </div>
+        <div class="form-group">
+          <label for="termMaxMonths">Max Term (months)</label>
+          <input type="number" id="termMaxMonths" formControlName="termMaxMonths" class="form-control" step="1" min="1">
+        </div>
+      </div>
+      <small class="error-text" *ngIf="termRangeInvalid">Min term should not exceed max term.</small>
+
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" formControlName="collateralRequired">
+          Collateral Required
+        </label>
+      </div>
+
+      <div class="example-button-row">
+        <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+          {{ editingId != null ? 'Save Changes' : 'Add Category' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()" *ngIf="editingId != null">Cancel</button>
+      </div>
+
+      <p class="success-text" *ngIf="successMessage()">{{ successMessage() }}</p>
+      <p class="error-text" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+    </form>
+  </div>
+
+  <div class="list-card">
+    <h2>Existing Loan Categories</h2>
+
+    <p *ngIf="loading()" class="loading-text">Loading loan categories...</p>
+
+    <div class="table-wrapper" *ngIf="!loading()">
+      <table class="categories-table" *ngIf="categories().length > 0; else noCategories">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Interest Rate</th>
+            <th>Term (months)</th>
+            <th>Collateral</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cat of categories()">
+            <td>{{ cat.name }}</td>
+            <td>{{ cat.description || '-' }}</td>
+            <td>{{ cat.interestRateMin }}% - {{ cat.interestRateMax }}%</td>
+            <td>{{ cat.termMinMonths }} - {{ cat.termMaxMonths }}</td>
+            <td>{{ cat.collateralRequired ? 'Yes' : 'No' }}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-primary" (click)="editCategory(cat)">Edit</button>
+              <button type="button" class="btn btn-sm btn-warn" (click)="deleteCategory(cat)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #noCategories>
+        <p class="no-data">No loan categories configured yet.</p>
+      </ng-template>
     </div>
-  </body> 
+  </div>
+</div>
