@@ -24,6 +24,10 @@ export class AppComponent {
   title = 'FrontEnd';
   private auth = inject(AuthService);
   // Was a signal that nothing ever set, so the role-based navbar never
-  // rendered - now driven by the logged-in user's actual role.
-  role = computed(() => this.auth.currentUser()?.role ?? '');
+  // rendered - now driven by the logged-in user's actual role. Gated on
+  // isLoggedIn() (requires a real token), not just currentUser() alone -
+  // otherwise a stale currentUser left in localStorage from testing before
+  // a token existed would render a navbar with no actual session (this
+  // showed up live: the manager navbar appeared on the login page itself).
+  role = computed(() => (this.auth.isLoggedIn() ? (this.auth.currentUser()?.role ?? '') : ''));
 }
