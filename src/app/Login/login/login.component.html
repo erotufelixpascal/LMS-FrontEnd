@@ -11,7 +11,7 @@
       autocomplete="email"
     />
     <div class="field-error" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-      Please enter a valid email address.
+      A valid email is required.
     </div>
 
     <label for="password">Password</label>
@@ -29,7 +29,9 @@
     <div class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</div>
 
     <div class="button-row">
-      <button type="submit" class="btn btn-primary">Login</button>
+      <button type="submit" class="btn btn-primary" [disabled]="submitting">
+        {{ submitting ? 'Logging in...' : 'Login' }}
+      </button>
       <button type="button" class="btn btn-secondary" routerLink="/signIn">Create Account</button>
     </div>
   </form>
