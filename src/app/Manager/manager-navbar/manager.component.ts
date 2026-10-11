@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-manager-navbar',
     imports: [
         RouterLink,
+        RouterOutlet,
         MatIconModule
     ],
     templateUrl: './manager.component.html',
