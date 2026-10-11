@@ -15,145 +15,121 @@
       <!-- Summary cards -->
       <div class="summary-cards">
         <div class="summary-card">
-          <h3>Total Employees Paid</h3>
-          <p class="summary-value">120</p>
+          <h3>Payroll Entries</h3>
+          <p class="summary-value">{{ totalEntries }}</p>
         </div>
         <div class="summary-card">
-          <h3>Monthly Payroll Cost</h3>
-          <p class="summary-value">$450,000</p>
+          <h3>Paid</h3>
+          <p class="summary-value">{{ totalPaid }}</p>
         </div>
         <div class="summary-card">
-          <h3>Pending Payments</h3>
-          <p class="summary-value">$35,000</p>
+          <h3>Pending</h3>
+          <p class="summary-value">{{ totalPending }}</p>
         </div>
         <div class="summary-card">
-          <h3>Overtime This Month</h3>
-          <p class="summary-value">320 hrs</p>
+          <h3>Total Net Pay</h3>
+          <p class="summary-value">{{ totalNetPay | currency }}</p>
         </div>
       </div>
 
-      <!-- Payroll details tabs -->
-      <div class="tabs-container">
-        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-          <!-- Current Payroll Tab -->
-          <mat-tab label="Current Payroll">
-            <div class="tab-content">
-              <div class="tab-header">
-                <h4>Current Month Payroll</h4>
-              </div>
-              <p class="tab-description">
-                Overview of all staff and their payroll details for the current month.
-              </p>
+      <!-- Create Payroll Entry -->
+      <div class="tab-header">
+        <h4>Create Payroll Entry</h4>
+      </div>
 
-              <div class="table-wrapper">
-                <table class="dashboard-table">
-                  <thead>
-                    <tr>
-                      <th>Employee</th>
-                      <th>Department</th>
-                      <th>Base Salary</th>
-                      <th>Overtime</th>
-                      <th>Deductions</th>
-                      <th>Net Pay</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>John Doe</td>
-                      <td>Credit</td>
-                      <td>$3,500</td>
-                      <td>$250</td>
-                      <td>$100</td>
-                      <td>$3,650</td>
-                    </tr>
-                    <tr>
-                      <td>Jane Smith</td>
-                      <td>Loans</td>
-                      <td>$4,200</td>
-                      <td>$0</td>
-                      <td>$150</td>
-                      <td>$4,050</td>
-                    </tr>
-                    <tr>
-                      <td>Michael Johnson</td>
-                      <td>Operations</td>
-                      <td>$3,000</td>
-                      <td>$180</td>
-                      <td>$90</td>
-                      <td>$3,090</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </mat-tab>
+      <p *ngIf="loadingStaff()" class="loading-text">Loading staff list...</p>
+      <p *ngIf="staffError()" class="error-text">{{ staffError() }}</p>
 
-          <!-- Payroll Files Tab -->
-          <mat-tab label="Payroll Files">
-            <div class="tab-content">
-              <div class="tab-header">
-                <h4>Payroll Files</h4>
-              </div>
-              <p class="tab-description">
-                Download payroll reports, payslips, and supporting documents.
-              </p>
+      <form [formGroup]="payrollForm" (ngSubmit)="submitPayroll()" class="payroll-form" *ngIf="!loadingStaff()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="staffId">Staff Member</label>
+            <select formControlName="staffId" id="staffId" class="form-control">
+              <option [ngValue]="null">Select staff...</option>
+              <option *ngFor="let staff of staffList()" [ngValue]="staff.id">
+                {{ staff.firstName }} {{ staff.lastName }}
+              </option>
+            </select>
+          </div>
 
-              <div class="table-wrapper">
-                <table class="dashboard-table">
-                  <thead>
-                    <tr>
-                      <th>File Name</th>
-                      <th>Type</th>
-                      <th>Upload Date</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let file of loanFiles">
-                      <td>{{ file.fileName }}</td>
-                      <td>{{ file.fileType }}</td>
-                      <td>{{ file.uploadDate | date }}</td>
-                      <td>
-                        <button class="btn btn-primary" (click)="downloadFile(file)">Download</button>
-                        <button class="btn btn-secondary" (click)="deleteFile(file)">Delete</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </mat-tab>
+          <div class="form-group">
+            <label for="period">Period</label>
+            <input formControlName="period" id="period" type="text" class="form-control" placeholder="e.g. 2026-10">
+          </div>
 
-          <!-- Payroll Comments Tab -->
-          <mat-tab label="Payroll Notes">
-            <div class="tab-content">
-              <div class="tab-header">
-                <h4>Payroll Comments & Reminders</h4>
-              </div>
+          <div class="form-group">
+            <label for="baseSalary">Base Salary</label>
+            <input formControlName="baseSalary" id="baseSalary" type="number" min="0" class="form-control">
+          </div>
 
-              <div class="comments-section">
-                <!-- Existing comments -->
-                <div *ngFor="let comment of comments" class="comment-card">
-                  <div class="comment-header">
-                    <strong>{{ comment.userName }}</strong>
-                    <span class="timestamp">{{ comment.timestamp | date:'short' }}</span>
-                  </div>
-                  <p class="comment-text">{{ comment.text }}</p>
-                </div>
+          <div class="form-group">
+            <label for="commission">Commission</label>
+            <input formControlName="commission" id="commission" type="number" min="0" class="form-control">
+          </div>
 
-                <!-- Add new comment -->
-                <div class="add-comment-card">
-                  <h4>Add a Note</h4>
-                  <textarea [(ngModel)]="newComment.text"
-                            rows="3"
-                            placeholder="Write your comment..."
-                            class="comment-textarea"></textarea>
-                  <button class="btn btn-primary" (click)="addComment()">Submit</button>
-                </div>
-              </div>
-            </div>
-          </mat-tab>
-        </mat-tab-group>
+          <div class="form-group">
+            <label for="deductions">Deductions</label>
+            <input formControlName="deductions" id="deductions" type="number" min="0" class="form-control">
+          </div>
+
+          <div class="form-group button-group">
+            <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+              {{ submitting() ? 'Saving...' : 'Add Payroll Entry' }}
+            </button>
+          </div>
+        </div>
+
+        <p *ngIf="payrollForm.get('staffId')?.touched && payrollForm.get('staffId')?.invalid" class="error-text">Staff member is required.</p>
+        <p *ngIf="payrollForm.get('period')?.touched && payrollForm.get('period')?.invalid" class="error-text">Period is required, format YYYY-MM.</p>
+        <p *ngIf="payrollForm.get('baseSalary')?.touched && payrollForm.get('baseSalary')?.invalid" class="error-text">Base salary is required and must be 0 or more.</p>
+        <p *ngIf="submitError()" class="error-text">{{ submitError() }}</p>
+      </form>
+
+      <!-- Payroll Records -->
+      <div class="tab-header">
+        <h4>Payroll Records</h4>
+      </div>
+
+      <p *ngIf="loadingPayroll()" class="loading-text">Loading payroll records...</p>
+      <p *ngIf="payrollError()" class="error-text">{{ payrollError() }}</p>
+
+      <div class="table-wrapper" *ngIf="!loadingPayroll()">
+        <table class="dashboard-table">
+          <thead>
+            <tr>
+              <th>Staff</th>
+              <th>Period</th>
+              <th>Base Salary</th>
+              <th>Commission</th>
+              <th>Deductions</th>
+              <th>Net Pay</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let entry of payrollList()">
+              <td>{{ staffName(entry.staffId) }}</td>
+              <td>{{ entry.period }}</td>
+              <td>{{ entry.baseSalary | currency }}</td>
+              <td>{{ entry.commission | currency }}</td>
+              <td>{{ entry.deductions | currency }}</td>
+              <td>{{ entry.netPay | currency }}</td>
+              <td>{{ entry.status }}</td>
+              <td>
+                <button
+                  class="btn btn-success btn-sm"
+                  *ngIf="entry.status === 'pending'"
+                  [disabled]="updatingId() === entry.id"
+                  (click)="markAsPaid(entry)">
+                  {{ updatingId() === entry.id ? 'Updating...' : 'Mark as Paid' }}
+                </button>
+                <span *ngIf="entry.status === 'paid'">—</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p *ngIf="payrollList().length === 0" class="no-data">No payroll entries found.</p>
       </div>
     </div>
   </article>
