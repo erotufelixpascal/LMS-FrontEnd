@@ -1,7 +1,7 @@
 <section>
   <article>
       <div class="alert alert-warning">
-          <strong>⚠️ User Management</strong> Assign roles and manage users.
+          <strong>⚠️ User Management</strong> Create staff/manager accounts and manage user roles.
       </div>
 
       <div class="timeDate my-3 text-muted">
@@ -9,31 +9,16 @@
       </div>
 
       <div class="container">
-          <h2>User Roles Management</h2>
+          <h2>User Management</h2>
 
-          <!-- Existing User Selection -->
-          <div class="section-header">
-              <h3>Select Existing User</h3>
-          </div>
-
-          <div class="form-group mb-4">
-              <label>Select User</label>
-              <select class="form-control" (change)="onUserSelect($event)">
-                  <option value="">-- Select Existing User --</option>
-                  <option *ngFor="let user of users()" [value]="user.userId">
-                      {{ user.firstName }} {{ user.lastName }} ({{ user.email }})
-                  </option>
-              </select>
-          </div>
-
-          <!-- Create / Edit User and Assign Role -->
+          <!-- Create User -->
           <div class="card-container">
               <div class="card shadow-sm user-card">
                   <div class="card-header bg-primary text-black">
-                      <h5 class="mb-0">Create / Edit User</h5>
+                      <h5 class="mb-0">Create User</h5>
                   </div>
                   <div class="card-body">
-                      <form [formGroup]="assignRoleForm" (ngSubmit)="onSubmitRole()" class="report-form">
+                      <form [formGroup]="createUserForm" (ngSubmit)="createUser()" class="report-form">
                           <div class="row">
                               <div class="col-md-6 form-group">
                                   <label>First Name</label>
@@ -50,58 +35,139 @@
                               <input type="email" formControlName="email" class="form-control" placeholder="Enter email" required>
                           </div>
 
-                          <div class="form-group">
-                              <label>Address</label>
-                              <input type="text" formControlName="address" class="form-control" placeholder="Enter address">
-                          </div>
-
                           <div class="row">
                               <div class="col-md-6 form-group">
                                   <label>Phone Number</label>
                                   <input type="text" formControlName="phone" class="form-control" placeholder="Enter phone number">
                               </div>
+                              <div class="col-md-6 form-group">
+                                  <label>Password</label>
+                                  <input type="password" formControlName="password" class="form-control" placeholder="Temporary password">
+                              </div>
                           </div>
 
-                          <hr>
-                          <div class="form-group">
-                              <label>Assign Role</label>
-                              <select formControlName="role" class="form-control">
-                                  <option *ngFor="let role of roles()" [value]="role.roleId">{{ role.roleName }}</option>
-                              </select>
+                          <div class="row">
+                              <div class="col-md-6 form-group">
+                                  <label>Role</label>
+                                  <select formControlName="role" class="form-control">
+                                      <option value="client">Client</option>
+                                      <option value="staff">Staff</option>
+                                      <option value="manager">Manager</option>
+                                  </select>
+                              </div>
+                              <div class="col-md-6 form-group">
+                                  <label>Branch (optional)</label>
+                                  <input type="text" formControlName="branch" class="form-control" placeholder="Branch name">
+                              </div>
                           </div>
 
                           <div class="action-buttons">
-                              <button type="submit" class="btn btn-success">
-                                  Save and Assign Role
-                              </button>
-                              <button type="button" class="btn btn-secondary" (click)="onCancel()">
-                                  Cancel
+                              <button type="submit" class="btn btn-success" [disabled]="creating()">
+                                  Create User
                               </button>
                           </div>
+
+                          <p class="success-text" *ngIf="successMessage()">{{ successMessage() }}</p>
+                          <p class="error-text" *ngIf="errorMessage()">{{ errorMessage() }}</p>
                       </form>
                   </div>
               </div>
 
-              <!-- Roles Summary -->
+              <!-- Permission templates (Roles) - optional section -->
               <div class="card shadow-sm roles-summary">
                   <div class="card-header">
-                      <h5 class="mb-0">Available Roles</h5>
+                      <h5 class="mb-0">Permission Templates (Roles)</h5>
                   </div>
                   <div class="card-body">
+                      <form [formGroup]="roleForm" (ngSubmit)="createRole()" class="role-form">
+                          <div class="form-group">
+                              <label>Name</label>
+                              <input type="text" formControlName="name" class="form-control" placeholder="e.g. Branch Manager">
+                          </div>
+                          <div class="form-group">
+                              <label>Description</label>
+                              <input type="text" formControlName="description" class="form-control" placeholder="Short description">
+                          </div>
+                          <button type="submit" class="btn btn-secondary btn-sm" [disabled]="roleSubmitting()">Add Role</button>
+                      </form>
+
                       <ul class="roles-list">
                           <li *ngFor="let role of roles()">
-                              <span class="role-name">{{ role.roleName }}</span>
+                              <span class="role-name">{{ role.name }}</span>
                               <span class="role-desc">{{ role.description || 'No description provided' }}</span>
+                              <button type="button" class="btn btn-sm btn-warn" (click)="deleteRole(role)">Delete</button>
                           </li>
                       </ul>
                       <p *ngIf="roles().length === 0" class="no-data">No roles configured yet.</p>
                   </div>
               </div>
           </div>
+
+          <!-- Users table -->
+          <div class="section-header">
+              <h3>All Users</h3>
+          </div>
+
+          <p *ngIf="loadingUsers()" class="no-data">Loading users...</p>
+
+          <div class="table-wrapper" *ngIf="!loadingUsers()">
+              <table class="users-table" *ngIf="users().length > 0; else noUsers">
+                  <thead>
+                      <tr>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Phone</th>
+                          <th>Role</th>
+                          <th>Branch</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let user of users()">
+                          <td>{{ user.firstName }} {{ user.lastName }}</td>
+                          <td>{{ user.email }}</td>
+                          <td>{{ user.phone }}</td>
+                          <td>
+                              <ng-container *ngIf="editingUserId !== user.id">{{ user.role }}</ng-container>
+                              <select *ngIf="editingUserId === user.id" [(ngModel)]="editDraft.role" [ngModelOptions]="{standalone: true}" class="form-control">
+                                  <option value="client">Client</option>
+                                  <option value="staff">Staff</option>
+                                  <option value="manager">Manager</option>
+                              </select>
+                          </td>
+                          <td>
+                              <ng-container *ngIf="editingUserId !== user.id">{{ user.branch || '-' }}</ng-container>
+                              <input *ngIf="editingUserId === user.id" type="text" [(ngModel)]="editDraft.branch" [ngModelOptions]="{standalone: true}" class="form-control">
+                          </td>
+                          <td>
+                              <ng-container *ngIf="editingUserId !== user.id">{{ user.status }}</ng-container>
+                              <select *ngIf="editingUserId === user.id" [(ngModel)]="editDraft.status" [ngModelOptions]="{standalone: true}" class="form-control">
+                                  <option value="active">Active</option>
+                                  <option value="suspended">Suspended</option>
+                              </select>
+                          </td>
+                          <td class="actions-cell">
+                              <ng-container *ngIf="editingUserId !== user.id">
+                                  <button type="button" class="btn btn-sm btn-primary" (click)="startEdit(user)">Edit</button>
+                                  <button type="button" class="btn btn-sm btn-warn" (click)="deleteUser(user)">Delete</button>
+                              </ng-container>
+                              <ng-container *ngIf="editingUserId === user.id">
+                                  <button type="button" class="btn btn-sm btn-success" (click)="saveEdit(user)">Save</button>
+                                  <button type="button" class="btn btn-sm btn-secondary" (click)="cancelEdit()">Cancel</button>
+                              </ng-container>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+              <ng-template #noUsers>
+                  <p class="no-data">No users found.</p>
+              </ng-template>
+          </div>
       </div>
   </article>
 </section>
 
 <footer>
-  <p>© 2024 Loan Management System - User Roles</p>
+  <p>© 2024 Loan Management System - User Management</p>
 </footer>

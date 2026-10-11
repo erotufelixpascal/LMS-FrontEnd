@@ -1,10 +1,10 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CommonService } from '../../Services/common.service';
 import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+import { Role, User, UserRole, UserStatus } from '../../Services/models/api.models';
 
 @Component({
     selector: 'app-user-roles',
@@ -18,104 +18,186 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     templateUrl: './user-roles.component.html',
     styleUrl: './user-roles.component.scss'
 })
-export class UserRolesComponent  {
-  assignRoleForm: FormGroup;
-  roles =signal<any[]>([]);
-  currentDateTime: string=""
-  users= signal<any[]>([]);
+export class UserRolesComponent {
+  createUserForm: FormGroup;
+  roles = signal<Role[]>([]);
+  users = signal<User[]>([]);
+  currentDateTime: string = '';
+
+  loadingUsers = signal<boolean>(false);
+  creating = signal<boolean>(false);
+  errorMessage = signal<string>('');
+  successMessage = signal<string>('');
+
+  // Inline edit state: userId -> draft values
+  editingUserId: number | null = null;
+  editDraft: { role: UserRole; branch: string | null; status: UserStatus } = {
+    role: 'client',
+    branch: null,
+    status: 'active'
+  };
+
+  // Optional: simple role (permission template) management
+  roleForm: FormGroup;
+  roleSubmitting = signal<boolean>(false);
 
   constructor(
-    private fb:FormBuilder,
-    private DataService:CommonService,
+    private fb: FormBuilder,
+    private DataService: CommonService,
     private router: Router,
     private datePipe: DatePipe
-    ){
-      this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
-      this.assignRoleForm = this.fb.group({
-        userId: ["", Validators.required],
-        role: ["", Validators.required],
-        firstName :["", Validators.required],
-        lastName :["", Validators.required],
-        email :["", Validators.required],
-        address :["", Validators.required],
-        // designation :["", Validators.required],
-        phone :["", Validators.required],
-        // information :["", Validators.required],
-      });
-      this.getUsers();
-      this.getRoles();
-    }
+  ) {
+    this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
 
-  
-  getUsers(){
+    this.createUserForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      role: ['client', Validators.required],
+      branch: [''],
+    });
+
+    this.roleForm = this.fb.group({
+      name: ['', Validators.required],
+      description: [''],
+    });
+
+    this.getUsers();
+    this.getRoles();
+  }
+
+  getUsers(): void {
+    this.loadingUsers.set(true);
     this.DataService.getUsers().subscribe({
-      next:(res)=>{
+      next: (res) => {
         this.users.set(res);
-        console.log(this.users())
+        this.loadingUsers.set(false);
       },
-      error: (error) =>{
-        console.error('Error users data:', error);
-      },
-      complete: () => {
-        console.log('Users fetched complete');
+      error: (error) => {
+        console.error('Error fetching users:', error);
+        this.errorMessage.set('Failed to load users.');
+        this.loadingUsers.set(false);
       }
     });
   }
 
-  onUserSelect(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    const userId = target.value;
-    
-    const selectedUser = this.users().find(user => user.userId.toString() === userId);
-    if (selectedUser) {
-      this.assignRoleForm.patchValue({
-        userId: selectedUser.userId,
-        firstName: selectedUser.firstName,
-        lastName: selectedUser.lastName,
-        email: selectedUser.email,
-        address: selectedUser.address[0]?.city,
-        phone: selectedUser.phoneNumber
-        // designation: selectedUser.designation,
-        // information: selectedUser.information
-      });
-    }
-  }
-
-  getRoles(){
+  getRoles(): void {
     this.DataService.getRoles().subscribe({
-      next:(res)=>{
+      next: (res) => {
         this.roles.set(res);
-        console.log(this.roles())
       },
-      error: (error) =>{
-        console.error('Roles data error:', error);
-      },
-      complete: () => {
-        console.log('Roles fetched complete');
+      error: (error) => {
+        console.error('Error fetching roles:', error);
       }
     });
   }
 
-  onSubmit(){
-    const formValue = this.assignRoleForm.value;
-    this.DataService.addUser(formValue.role,formValue.firstName,formValue.lastName,formValue.email,formValue.address,formValue.designation,formValue.phone,formValue.information).subscribe(response => {
-      console.log('User role updated', response);
+  createUser(): void {
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    if (this.createUserForm.invalid) {
+      this.createUserForm.markAllAsTouched();
+      return;
+    }
+
+    const v = this.createUserForm.value;
+    this.creating.set(true);
+    this.DataService.createUser({
+      firstName: v.firstName,
+      lastName: v.lastName,
+      email: v.email,
+      phone: v.phone,
+      password: v.password,
+      role: v.role,
+      branch: v.branch || null,
+    }).subscribe({
+      next: () => {
+        this.successMessage.set('User created successfully.');
+        this.creating.set(false);
+        this.createUserForm.reset({ role: 'client', branch: '' });
+        this.getUsers();
+      },
+      error: (error) => {
+        console.error('Error creating user:', error);
+        this.errorMessage.set(error?.error?.message || 'Failed to create user.');
+        this.creating.set(false);
+      }
     });
   }
 
-  onSubmitRole(){
-    const formValue = this.assignRoleForm.value;
-    this.DataService.addUserRole(formValue.userId,formValue.role,formValue.firstName,formValue.lastName,formValue.email,formValue.address,formValue.phone).subscribe(response => {
-      console.log('User role updated', response);
+  startEdit(user: User): void {
+    this.editingUserId = user.id;
+    this.editDraft = {
+      role: user.role,
+      branch: user.branch,
+      status: user.status
+    };
+  }
+
+  cancelEdit(): void {
+    this.editingUserId = null;
+  }
+
+  saveEdit(user: User): void {
+    this.DataService.updateUser(user.id, {
+      role: this.editDraft.role,
+      branch: this.editDraft.branch,
+      status: this.editDraft.status
+    }).subscribe({
+      next: () => {
+        this.editingUserId = null;
+        this.getUsers();
+      },
+      error: (error) => {
+        console.error('Error updating user:', error);
+        this.errorMessage.set('Failed to update user.');
+      }
     });
   }
 
-  onCancel(){
-    
+  deleteUser(user: User): void {
+    this.DataService.deleteUser(user.id).subscribe({
+      next: () => {
+        this.getUsers();
+      },
+      error: (error) => {
+        console.error('Error deleting user:', error);
+        this.errorMessage.set('Failed to delete user.');
+      }
+    });
   }
-  
-  goToChildRoute(route :string ){
+
+  createRole(): void {
+    if (this.roleForm.invalid) {
+      this.roleForm.markAllAsTouched();
+      return;
+    }
+    const v = this.roleForm.value;
+    this.roleSubmitting.set(true);
+    this.DataService.createRole({ name: v.name, description: v.description || '' }).subscribe({
+      next: () => {
+        this.roleSubmitting.set(false);
+        this.roleForm.reset();
+        this.getRoles();
+      },
+      error: (error) => {
+        console.error('Error creating role:', error);
+        this.roleSubmitting.set(false);
+      }
+    });
+  }
+
+  deleteRole(role: Role): void {
+    this.DataService.deleteRole(role.id).subscribe({
+      next: () => this.getRoles(),
+      error: (error) => console.error('Error deleting role:', error)
+    });
+  }
+
+  goToChildRoute(route: string) {
     this.router.navigate([route]);
   }
-
 }
