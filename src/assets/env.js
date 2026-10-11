@@ -10,7 +10,7 @@
     window["env"] = window["env"] || {};
     window["env"]["ddEnv"] = "local";
     window["env"]["buildVersion"] = "v1.0.0-local";
-    window["env"]["apiUrl"] = "http://127.0.0.1:8000";
+    window["env"]["apiUrl"] = "http://localhost:3000/api";
     window["env"]["sessionId"] = "1234";
     window["env"]["lmsUrl"] = "http://localhost:4200";
     // window["env"]["auth0ClientID"] = "te474747y";
