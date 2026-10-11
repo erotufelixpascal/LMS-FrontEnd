@@ -1,22 +1,13 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { CommonService } from '../../Services/common.service';
 import { StaffNavbarComponent } from '../staff-navbar/staff-navbar.component';
+import { LoanApplication, Statistics } from '../../Services/models/api.models';
 
-interface IRow {
-  participant_PID: string;
-  ParticipantFirstName: string;
-  ParticipantLastName: string;
-  ParticipantNamesLike: string;
-  course_partner_PID: string;
-  CoursePartnerFirstName: string;
-  CoursePartnerLastName: string;
-  CoursePartnerNamesLike: string;
-}
 interface LoanFile {
   fileName: string;
   fileType: string;
@@ -45,14 +36,19 @@ interface Comment {
 export class StaffDashboardComponent implements OnInit{
   currentDateTime: string;
   gridApi: any;
- 
+
+  statistics = signal<Statistics | null>(null);
+  statisticsLoading = signal<boolean>(false);
+
+  recentPendingApplications = signal<LoanApplication[]>([]);
+  applicationsLoading = signal<boolean>(false);
 
   constructor (
     private router: Router,
     private formBuilder: FormBuilder,
     private dataService:CommonService,
     private datePipe: DatePipe
-){ 
+){
   this.currentDateTime = this.datePipe.transform(new Date(), 'fullDate') + ' ' + this.datePipe.transform(new Date(), 'shortTime');
 }
 
@@ -71,7 +67,40 @@ comments: Comment[] = [
 ];
 newComment: Comment = { userName: 'Current User', text: '', timestamp: new Date() };
 
-ngOnInit(): void { }
+ngOnInit(): void {
+  this.fetchStatistics();
+  this.fetchRecentPendingApplications();
+}
+
+fetchStatistics(): void {
+  this.statisticsLoading.set(true);
+  this.dataService.getStatistics().subscribe({
+    next: (res) => {
+      this.statistics.set(res);
+      this.statisticsLoading.set(false);
+    },
+    error: (error) => {
+      console.error('Error fetching statistics', error);
+      this.statisticsLoading.set(false);
+    }
+  });
+}
+
+fetchRecentPendingApplications(): void {
+  this.applicationsLoading.set(true);
+  this.dataService.getLoanApplications().subscribe({
+    next: (res) => {
+      const pending = (res || []).filter(app => app.status === 'pending');
+      pending.sort((a, b) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime());
+      this.recentPendingApplications.set(pending.slice(0, 5));
+      this.applicationsLoading.set(false);
+    },
+    error: (error) => {
+      console.error('Error fetching loan applications', error);
+      this.applicationsLoading.set(false);
+    }
+  });
+}
 
 showModal(){
   //const modalRef = this.modalService.open(LoanCategoryComponent);

@@ -19,60 +19,57 @@
             <div class="section-header">
                 <h3>🏅 Loan Performance</h3>
             </div>
-            <div class="stats-grid">
+
+            <p *ngIf="statisticsLoading()" class="no-data">Loading statistics...</p>
+
+            <div class="stats-grid" *ngIf="!statisticsLoading() && statistics() as stats">
                 <div class="stat-card">
-                    <div class="stat-icon">👤</div>
-                    <div class="stat-content">
-                        <h4>Loan Assigned</h4>
-                        <p>💰 LM33697</p>
-                        <p>💰 LM33394</p>
-                        <p>💰 LM333365</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">👤</div>
-                    <div class="stat-content">
-                        <h4>Customer Information</h4>
-                        <p>Total Customers: 100</p>
-                        <p>Active Loans: 75</p>
-                        <p>Closed Loans: 18282</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">👤</div>
+                    <div class="stat-icon">📋</div>
                     <div class="stat-content">
                         <h4>Loan Application Overview</h4>
-                        <p>Pending Applications: 20</p>
-                        <p>Approved Applications: 50</p>
-                        <p>Rejected Applications: 10</p>
+                        <p>Pending Applications: {{ stats.pendingApplications }}</p>
+                        <p>Rejected Applications: {{ stats.rejectedApplications }}</p>
+                        <p>Disbursed Applications: {{ stats.disbursedApplications }}</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h4>Loan Book</h4>
+                        <p>Active Loans: {{ stats.activeLoans }}</p>
+                        <p>Closed Loans: {{ stats.closedLoans }}</p>
+                        <p>Defaulted Loans: {{ stats.defaultedLoans }}</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-content">
+                        <h4>Totals</h4>
+                        <p>Principal Disbursed: {{ stats.totalPrincipalDisbursed | currency:'USD':'symbol':'1.0-0' }}</p>
+                        <p>Outstanding: {{ stats.totalOutstanding | currency:'USD':'symbol':'1.0-0' }}</p>
+                        <p>Collected: {{ stats.totalCollected | currency:'USD':'symbol':'1.0-0' }}</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Loan Setup Section -->
+            <!-- Recent Pending Applications -->
             <div class="section-header">
-                <h3>🛠️ Loan Setup</h3>
+                <h3>🛠️ Recent Pending Applications</h3>
             </div>
-            <div class="loan-setup-grid">
-                <div class="setup-card">
-                    <h4>Monthly Targets</h4>
-                    <p>LM33697</p>
-                    <p>LM33394</p>
-                    <p>LM333365</p>
-                </div>
-                <div class="setup-card">
-                    <h4>Monthly Targets</h4>
-                    <p>LM33697</p>
-                    <p>LM33394</p>
-                    <p>LM333365</p>
-                </div>
-                <div class="setup-card">
-                    <h4>Customer Information</h4>
-                    <p>Total Customers: 100</p>
-                    <p>Active Loans: 75</p>
-                    <p>Closed Loans: 18282</p>
+
+            <p *ngIf="applicationsLoading()" class="no-data">Loading pending applications...</p>
+
+            <div class="loan-setup-grid" *ngIf="!applicationsLoading() && recentPendingApplications().length > 0">
+                <div class="setup-card" *ngFor="let app of recentPendingApplications()">
+                    <h4>Application #{{ app.id }}</h4>
+                    <p>Customer ID: {{ app.customerId }}</p>
+                    <p>Amount: {{ app.amount | currency:'USD':'symbol':'1.0-0' }}</p>
+                    <p>Applied: {{ app.appliedAt | date:'short' }}</p>
                 </div>
             </div>
+            <p class="no-data" *ngIf="!applicationsLoading() && recentPendingApplications().length === 0">
+                No pending applications.
+            </p>
         </div>
         </article>
     </section>
