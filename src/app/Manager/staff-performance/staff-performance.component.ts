@@ -13,19 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-
-interface StaffPerformance {
-  staffID?: string;
-  firstName?: string;
-  lastName?: string;
-  loans_applied?: number;
-  loans_pending?: number;
-  loans_disbursed?: number;
-  loans_recovered?: number;
-  effectiveness?: number;
-  totalAmount?: number;
-  recoveredAmount?: number;
-}
+import { User } from '../../Services/models/api.models';
 
 @Component({
     selector: 'app-staff-performance',
@@ -49,38 +37,38 @@ interface StaffPerformance {
     styleUrl: './staff-performance.component.scss'
 })
 export class StaffPerformanceComponent implements OnInit, AfterViewInit {
-  
+
   router = inject(Router);
   dataService = inject(CommonService);
   datePipe = inject(DatePipe);
 
   staffForm: FormGroup;
   currentDateTime: string = "";
-  staffList = signal<any[]>([]);
-  staffPerformanceList = signal<StaffPerformance[]>([]);
-  
+  staffList = signal<User[]>([]);
+  loadingStaff = signal<boolean>(true);
+  staffError = signal<string | null>(null);
+
+  // There is no backend endpoint yet for per-staff performance metrics
+  // (loans applied/pending/disbursed/recovered, effectiveness %). This screen
+  // shows the real staff roster instead of fabricating those numbers.
   displayedColumns: string[] = [
-    'firstName', 
-    'lastName', 
-    'loans_applied', 
-    'loans_pending', 
-    'loans_disbursed', 
-    'loans_recovered', 
-    'effectiveness'
+    'firstName',
+    'lastName',
+    'email',
+    'branch',
+    'status'
   ];
-  
-  dataSource = new MatTableDataSource<StaffPerformance>([]);
-  filteredDataSource = new MatTableDataSource<StaffPerformance>([]);
-  
+
+  dataSource = new MatTableDataSource<User>([]);
+  filteredDataSource = new MatTableDataSource<User>([]);
+
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  // Statistics
+  // Statistics (real, derived from the staff roster only)
   totalStaff = signal<number>(0);
-  totalLoansApplied = signal<number>(0);
-  totalLoansDisbursed = signal<number>(0);
-  totalLoansRecovered = signal<number>(0);
-  averageEffectiveness = signal<number>(0);
+  activeStaff = signal<number>(0);
+  suspendedStaff = signal<number>(0);
 
   constructor(
     private fb: FormBuilder
@@ -94,7 +82,6 @@ export class StaffPerformanceComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadStaffList();
-    this.loadStaffPerformance();
   }
 
   ngAfterViewInit(): void {
@@ -103,56 +90,41 @@ export class StaffPerformanceComponent implements OnInit, AfterViewInit {
   }
 
   loadStaffList(): void {
-    this.dataService.getStaffList().subscribe({
+    this.loadingStaff.set(true);
+    this.staffError.set(null);
+    this.dataService.getUsers('staff').subscribe({
       next: (data) => {
-        this.staffList.set(data || []);
+        const staff = data || [];
+        this.staffList.set(staff);
+        this.dataSource.data = staff;
+        this.filteredDataSource.data = staff;
+        this.calculateStatistics(staff);
       },
       error: (error) => {
         console.error('Error fetching staff list:', error);
-      }
-    });
-  }
-
-  loadStaffPerformance(): void {
-    this.dataService.getStatistics().subscribe({
-      next: (data) => {
-        const performanceData = Array.isArray(data) ? data : [data];
-        this.staffPerformanceList.set(performanceData);
-        this.dataSource.data = performanceData;
-        this.filteredDataSource.data = performanceData;
-        this.calculateStatistics(performanceData);
+        this.staffError.set('Unable to load the staff list.');
       },
-      error: (error) => {
-        console.error('Error fetching staff performance:', error);
+      complete: () => {
+        this.loadingStaff.set(false);
       }
     });
   }
 
-  calculateStatistics(data: StaffPerformance[]): void {
-    if (!data || data.length === 0) return;
-
+  calculateStatistics(data: User[]): void {
     this.totalStaff.set(data.length);
-    
-    const totalApplied = data.reduce((sum, staff) => sum + (staff.loans_applied || 0), 0);
-    const totalDisbursed = data.reduce((sum, staff) => sum + (staff.loans_disbursed || 0), 0);
-    const totalRecovered = data.reduce((sum, staff) => sum + (staff.loans_recovered || 0), 0);
-    const totalEffectiveness = data.reduce((sum, staff) => sum + (staff.effectiveness || 0), 0);
-
-    this.totalLoansApplied.set(totalApplied);
-    this.totalLoansDisbursed.set(totalDisbursed);
-    this.totalLoansRecovered.set(totalRecovered);
-    this.averageEffectiveness.set(data.length > 0 ? totalEffectiveness / data.length : 0);
+    this.activeStaff.set(data.filter(staff => staff.status === 'active').length);
+    this.suspendedStaff.set(data.filter(staff => staff.status === 'suspended').length);
   }
 
   onStaffSelected(): void {
     const selectedStaffID = this.staffForm.get('staffID')?.value;
     if (selectedStaffID) {
-      const filtered = this.staffPerformanceList().filter(
-        staff => staff.staffID === selectedStaffID
+      const filtered = this.staffList().filter(
+        staff => String(staff.id) === String(selectedStaffID)
       );
       this.filteredDataSource.data = filtered;
     } else {
-      this.filteredDataSource.data = this.staffPerformanceList();
+      this.filteredDataSource.data = this.staffList();
     }
   }
 
@@ -170,41 +142,34 @@ export class StaffPerformanceComponent implements OnInit, AfterViewInit {
       staffID: "",
       searchTerm: ""
     });
-    this.filteredDataSource.data = this.staffPerformanceList();
+    this.filteredDataSource.data = this.staffList();
     this.filteredDataSource.filter = "";
   }
 
   exportToCSV(): void {
-    const data = this.filteredDataSource.filteredData.length > 0 
-      ? this.filteredDataSource.filteredData 
+    const data = this.filteredDataSource.filteredData.length > 0
+      ? this.filteredDataSource.filteredData
       : this.filteredDataSource.data;
-    
+
     const headers = this.displayedColumns.join(',');
-    const rows = data.map(staff => 
+    const rows = data.map(staff =>
       this.displayedColumns.map(col => {
-        const value = staff[col as keyof StaffPerformance];
+        const value = staff[col as keyof User];
         return value !== undefined && value !== null ? value : '';
       }).join(',')
     );
-    
+
     const csvContent = [headers, ...rows].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `staff-performance-${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `staff-list-${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
     window.URL.revokeObjectURL(url);
   }
 
   goToChildRoute(route: string): void {
     this.router.navigate([route]);
-  }
-
-  getEffectivenessColor(effectiveness: number | undefined): string {
-    if (!effectiveness) return '';
-    if (effectiveness >= 80) return 'text-green-600 font-bold';
-    if (effectiveness >= 60) return 'text-yellow-600 font-semibold';
-    return 'text-red-600';
   }
 }
