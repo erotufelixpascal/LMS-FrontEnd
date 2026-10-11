@@ -18,8 +18,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { StaffNavbarComponent } from '../staff-navbar/staff-navbar.component';
 
 interface ReportData {
-    loanNumber?: string;
-    customerName?: string;
+    id?: number;
+    customerId?: number;
     amount?: number;
     status?: string;
     date?: string;
@@ -60,31 +60,29 @@ export class ReportsComponent {
 
   reportForm: FormGroup;
   currentDateTime: string = "";
-  
+
   // Report types
   reportTypes = [
     { value: 'loan-approval', label: 'Loan Approval Report' },
     { value: 'loan-disbursement', label: 'Loan Disbursement Report' },
     { value: 'loan-closed', label: 'Closed Loans Report' },
     { value: 'loan-pending', label: 'Pending Loans Report' },
-    { value: 'staff-performance', label: 'Staff Performance Report' },
-    { value: 'financial-summary', label: 'Financial Summary Report' }
   ];
 
   selectedReportType = signal<string>('loan-approval');
-  
+
   // Data sources
   loanApprovalData = signal<ReportData[]>([]);
   loanDisbursementData = signal<ReportData[]>([]);
   loanClosedData = signal<ReportData[]>([]);
   loanPendingData = signal<ReportData[]>([]);
-  
+
   // Table configuration
-  displayedColumns: string[] = ['loanNumber', 'customerName', 'amount', 'status', 'date', 'category'];
+  displayedColumns: string[] = ['id', 'customerId', 'amount', 'status', 'date', 'category'];
   dataSource = new MatTableDataSource<ReportData>([]);
-  
+
   // Filters
-  statusOptions = ['All', 'Approved', 'Pending', 'Rejected', 'Disbursed', 'Closed'];
+  statusOptions = ['All', 'Pending', 'Rejected', 'Disbursed', 'Active', 'Closed', 'Defaulted'];
   categoryOptions = signal<string[]>([]);
 
   constructor(
@@ -144,7 +142,7 @@ export class ReportsComponent {
   loadLoanCategories(): void {
     this.DataService.getLoanCategories().subscribe({
       next: (data) => {
-        const categories = Array.isArray(data) ? data.map(cat => cat.loanName || cat.category) : [];
+        const categories = Array.isArray(data) ? data.map(cat => cat.name) : [];
         this.categoryOptions.set(['All', ...categories]);
       },
       error: (error) => {
@@ -154,39 +152,58 @@ export class ReportsComponent {
   }
 
   loadAllReports(): void {
-    // Load Loan Approval Report
-    this.DataService.getPendingLoan().subscribe({
+    // Loan Approval / Pending report: pending loan applications
+    this.DataService.getLoanApplications().subscribe({
       next: (data) => {
-        const reportData = Array.isArray(data) ? data : [data];
-        this.loanApprovalData.set(reportData);
-        if (this.selectedReportType() === 'loan-approval') {
+        const pending = (data || [])
+          .filter(app => app.status === 'pending')
+          .map(app => ({
+            id: app.id,
+            customerId: app.customerId,
+            amount: app.amount,
+            status: app.status,
+            date: app.appliedAt,
+          } as ReportData));
+        this.loanApprovalData.set(pending);
+        this.loanPendingData.set(pending);
+        if (this.selectedReportType() === 'loan-approval' || this.selectedReportType() === 'loan-pending') {
           this.updateDataSource();
         }
       },
       error: (error) => {
-        console.error('Error loading loan approval data:', error);
+        console.error('Error loading loan applications data:', error);
       }
     });
 
-    // Load Loan Disbursement Report
-    this.DataService.getDisbusredLoan().subscribe({
+    // Loan Disbursement report: active/disbursed loans (has principal/outstanding data)
+    this.DataService.getLoans().subscribe({
       next: (data) => {
-        const reportData = Array.isArray(data) ? data : [data];
-        this.loanDisbursementData.set(reportData);
+        const disbursed = (data || []).map(loan => ({
+          id: loan.id,
+          amount: loan.principal,
+          status: loan.status,
+          date: loan.disbursedAt,
+        } as ReportData));
+        this.loanDisbursementData.set(disbursed);
         if (this.selectedReportType() === 'loan-disbursement') {
           this.updateDataSource();
         }
       },
       error: (error) => {
-        console.error('Error loading loan disbursement data:', error);
+        console.error('Error loading loans data:', error);
       }
     });
 
-    // Load Closed Loans Report
-    this.DataService.getClosedLoan().subscribe({
+    // Closed Loans report
+    this.DataService.getLoans('closed').subscribe({
       next: (data) => {
-        const reportData = Array.isArray(data) ? data : [data];
-        this.loanClosedData.set(reportData);
+        const closed = (data || []).map(loan => ({
+          id: loan.id,
+          amount: loan.principal,
+          status: loan.status,
+          date: loan.disbursedAt,
+        } as ReportData));
+        this.loanClosedData.set(closed);
         if (this.selectedReportType() === 'loan-closed') {
           this.updateDataSource();
         }
@@ -195,25 +212,11 @@ export class ReportsComponent {
         console.error('Error loading closed loans data:', error);
       }
     });
-
-    // Load Pending Loans (same as approval for now)
-    this.DataService.getPendingLoan().subscribe({
-      next: (data) => {
-        const reportData = Array.isArray(data) ? data : [data];
-        this.loanPendingData.set(reportData);
-        if (this.selectedReportType() === 'loan-pending') {
-          this.updateDataSource();
-        }
-      },
-      error: (error) => {
-        console.error('Error loading pending loans data:', error);
-      }
-    });
   }
 
   updateDataSource(): void {
     let data: ReportData[] = [];
-    
+
     switch (this.selectedReportType()) {
       case 'loan-approval':
         data = this.loanApprovalData();
@@ -230,30 +233,30 @@ export class ReportsComponent {
       default:
         data = [];
     }
-    
+
     this.dataSource.data = data;
     this.applyFilters();
   }
 
   applyFilters(): void {
     let filteredData = [...this.dataSource.data];
-    
+
     // Status filter
     const statusFilter = this.reportForm.get('status')?.value;
     if (statusFilter && statusFilter !== 'All') {
-      filteredData = filteredData.filter(item => 
+      filteredData = filteredData.filter(item =>
         item.status?.toLowerCase() === statusFilter.toLowerCase()
       );
     }
-    
+
     // Category filter
     const categoryFilter = this.reportForm.get('category')?.value;
     if (categoryFilter && categoryFilter !== 'All') {
-      filteredData = filteredData.filter(item => 
+      filteredData = filteredData.filter(item =>
         item.category?.toLowerCase() === categoryFilter.toLowerCase()
       );
     }
-    
+
     // Date range filter
     const startDate = this.reportForm.get('startDate')?.value;
     const endDate = this.reportForm.get('endDate')?.value;
@@ -269,17 +272,17 @@ export class ReportsComponent {
         return itemDate && itemDate <= endDate;
       });
     }
-    
+
     // Search filter
     const searchTerm = this.reportForm.get('searchTerm')?.value?.toLowerCase();
     if (searchTerm) {
       filteredData = filteredData.filter(item =>
-        item.loanNumber?.toLowerCase().includes(searchTerm) ||
-        item.customerName?.toLowerCase().includes(searchTerm) ||
+        item.id?.toString().includes(searchTerm) ||
+        item.customerId?.toString().includes(searchTerm) ||
         item.amount?.toString().includes(searchTerm)
       );
     }
-    
+
     this.dataSource.data = filteredData;
   }
 
@@ -295,18 +298,18 @@ export class ReportsComponent {
   }
 
   exportToCSV(): void {
-    const data = this.dataSource.filteredData.length > 0 
-      ? this.dataSource.filteredData 
+    const data = this.dataSource.filteredData.length > 0
+      ? this.dataSource.filteredData
       : this.dataSource.data;
-    
+
     const headers = this.displayedColumns.join(',');
-    const rows = data.map(item => 
+    const rows = data.map(item =>
       this.displayedColumns.map(col => {
         const value = item[col as keyof ReportData];
         return value !== undefined && value !== null ? `"${value}"` : '""';
       }).join(',')
     );
-    
+
     const csvContent = [headers, ...rows].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -341,9 +344,9 @@ export class ReportsComponent {
   getStatusColor(status: string | undefined): string {
     if (!status) return '';
     const statusLower = status.toLowerCase();
-    if (statusLower.includes('approved') || statusLower.includes('disbursed')) return 'status-approved';
+    if (statusLower.includes('approved') || statusLower.includes('disbursed') || statusLower.includes('active')) return 'status-approved';
     if (statusLower.includes('pending')) return 'status-pending';
-    if (statusLower.includes('rejected') || statusLower.includes('closed')) return 'status-rejected';
+    if (statusLower.includes('rejected') || statusLower.includes('closed') || statusLower.includes('defaulted')) return 'status-rejected';
     return '';
   }
 
