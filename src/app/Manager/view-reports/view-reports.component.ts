@@ -15,16 +15,18 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { Loan, LoanApplication, LoanCategory } from '../../Services/models/api.models';
 
 interface ReportData {
-  loanNumber?: string;
-  customerName?: string;
+  id?: number;
+  // Identifies who/what the record relates to without fabricating a
+  // customer name we don't have (loan applications only expose customerId,
+  // loans only expose applicationId).
+  reference?: string;
   amount?: number;
   status?: string;
   date?: string;
   category?: string;
-  interestRate?: number;
-  term?: number;
 }
 
 @Component({
@@ -58,31 +60,33 @@ export class ViewReportsComponent implements OnInit {
 
   reportForm: FormGroup;
   currentDateTime: string = "";
-  
+
   // Report types
   reportTypes = [
     { value: 'loan-approval', label: 'Loan Approval Report' },
     { value: 'loan-disbursement', label: 'Loan Disbursement Report' },
     { value: 'loan-closed', label: 'Closed Loans Report' },
-    { value: 'loan-pending', label: 'Pending Loans Report' },
-    { value: 'staff-performance', label: 'Staff Performance Report' },
-    { value: 'financial-summary', label: 'Financial Summary Report' }
+    { value: 'loan-pending', label: 'Pending Loans Report' }
   ];
 
   selectedReportType = signal<string>('loan-approval');
-  
+
   // Data sources
   loanApprovalData = signal<ReportData[]>([]);
   loanDisbursementData = signal<ReportData[]>([]);
   loanClosedData = signal<ReportData[]>([]);
   loanPendingData = signal<ReportData[]>([]);
-  
+
+  loadingReports = signal<boolean>(true);
+  reportsError = signal<string | null>(null);
+
   // Table configuration
-  displayedColumns: string[] = ['loanNumber', 'customerName', 'amount', 'status', 'date', 'category'];
+  displayedColumns: string[] = ['id', 'reference', 'amount', 'status', 'date', 'category'];
   dataSource = new MatTableDataSource<ReportData>([]);
-  
+
   // Filters
-  statusOptions = ['All', 'Approved', 'Pending', 'Rejected', 'Disbursed', 'Closed'];
+  statusOptions = ['All', 'Pending', 'Rejected', 'Disbursed', 'Active', 'Closed', 'Defaulted'];
+  categoriesList = signal<LoanCategory[]>([]);
   categoryOptions = signal<string[]>([]);
 
   constructor(
@@ -115,9 +119,10 @@ export class ViewReportsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadAllReports();
-    this.loadLoanCategories();
     this.setupFormListeners();
+    // Load categories first so application-based reports can resolve a
+    // human-readable category name while mapping.
+    this.loadLoanCategories();
   }
 
   setupFormListeners(): void {
@@ -142,34 +147,73 @@ export class ViewReportsComponent implements OnInit {
   loadLoanCategories(): void {
     this.DataService.getLoanCategories().subscribe({
       next: (data) => {
-        const categories = Array.isArray(data) ? data.map(cat => cat.loanName || cat.category) : [];
-        this.categoryOptions.set(['All', ...categories]);
+        const categories = data || [];
+        this.categoriesList.set(categories);
+        this.categoryOptions.set(['All', ...categories.map(cat => cat.name)]);
       },
       error: (error) => {
         console.error('Error loading categories:', error);
+      },
+      complete: () => {
+        this.loadAllReports();
       }
     });
   }
 
+  private categoryNameById(categoryId: number | undefined): string | undefined {
+    if (categoryId === undefined) return undefined;
+    return this.categoriesList().find(cat => cat.id === categoryId)?.name;
+  }
+
+  private mapApplications(apps: LoanApplication[]): ReportData[] {
+    return apps.map(app => ({
+      id: app.id,
+      reference: `Customer #${app.customerId}`,
+      amount: app.amount,
+      status: app.status,
+      date: app.appliedAt,
+      category: this.categoryNameById(app.categoryId)
+    }));
+  }
+
+  private mapLoans(loans: Loan[]): ReportData[] {
+    return loans.map(loan => ({
+      id: loan.id,
+      reference: `Application #${loan.applicationId}`,
+      amount: loan.principal,
+      status: loan.status,
+      date: loan.disbursedAt
+    }));
+  }
+
   loadAllReports(): void {
-    // Load Loan Approval Report
-    this.DataService.getPendingLoan().subscribe({
+    this.loadingReports.set(true);
+    this.reportsError.set(null);
+
+    // Loan Approval / Pending Report - pending applications
+    this.DataService.getLoanApplications().subscribe({
       next: (data) => {
-        const reportData = Array.isArray(data) ? data : [data];
+        const pending = (data || []).filter(app => app.status === 'pending');
+        const reportData = this.mapApplications(pending);
         this.loanApprovalData.set(reportData);
-        if (this.selectedReportType() === 'loan-approval') {
+        this.loanPendingData.set(reportData);
+        if (this.selectedReportType() === 'loan-approval' || this.selectedReportType() === 'loan-pending') {
           this.updateDataSource();
         }
       },
       error: (error) => {
         console.error('Error loading loan approval data:', error);
+        this.reportsError.set('Unable to load loan application data.');
+      },
+      complete: () => {
+        this.loadingReports.set(false);
       }
     });
 
-    // Load Loan Disbursement Report
-    this.DataService.getDisbusredLoan().subscribe({
+    // Loan Disbursement Report - all loans (post-disbursement records)
+    this.DataService.getLoans().subscribe({
       next: (data) => {
-        const reportData = Array.isArray(data) ? data : [data];
+        const reportData = this.mapLoans(data || []);
         this.loanDisbursementData.set(reportData);
         if (this.selectedReportType() === 'loan-disbursement') {
           this.updateDataSource();
@@ -177,13 +221,14 @@ export class ViewReportsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading loan disbursement data:', error);
+        this.reportsError.set('Unable to load loan disbursement data.');
       }
     });
 
-    // Load Closed Loans Report
-    this.DataService.getClosedLoan().subscribe({
+    // Closed Loans Report
+    this.DataService.getLoans('closed').subscribe({
       next: (data) => {
-        const reportData = Array.isArray(data) ? data : [data];
+        const reportData = this.mapLoans(data || []);
         this.loanClosedData.set(reportData);
         if (this.selectedReportType() === 'loan-closed') {
           this.updateDataSource();
@@ -191,27 +236,14 @@ export class ViewReportsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading closed loans data:', error);
-      }
-    });
-
-    // Load Pending Loans (same as approval for now)
-    this.DataService.getPendingLoan().subscribe({
-      next: (data) => {
-        const reportData = Array.isArray(data) ? data : [data];
-        this.loanPendingData.set(reportData);
-        if (this.selectedReportType() === 'loan-pending') {
-          this.updateDataSource();
-        }
-      },
-      error: (error) => {
-        console.error('Error loading pending loans data:', error);
+        this.reportsError.set('Unable to load closed loans data.');
       }
     });
   }
 
   updateDataSource(): void {
     let data: ReportData[] = [];
-    
+
     switch (this.selectedReportType()) {
       case 'loan-approval':
         data = this.loanApprovalData();
@@ -228,30 +260,30 @@ export class ViewReportsComponent implements OnInit {
       default:
         data = [];
     }
-    
+
     this.dataSource.data = data;
     this.applyFilters();
   }
 
   applyFilters(): void {
     let filteredData = [...this.dataSource.data];
-    
+
     // Status filter
     const statusFilter = this.reportForm.get('status')?.value;
     if (statusFilter && statusFilter !== 'All') {
-      filteredData = filteredData.filter(item => 
+      filteredData = filteredData.filter(item =>
         item.status?.toLowerCase() === statusFilter.toLowerCase()
       );
     }
-    
+
     // Category filter
     const categoryFilter = this.reportForm.get('category')?.value;
     if (categoryFilter && categoryFilter !== 'All') {
-      filteredData = filteredData.filter(item => 
+      filteredData = filteredData.filter(item =>
         item.category?.toLowerCase() === categoryFilter.toLowerCase()
       );
     }
-    
+
     // Date range filter
     const startDate = this.reportForm.get('startDate')?.value;
     const endDate = this.reportForm.get('endDate')?.value;
@@ -267,17 +299,17 @@ export class ViewReportsComponent implements OnInit {
         return itemDate && itemDate <= endDate;
       });
     }
-    
+
     // Search filter
     const searchTerm = this.reportForm.get('searchTerm')?.value?.toLowerCase();
     if (searchTerm) {
       filteredData = filteredData.filter(item =>
-        item.loanNumber?.toLowerCase().includes(searchTerm) ||
-        item.customerName?.toLowerCase().includes(searchTerm) ||
+        item.reference?.toLowerCase().includes(searchTerm) ||
+        item.id?.toString().includes(searchTerm) ||
         item.amount?.toString().includes(searchTerm)
       );
     }
-    
+
     this.dataSource.data = filteredData;
   }
 
@@ -293,18 +325,18 @@ export class ViewReportsComponent implements OnInit {
   }
 
   exportToCSV(): void {
-    const data = this.dataSource.filteredData.length > 0 
-      ? this.dataSource.filteredData 
+    const data = this.dataSource.filteredData.length > 0
+      ? this.dataSource.filteredData
       : this.dataSource.data;
-    
+
     const headers = this.displayedColumns.join(',');
-    const rows = data.map(item => 
+    const rows = data.map(item =>
       this.displayedColumns.map(col => {
         const value = item[col as keyof ReportData];
         return value !== undefined && value !== null ? `"${value}"` : '""';
       }).join(',')
     );
-    
+
     const csvContent = [headers, ...rows].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -339,9 +371,9 @@ export class ViewReportsComponent implements OnInit {
   getStatusColor(status: string | undefined): string {
     if (!status) return '';
     const statusLower = status.toLowerCase();
-    if (statusLower.includes('approved') || statusLower.includes('disbursed')) return 'status-approved';
+    if (statusLower.includes('disbursed') || statusLower.includes('active')) return 'status-approved';
     if (statusLower.includes('pending')) return 'status-pending';
-    if (statusLower.includes('rejected') || statusLower.includes('closed')) return 'status-rejected';
+    if (statusLower.includes('rejected') || statusLower.includes('closed') || statusLower.includes('defaulted')) return 'status-rejected';
     return '';
   }
 }

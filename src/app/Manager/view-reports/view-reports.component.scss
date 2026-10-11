@@ -258,6 +258,18 @@ h3 {
     background-color: #f5f5f5;
 }
 
+.loading-text {
+    color: #667eea;
+    font-style: italic;
+    padding: 10px 0;
+}
+
+.error-text {
+    color: #dc2626;
+    font-weight: 600;
+    padding: 10px 0;
+}
+
 // Status Colors
 .status-approved {
     color: #16a34a;
