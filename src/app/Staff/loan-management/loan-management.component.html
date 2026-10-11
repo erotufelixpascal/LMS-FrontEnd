@@ -15,19 +15,66 @@
         <div class="container">
             <h2>Loan Management</h2>
 
+            <!-- Pending Applications Review -->
+            <div class="section-header">
+                <h3>Pending Loan Applications</h3>
+            </div>
+
+            <p *ngIf="applicationsLoading()" class="no-data">Loading pending applications...</p>
+
+            <div class="table-wrapper" *ngIf="!applicationsLoading()">
+                <table class="dashboard-table" *ngIf="pendingApplications().length > 0; else noApplications">
+                    <thead>
+                        <tr>
+                            <th>Application ID</th>
+                            <th>Customer ID</th>
+                            <th>Amount</th>
+                            <th>Term (months)</th>
+                            <th>Reason</th>
+                            <th>Applied At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let app of pendingApplications()">
+                            <td>{{ app.id }}</td>
+                            <td>{{ app.customerId }}</td>
+                            <td>{{ app.amount | currency:'USD':'symbol':'1.0-0' }}</td>
+                            <td>{{ app.term }}</td>
+                            <td>{{ app.reason }}</td>
+                            <td>{{ app.appliedAt | date:'short' }}</td>
+                            <td>
+                                <button class="btn btn-success btn-sm" [disabled]="decisionInProgress() === app.id" (click)="decide(app, 'approved')">Approve</button>
+                                <button class="btn btn-sm btn-danger" [disabled]="decisionInProgress() === app.id" (click)="decide(app, 'rejected')">Reject</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ng-template #noApplications>
+                    <p class="no-data">No pending applications.</p>
+                </ng-template>
+            </div>
+
+            <!-- Loan Selection -->
             <div class="section-header">
                 <h3>Outstanding Loan Performers - Clients</h3>
             </div>
 
             <form [formGroup]="staffForm" class="search-form">
                 <div class="form-group">
-                    <label>Loan Number:</label>
-                    <select formControlName="loanNumber" id="loanNumber" name="loanNumber" class="form-control">
-                        <option *ngFor="let loan of loanNumbers" [value]="loan.loanNumber">{{ loan.loanNumber }}</option>
+                    <label>Loan:</label>
+                    <select formControlName="loanId" id="loanId" name="loanId" class="form-control" (change)="onLoanSelected()">
+                        <option value="">-- Select a loan --</option>
+                        <option *ngFor="let loan of loans()" [value]="loan.id">
+                            #{{ loan.id }} - {{ loan.principal | currency:'USD':'symbol':'1.0-0' }} ({{ loan.status }})
+                        </option>
                     </select>
-                    <button class="btn btn-primary" type="submit" (click)="schedules(loanNumber)">Search</button>
                 </div>
             </form>
+
+            <div *ngIf="selectedLoan() as loan" class="selected-loan-summary">
+                <p><strong>Loan #{{ loan.id }}</strong> | Principal: {{ loan.principal | currency:'USD':'symbol':'1.0-0' }} | Outstanding: {{ loan.outstandingBalance | currency:'USD':'symbol':'1.0-0' }} | Status: {{ loan.status }}</p>
+            </div>
 
             <div class="tabs-container">
                 <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
@@ -37,6 +84,36 @@
                                 <h4>Loan Payment Schedule</h4>
                             </div>
                             <p class="tab-description">Here you will find the Loan Schedule Plan</p>
+
+                            <p *ngIf="scheduleLoading()" class="no-data">Loading schedule...</p>
+
+                            <div class="table-wrapper" *ngIf="!scheduleLoading()">
+                                <table class="dashboard-table" *ngIf="loanSchedule().length > 0; else noSchedule">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Due Date</th>
+                                            <th>Principal Due</th>
+                                            <th>Interest Due</th>
+                                            <th>Total Due</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let row of loanSchedule()">
+                                            <td>{{ row.installmentNumber }}</td>
+                                            <td>{{ row.dueDate | date }}</td>
+                                            <td>{{ row.principalDue | currency:'USD':'symbol':'1.0-0' }}</td>
+                                            <td>{{ row.interestDue | currency:'USD':'symbol':'1.0-0' }}</td>
+                                            <td>{{ row.totalDue | currency:'USD':'symbol':'1.0-0' }}</td>
+                                            <td>{{ row.status }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <ng-template #noSchedule>
+                                    <p class="no-data">{{ selectedLoan() ? 'No schedule rows found for this loan.' : 'Select a loan to view its schedule.' }}</p>
+                                </ng-template>
+                            </div>
                         </div>
                     </mat-tab>
 
@@ -45,7 +122,63 @@
                             <div class="tab-header">
                                 <h4>Loan Repayments</h4>
                             </div>
-                            <p class="tab-description">Here you will find the Loan Disbursement</p>
+                            <p class="tab-description">Payment history for the selected loan</p>
+
+                            <div class="table-wrapper">
+                                <table class="dashboard-table" *ngIf="loanPayments().length > 0; else noPayments">
+                                    <thead>
+                                        <tr>
+                                            <th>Payment ID</th>
+                                            <th>Amount</th>
+                                            <th>Method</th>
+                                            <th>Paid At</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let p of loanPayments()">
+                                            <td>{{ p.id }}</td>
+                                            <td>{{ p.amountPaid | currency:'USD':'symbol':'1.0-0' }}</td>
+                                            <td>{{ p.method }}</td>
+                                            <td>{{ p.paidAt | date:'short' }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <ng-template #noPayments>
+                                    <p class="no-data">{{ selectedLoan() ? 'No payments recorded yet for this loan.' : 'Select a loan to view payment history.' }}</p>
+                                </ng-template>
+                            </div>
+
+                            <!-- Record Payment -->
+                            <div class="add-comment-card" *ngIf="selectedLoan() as loan">
+                                <h4>Record a Payment for Loan #{{ loan.id }}</h4>
+                                <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()" class="payment-form">
+                                    <div class="form-group">
+                                        <label>Amount</label>
+                                        <input type="number" formControlName="amountPaid" class="form-control" step="0.01" min="0.01">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Method</label>
+                                        <select formControlName="method" class="form-control">
+                                            <option value="cash">Cash</option>
+                                            <option value="bank_transfer">Bank Transfer</option>
+                                            <option value="card">Card</option>
+                                            <option value="mobile_money">Mobile Money</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Apply to Schedule Row (optional)</label>
+                                        <select formControlName="scheduleId" class="form-control">
+                                            <option [value]="null">-- Not specified --</option>
+                                            <option *ngFor="let row of loanSchedule()" [value]="row.id">
+                                                #{{ row.installmentNumber }} - due {{ row.dueDate | date }} ({{ row.totalDue | currency:'USD':'symbol':'1.0-0' }})
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" [disabled]="paymentSubmitting()">Record Payment</button>
+                                    <p class="success-text" *ngIf="paymentMessage()">{{ paymentMessage() }}</p>
+                                    <p class="error-text" *ngIf="paymentError()">{{ paymentError() }}</p>
+                                </form>
+                            </div>
                         </div>
                     </mat-tab>
 
@@ -72,7 +205,7 @@
                             <div class="tab-header">
                                 <h4>Loan Files</h4>
                             </div>
-                            
+
                             <div class="table-wrapper">
                                 <table mat-table [dataSource]="loanFiles" class="dashboard-table">
                                     <ng-container matColumnDef="fileName">
@@ -110,7 +243,7 @@
                             <div class="tab-header">
                                 <h4>Loan Comments/Reminders</h4>
                             </div>
-                            
+
                             <div class="comments-section">
                                 <!-- Display existing comments -->
                                 <div *ngFor="let comment of comments" class="comment-card">
@@ -141,4 +274,3 @@
     </footer>
 <!-- </div> -->
 
-  
