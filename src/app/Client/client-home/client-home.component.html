@@ -14,6 +14,66 @@
         <div class="container">
             <h2>Client Dashboard</h2>
 
+            <!-- Active Loans Summary -->
+            <div class="section-header">
+                <h3>💰 Active Loans</h3>
+            </div>
+            <div class="loading-indicator" *ngIf="loadingLoans">Loading your loans...</div>
+            <div class="empty-state" *ngIf="!loadingLoans && activeLoans.length === 0">
+                You have no loans yet.
+            </div>
+            <div class="table-wrapper" *ngIf="!loadingLoans && activeLoans.length > 0">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Loan ID</th>
+                            <th>Principal</th>
+                            <th>Outstanding Balance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let loan of activeLoans">
+                            <td>{{ loan.id }}</td>
+                            <td>{{ loan.principal }}</td>
+                            <td>{{ loan.outstandingBalance }}</td>
+                            <td>{{ loan.status }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Application Status History -->
+            <div class="section-header">
+                <h3>📝 Application Status History</h3>
+            </div>
+            <div class="loading-indicator" *ngIf="loadingApplications">Loading your applications...</div>
+            <div class="empty-state" *ngIf="!loadingApplications && applications.length === 0">
+                You have not submitted any loan applications yet.
+            </div>
+            <div class="table-wrapper" *ngIf="!loadingApplications && applications.length > 0">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Application ID</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Applied At</th>
+                            <th>Decision Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let application of applications">
+                            <td>{{ application.id }}</td>
+                            <td>{{ application.amount }}</td>
+                            <td>{{ application.status }}</td>
+                            <td>{{ application.appliedAt | date }}</td>
+                            <td>{{ application.decisionComment || '-' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <!-- Loan Management Section -->
             <div class="section-header">
                 <h3>📊 Loan Management</h3>
@@ -26,7 +86,7 @@
                             <div class="tab-header">
                                 <h4>Repayments</h4>
                             </div>
-                            <p class="tab-description">Here you will find the repayments</p>
+                            <p class="tab-description">Use the Loan Repayment page to make a payment towards one of your active loans.</p>
                         </div>
                     </mat-tab>
 
@@ -35,7 +95,7 @@
                             <div class="tab-header">
                                 <h4>Loan Repayment Schedule</h4>
                             </div>
-                            <p class="tab-description">Here you will find the Loan Repayment Schedule</p>
+                            <p class="tab-description">Select a loan from the Loan Repayment page to view its repayment schedule.</p>
                         </div>
                     </mat-tab>
 
@@ -44,7 +104,26 @@
                             <div class="tab-header">
                                 <h4>Loan Terms</h4>
                             </div>
-                            <p class="tab-description">Loan terms information</p>
+                            <div class="loading-indicator" *ngIf="loadingLoanTerms">Loading loan terms...</div>
+                            <div class="empty-state" *ngIf="!loadingLoanTerms && loanTerm.length === 0">
+                                No loan terms available yet.
+                            </div>
+                            <div class="table-wrapper" *ngIf="!loadingLoanTerms && loanTerm.length > 0">
+                                <table class="dashboard-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Min Term (Months)</th>
+                                            <th>Max Term (Months)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let term of loanTerm">
+                                            <td>{{ term.termMinMonths }}</td>
+                                            <td>{{ term.termMaxMonths }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </mat-tab>
 

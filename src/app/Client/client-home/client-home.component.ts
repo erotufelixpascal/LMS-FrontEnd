@@ -6,22 +6,12 @@ import { CommonService } from '../../Services/common.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { ClientNavbarComponent } from '../client-navbar/client-navbar.component';
+import { Loan, LoanApplication, LoanTerm } from '../../Services/models/api.models';
 // import { AgGridModule } from 'ag-grid-angular';
 // import { ColDef, GridReadyEvent,  GridSizeChangedEvent, createGrid } from "ag-grid-community";
 // import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 // import { LoanRepaymentComponent } from '../loan-repayment/loan-repayment.component';
 
-
-interface IRow {
-  participant_PID: string;
-  ParticipantFirstName: string;
-  ParticipantLastName: string;
-  ParticipantNamesLike: string;
-  course_partner_PID: string;
-  CoursePartnerFirstName: string;
-  CoursePartnerLastName: string;
-  CoursePartnerNamesLike: string;
-}
 interface LoanFile {
   fileName: string;
   fileType: string;
@@ -50,9 +40,12 @@ interface Comment {
 export class ClientHomeComponent implements OnInit{
   currentDateTime: string;
   themeClass = "ag-theme-alpine";
-  repaymentList: IRow[] = [];
-  scheduleList: IRow[] = [];
-  loanTerm: IRow[] = [];
+  loanTerm: LoanTerm[] = [];
+  activeLoans: Loan[] = [];
+  applications: LoanApplication[] = [];
+  loadingLoanTerms = false;
+  loadingLoans = false;
+  loadingApplications = false;
   gridApi: any;
   // defaultColDef: ColDef = {
   //   sortable: true,
@@ -114,9 +107,38 @@ export class ClientHomeComponent implements OnInit{
    }
 
   ngOnInit(): void {
-    this.DataService.loanTerms().subscribe((res) =>{
-      this.loanTerm = res
-      })
+    this.loadingLoanTerms = true;
+    this.DataService.getLoanTerms().subscribe({
+      next: (res) => {
+        this.loanTerm = res;
+        this.loadingLoanTerms = false;
+      },
+      error: () => {
+        this.loadingLoanTerms = false;
+      }
+    });
+
+    this.loadingLoans = true;
+    this.DataService.getLoans().subscribe({
+      next: (res) => {
+        this.activeLoans = res;
+        this.loadingLoans = false;
+      },
+      error: () => {
+        this.loadingLoans = false;
+      }
+    });
+
+    this.loadingApplications = true;
+    this.DataService.getLoanApplications().subscribe({
+      next: (res) => {
+        this.applications = res;
+        this.loadingApplications = false;
+      },
+      error: () => {
+        this.loadingApplications = false;
+      }
+    });
   }
 
   downloadFile(file: LoanFile): void {
