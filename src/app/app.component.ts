@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FooterComponent } from './Core/Footer/footer.component';
 import { ClientNavbarComponent } from './Client/client-navbar/client-navbar.component';
 import { StaffNavbarComponent } from './Staff/staff-navbar/staff-navbar.component';
 import { ManagerComponent } from './Manager/manager-navbar/manager.component';
+import { AuthService } from './Services/auth.service';
 
 @Component({
     selector: 'app-root',
@@ -21,5 +22,8 @@ import { ManagerComponent } from './Manager/manager-navbar/manager.component';
 })
 export class AppComponent {
   title = 'FrontEnd';
-  role = signal('');
+  private auth = inject(AuthService);
+  // Was a signal that nothing ever set, so the role-based navbar never
+  // rendered - now driven by the logged-in user's actual role.
+  role = computed(() => this.auth.currentUser()?.role ?? '');
 }
