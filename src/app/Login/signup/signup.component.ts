@@ -7,8 +7,9 @@ import {
   ValidationErrors,
   Validators
 } from "@angular/forms";
-import { Router, RouterLink } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
+import { AuthService } from "../../Services/auth.service";
 
 function passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
   const pass = group.get('password')?.value;
@@ -26,15 +27,16 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
 export class SignupComponent {
   signupForm: FormGroup;
   errorMessage = '';
+  submitting = false;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private auth: AuthService) {
     this.signupForm = this.fb.group(
       {
         firstName: ['', Validators.required],
         lastName: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
         phone: ['', Validators.required],
-        password: ['', [Validators.required, Validators.minLength(6)]],
+        password: ['', [Validators.required, Validators.minLength(8)]],
         confirmPassword: ['', Validators.required]
       },
       { validators: passwordMatchValidator }
@@ -52,30 +54,18 @@ export class SignupComponent {
     const { confirmPassword, ...userData } = this.signupForm.value;
     const email = userData.email.trim().toLowerCase();
 
-    // Prevent duplicate registrations
-    const existing: any[] = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    if (existing.some(u => u.email.toLowerCase() === email)) {
-      this.errorMessage = 'An account with this email already exists.';
-      return;
-    }
-
-    const newUser = {
-      id: Date.now(),
-      ...userData,
-      email,
-      role: 'client',
-      branch: null,
-      status: 'active',
-      createdAt: new Date().toISOString(),
-      lastLogin: new Date().toISOString()
-    };
-
-    existing.push(newUser);
-    localStorage.setItem('registeredUsers', JSON.stringify(existing));
-
-    const { password: _pw, ...safeUser } = newUser;
-    localStorage.setItem('currentUser', JSON.stringify(safeUser));
-
-    this.router.navigate(['/client']);
+    this.submitting = true;
+    this.auth.register({ ...userData, email }).subscribe({
+      next: () => {
+        this.submitting = false;
+        this.auth.redirectToHome();
+      },
+      error: (err) => {
+        this.submitting = false;
+        this.errorMessage = err?.status === 409
+          ? 'An account with this email already exists.'
+          : (err?.error?.message || 'Something went wrong. Please try again.');
+      }
+    });
   }
 }
