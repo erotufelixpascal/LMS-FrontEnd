@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
     selector: 'app-manager-navbar',
     imports: [
-        RouterOutlet
+        RouterOutlet,
+        RouterLink
     ],
     templateUrl: './manager.component.html',
     styleUrl: './manager.component.scss'
