@@ -114,6 +114,41 @@ h3 {
     }
 }
 
+.loading-indicator {
+    color: #667eea;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.empty-state {
+    color: #999;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.schedule-detail {
+    color: #555;
+    font-size: 13px;
+}
+
+.error-message {
+    padding: 12px;
+    border-radius: 6px;
+    background-color: #fde8e8;
+    border: 1px solid #f5c2c7;
+    color: #842029;
+    font-size: 14px;
+}
+
+.success-message {
+    padding: 12px;
+    border-radius: 6px;
+    background-color: #d1e7dd;
+    border: 1px solid #a3cfbb;
+    color: #0f5132;
+    font-size: 14px;
+}
+
 .form-actions {
     display: flex;
     justify-content: flex-end;

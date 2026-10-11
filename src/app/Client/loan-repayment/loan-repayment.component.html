@@ -17,27 +17,58 @@
             <div class="form-container">
                 <form [formGroup]="loanRepaymentForm" (ngSubmit)="onSubmit()" class="repayment-form">
                     <div class="form-group">
-                        <label for="loanId">Loan ID</label>
-                        <input type="text" id="loanId" formControlName="loanId" class="form-control" required placeholder="Enter loan ID" />
+                        <label for="loanId">Loan</label>
+                        <select id="loanId" formControlName="loanId" class="form-control" (change)="onLoanChange()" [disabled]="loadingLoans">
+                            <option value="">Select a loan</option>
+                            <option *ngFor="let loan of loans" [value]="loan.id">
+                                Loan #{{ loan.id }} - Outstanding: {{ loan.outstandingBalance }} ({{ loan.status }})
+                            </option>
+                        </select>
+                        <div class="loading-indicator" *ngIf="loadingLoans">Loading your loans...</div>
+                        <div class="empty-state" *ngIf="!loadingLoans && loans.length === 0">
+                            You have no loans to repay yet.
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="amountDue">Amount Due</label>
-                        <input type="number" id="amountDue" formControlName="amountDue" class="form-control" required placeholder="Enter amount due" />
+                        <label for="scheduleId">Installment Due</label>
+                        <select id="scheduleId" formControlName="scheduleId" class="form-control" [disabled]="loadingSchedule || schedule.length === 0">
+                            <option value="">Select an installment</option>
+                            <option *ngFor="let row of schedule" [value]="row.id">
+                                #{{ row.installmentNumber }} - Due {{ row.dueDate | date }} - {{ row.totalDue }} ({{ row.status }})
+                            </option>
+                        </select>
+                        <div class="loading-indicator" *ngIf="loadingSchedule">Loading repayment schedule...</div>
+                        <div class="empty-state" *ngIf="!loadingSchedule && loanRepaymentForm.get('loanId')?.value && schedule.length === 0">
+                            No repayment schedule found for this loan.
+                        </div>
+                        <div class="schedule-detail" *ngIf="selectedScheduleRow as row">
+                            Due date: {{ row.dueDate | date }} | Total due: {{ row.totalDue }}
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="amount">Repayment Amount</label>
-                        <input type="number" id="amount" formControlName="amount" class="form-control" required placeholder="Enter repayment amount" />
+                        <input type="number" id="amount" formControlName="amount" class="form-control" placeholder="Enter repayment amount" />
                     </div>
 
                     <div class="form-group">
-                        <label for="repaymentDate">Repayment Date</label>
-                        <input type="date" id="repaymentDate" formControlName="repaymentDate" class="form-control" required />
+                        <label for="method">Payment Method</label>
+                        <select id="method" formControlName="method" class="form-control">
+                            <option value="">Select payment method</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="cash">Cash</option>
+                            <option value="mobile_money">Mobile Money</option>
+                        </select>
                     </div>
 
+                    <div class="error-message" *ngIf="submitError">{{ submitError }}</div>
+                    <div class="success-message" *ngIf="submitSuccess">{{ submitSuccess }}</div>
+
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary" [disabled]="loanRepaymentForm.invalid">Submit Repayment</button>
+                        <button type="submit" class="btn btn-primary" [disabled]="loanRepaymentForm.invalid || submitting">
+                            {{ submitting ? 'Submitting...' : 'Submit Repayment' }}
+                        </button>
                     </div>
                 </form>
             </div>
@@ -49,4 +80,3 @@
         <p>© 2024 Loan Management System - Client Dashboard</p>
     </footer>
 </div>
-  
